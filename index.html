@@ -341,6 +341,7 @@
                     <button class="example-btn" onclick="loadExample('conan')">Conan - Advanced Techniques</button>
                     <button class="example-btn" onclick="loadExample('amaiyah')">Amaiyah - Equipment Discussion</button>
                     <button class="example-btn" onclick="loadExample('brody')">Brody - Multiple Songs</button>
+                    <button class="example-btn" onclick="loadExample('seek_destroy')">Seek & Destroy - Test Case</button>
                 </div>
             </div>
         </div>
@@ -389,9 +390,9 @@
 
         // Comprehensive spelling and grammar corrections
         const corrections = {
-            // Common typos
+            // Common typos - keep original case patterns
             'metalica': 'Metallica',
-            'metallica': 'Metallica',
+            'metallica': 'Metallica', 
             'sabath': 'Sabbath',
             'sabbath': 'Sabbath',
             'oma': 'OMA',
@@ -426,23 +427,21 @@
             'coldplay': 'Coldplay',
             'imagine dragons': 'Imagine Dragons',
             'hozier': 'Hozier',
-            
-            // Grammar fixes
-            'we played': 'they played',
-            'we worked': 'they worked',
-            'we went': 'they went',
-            'we started': 'they started',
-            'we practiced': 'they practiced',
-            'we focused': 'they focused',
-            'we learned': 'they learned',
-            'i sent': 'the instructor sent',
-            'i suggest': 'the instructor suggests',
-            'i recommend': 'the instructor recommends',
-            'you did': 'they did',
-            'you worked': 'they worked',
-            'you played': 'they played',
-            'your': 'their',
-            'you': 'they'
+            'indepence': 'independence',
+            'independance': 'independence',
+            'drumm': 'drum',
+            'fillls': 'fills',
+            'stong': 'song',
+            'songg': 'song',
+            'structue': 'structure',
+            'struture': 'structure',
+            'compicated': 'complicated',
+            'complicted': 'complicated',
+            'compliceted': 'complicated',
+            'porton': 'portion',
+            'portoin': 'portion',
+            'hardest': 'most challenging',
+            'easiest': 'most accessible'
         };
 
         // Known songs with proper formatting
@@ -476,7 +475,9 @@
             
             amaiyah: `Amaiyah - worked through creep, broke down the main patterns including the cross stick at the end. Went through learning sixtuplets and played them over the song CREAM by oma. Nice work with these. for sticking its 6 hits on the snare then 2, 2, 2 startingon the snare, tom, low tom. Sorry for going over your time, we spoke about what kind of drum kit to get which i suggest to not spend over $500 to start. A nice kit to start off with is Quest Loves Pocket kit or the breakbeats kit. You will need to get cymbals and hardware as well, which i would find used on facebook market place or ebay`,
             
-            brody: `Brody played through The Chainsmokers & Coldplay - Something Just Like This and picked out the kick pattern in the chorus that we worked on a bit and brody did great with it! Also played Bones Imagine Dragons and also too sweet by hozier.`
+            brody: `Brody played through The Chainsmokers & Coldplay - Something Just Like This and picked out the kick pattern in the chorus that we worked on a bit and brody did great with it! Also played Bones Imagine Dragons and also too sweet by hozier.`,
+            
+            seek_destroy: `Wonderful playing today. We started work on seek and destroy and although it is a very long song the song structure is not too complicated. I will be sending you the music and review it. The hardest portion of the song will be the drum fills and we can break them down as we go.`
         };
 
         class LessonFormatter {
@@ -491,6 +492,12 @@
 
             // Enhanced text preprocessing with better grammar correction
             preprocessText(text) {
+                let processed = text.trim();
+                
+                // First pass: Fix common spelling errors
+                Object.entries(corrections).forEach(([wrong, right]) => {
+                    const regex = new RegExp(`\\b${wrong.replace(/[.*+?^${}()|[\]\\]/g, '\\            // Enhanced text preprocessing with better grammar correction
+            preprocessText(text) {
                 let processed = text.toLowerCase().trim();
                 
                 // Fix common abbreviations and music terms
@@ -504,6 +511,59 @@
                     const regex = new RegExp(`\\b${wrong}\\b`, 'gi');
                     processed = processed.replace(regex, right);
                 });
+                
+                return processed;
+            }')}\\b`, 'gi');
+                    processed = processed.replace(regex, right);
+                });
+                
+                // Second pass: Fix music terminology
+                Object.entries(musicTerms).forEach(([abbrev, full]) => {
+                    const regex = new RegExp(`\\b${abbrev.replace(/[.*+?^${}()|[\]\\]/g, '\\            // Enhanced text preprocessing with better grammar correction
+            preprocessText(text) {
+                let processed = text.toLowerCase().trim();
+                
+                // Fix common abbreviations and music terms
+                Object.entries(musicTerms).forEach(([abbrev, full]) => {
+                    const regex = new RegExp(`\\b${abbrev}\\b`, 'gi');
+                    processed = processed.replace(regex, full);
+                });
+                
+                // Apply corrections
+                Object.entries(corrections).forEach(([wrong, right]) => {
+                    const regex = new RegExp(`\\b${wrong}\\b`, 'gi');
+                    processed = processed.replace(regex, right);
+                });
+                
+                return processed;
+            }')}\\b`, 'gi');
+                    processed = processed.replace(regex, full);
+                });
+                
+                // Third pass: Normalize to "we" language - avoid pronouns entirely
+                processed = processed
+                    // Clean up spacing and punctuation
+                    .replace(/\s+/g, ' ')
+                    .replace(/([.!?])\s*([a-z])/g, '$1 $2')
+                    // Fix common grammatical issues
+                    .replace(/\bi\s+sent\b/gi, 'sent')
+                    .replace(/\bi\s+will\s+be\s+sending\b/gi, 'will send')
+                    .replace(/\bi\s+suggest\b/gi, 'suggest')
+                    .replace(/\bi\s+recommend\b/gi, 'recommend')
+                    // Remove awkward constructions
+                    .replace(/\b(you|they)\s+did\s+great\b/gi, 'great work')
+                    .replace(/\b(you|they)\s+worked\b/gi, 'worked')
+                    .replace(/\b(you|they)\s+played\b/gi, 'played')
+                    .replace(/\b(you|they)\s+started\b/gi, 'started')
+                    .replace(/\byour\s+/gi, 'the ')
+                    .replace(/\btheir\s+/gi, 'the ')
+                    // Fix sentence starters
+                    .replace(/\bwe\s+will\s+be\s+/gi, 'will be ')
+                    .replace(/\bthen\s+we\s+/gi, 'then ')
+                    .replace(/\blast\s+we\s+/gi, 'then ')
+                    .replace(/\bfirst\s+we\s+/gi, 'first ')
+                    // Clean up double spaces
+                    .replace(/\s+/g, ' ');
                 
                 return processed;
             }
@@ -649,7 +709,55 @@
                 return 'other';
             }
 
-            // Enhanced sentence formatting with grammar correction
+            // Enhanced sentence formatting with proper "we" language
+            formatSentence(sentence, type) {
+                let formatted = sentence.trim();
+                
+                // Ensure proper capitalization
+                formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1);
+                
+                // Convert to proper "we" format for achievements
+                if (type === 'achievement') {
+                    // Start with "we" constructions
+                    if (!formatted.match(/^(we|today|this|first|then|also|additionally)/i)) {
+                        // Add "We" prefix for actions
+                        if (formatted.match(/^(worked|played|started|learned|practiced|went|focused|covered)/i)) {
+                            formatted = 'We ' + formatted.toLowerCase();
+                            formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1);
+                        }
+                    }
+                    
+                    // Clean up common awkward phrases
+                    formatted = formatted
+                        .replace(/wonderful playing today\.?\s*/i, 'Great progress today. ')
+                        .replace(/great work\.?\s*/i, 'Excellent work. ')
+                        .replace(/nice work\.?\s*/i, 'Solid progress. ')
+                        .replace(/doing great\.?\s*/i, 'Making excellent progress. ')
+                        .replace(/sounds very good\.?\s*/i, 'Sounding great. ')
+                        .replace(/sounding really good\.?\s*/i, 'Sounding excellent. ')
+                        .replace(/\s+/g, ' ');
+                }
+                
+                // Convert to proper homework format
+                if (type === 'homework') {
+                    // Convert to action items
+                    formatted = formatted
+                        .replace(/^try\s+(?:to\s+)?/i, '')
+                        .replace(/^keep\s+/i, 'Continue ')
+                        .replace(/^practice\s+/i, 'Practice ')
+                        .replace(/^work\s+on\s+/i, 'Work on ')
+                        .replace(/^focus\s+on\s+/i, 'Focus on ')
+                        .replace(/^review\s+/i, 'Review ')
+                        .replace(/^aim\s+for\s+/i, 'Aim for ')
+                        .replace(/^maintain\s+/i, 'Maintain ');
+                    
+                    // Ensure imperative voice
+                    formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1);
+                }
+                
+                // Insert properly formatted song titles
+                this.songs.forEach(song => {
+                    const songPattern = new RegExp(`\\b${song.title.replace(/[.*+?^${}()|[\]\\]/g, '\\            // Enhanced sentence formatting with grammar correction
             formatSentence(sentence, type) {
                 let formatted = sentence;
                 
@@ -675,9 +783,26 @@
                 }
 
                 return formatted;
+            }')}\\b`, 'gi');
+                    const replacement = song.artist ? `"${song.title}" by ${song.artist}` : `"${song.title}"`;
+                    formatted = formatted.replace(songPattern, replacement);
+                });
+                
+                // Final cleanup
+                formatted = formatted
+                    .replace(/\s*([,.!?])/g, '$1')  // Fix punctuation spacing
+                    .replace(/\s+/g, ' ')           // Remove extra spaces
+                    .trim();
+                
+                // Ensure proper sentence ending
+                if (!formatted.match(/[.!?]$/)) {
+                    formatted += '.';
+                }
+                
+                return formatted;
             }
 
-            // Generate intelligent homework suggestions
+            // Generate intelligent homework suggestions  
             generateInferredHomework() {
                 if (this.homework.length < 2) {
                     // Add song-specific practice
@@ -699,9 +824,13 @@
                         this.homework.push('Practice independence exercises to improve limb coordination.');
                     }
 
-                    // Ensure at least 2 homework items
+                    if (this.techniques.has('endurance') || this.techniques.has('stamina')) {
+                        this.homework.push('Build endurance by practicing for longer sessions.');
+                    }
+
+                    // General practice homework if still insufficient
                     if (this.homework.length === 0) {
-                        this.homework.push('Review and practice the material covered in today\'s lesson.');
+                        this.homework.push('Review and practice the material covered in this lesson.');
                         this.homework.push('Focus on maintaining proper technique and timing.');
                     }
                 }
