@@ -735,20 +735,20 @@
 
             // Generate final professional output
             generateOutput() {
-                let output = `📋 Lesson Recap`;
+                let output = `Lesson Recap`;
                 
                 if (this.studentName) {
                     output += ` - ${this.studentName}`;
                 }
                 
-                output += `\n\n🎯 Today's Achievements\n\n`;
+                output += `\n\nToday's Achievements\n\n`;
                 
                 if (this.achievements.length > 0) {
                     this.achievements.forEach(achievement => {
-                        output += `• ${achievement}\n`;
+                        output += `* ${achievement}\n`;
                     });
                 } else {
-                    output += `• Successfully completed lesson activities`;
+                    output += `* Successfully completed lesson activities`;
                     if (this.songs.length > 0) {
                         const songList = this.songs.map(s => s.artist ? `"${s.title}" by ${s.artist}` : `"${s.title}"`).join(', ');
                         output += ` including work on ${songList}`;
@@ -756,16 +756,16 @@
                     output += `.\n`;
                 }
                 
-                output += `\n📚 Practice Assignments\n\n`;
+                output += `\nPractice Assignments\n\n`;
                 
                 this.homework.forEach(hw => {
-                    output += `• ${hw}\n`;
+                    output += `* ${hw}\n`;
                 });
 
                 // Add techniques summary if significant
                 if (this.techniques.size > 2) {
                     const techniqueList = Array.from(this.techniques).slice(0, 3).join(', ');
-                    output += `\n🎵 Key Techniques Covered\n\n• ${techniqueList}\n`;
+                    output += `\nKey Techniques Covered\n\n* ${techniqueList}\n`;
                 }
 
                 return output;
@@ -813,17 +813,43 @@
         }
 
         function copyOutput() {
-            const outputText = document.getElementById('output').textContent;
+            const outputElement = document.getElementById('output');
+            const outputText = outputElement.textContent;
+            
+            if (!outputText || outputText === 'Click "Generate Professional Recap" to create your formatted lesson summary...') {
+                alert('No content to copy. Please generate a lesson recap first.');
+                return;
+            }
+            
             navigator.clipboard.writeText(outputText).then(() => {
-                // Create a temporary notification
-                const btn = event.target;
-                const originalText = btn.innerHTML;
-                btn.innerHTML = '<span>✅</span> Copied!';
+                // Create visual feedback
+                const copyBtn = document.querySelector('.btn-secondary:last-of-type');
+                const originalContent = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<span>✅</span> Copied!';
+                copyBtn.style.background = 'var(--accent)';
+                copyBtn.style.color = 'white';
+                
                 setTimeout(() => {
-                    btn.innerHTML = originalText;
+                    copyBtn.innerHTML = originalContent;
+                    copyBtn.style.background = '';
+                    copyBtn.style.color = '';
                 }, 2000);
             }).catch(err => {
-                alert('Failed to copy text. Please try selecting and copying manually.');
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = outputText;
+                document.body.appendChild(textArea);
+                textArea.select();
+                textArea.setSelectionRange(0, 99999);
+                
+                try {
+                    document.execCommand('copy');
+                    alert('Copied to clipboard!');
+                } catch (err) {
+                    alert('Unable to copy automatically. Please select the text and copy manually.');
+                }
+                
+                document.body.removeChild(textArea);
             });
         }
 
