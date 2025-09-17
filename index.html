@@ -192,11 +192,12 @@
                 <button class="example-button" onclick="loadExample('conan')">Conan (Advanced)</button>
                 <button class="example-button" onclick="loadExample('amaiyah')">Amaiyah (With Gear)</button>
                 <button class="example-button" onclick="loadExample('seek')">Seek & Destroy</button>
+                <button class="example-button" onclick="loadExample('brody')">Brody (Songs)</button>
             </div>
         </div>
     </div>
     <script>
-        // Expanded music terminology dictionary
+        // Expanded music terminology dictionary for general music lessons
         const musicTerms = {
             'hh': 'hi-hat',
             'hihat': 'hi-hat',
@@ -242,15 +243,28 @@
             'double stroke': 'double stroke',
             'single stroke': 'single stroke',
             'metronome': 'metronome',
-            'chorus': 'chorus',
-            'verse': 'verse',
-            'bridge': 'bridge',
-            'intro': 'intro',
-            'outro': 'outro',
-            'independence': 'independence'
+            'chord': 'chord',
+            'scale': 'scale',
+            'arpeggio': 'arpeggio',
+            'fingering': 'fingering',
+            'posture': 'posture',
+            'breathing': 'breathing',
+            'vocal': 'vocal',
+            'maj': 'major',
+            'min': 'minor',
+            'dim': 'diminished',
+            'aug': 'augmented',
+            'sus': 'suspended',
+            'key': 'key',
+            'tempo': 'tempo',
+            'dynamics': 'dynamics',
+            'legato': 'legato',
+            'staccato': 'staccato',
+            'pizzicato': 'pizzicato',
+            'tremolo': 'tremolo'
         };
 
-        // Expanded common misspellings and fixes
+        // Expanded common misspellings and capitalization fixes
         const spellFixes = {
             'metalica': 'Metallica',
             'metallica': 'Metallica',
@@ -268,7 +282,6 @@
             'tp': 'to',
             'lite': 'light',
             'avail': 'available',
-            'either': 'hi-hat',  // Assuming common typo for 'hi-hat'
             'hieght': 'height',
             'stedy': 'steady',
             'consistant': 'consistent',
@@ -290,21 +303,34 @@
             'creap': 'Creep',
             'creep': 'Creep',
             'paraniod': 'Paranoid',
-            'parnoid': 'Paranoid'
+            'parnoid': 'Paranoid',
+            'chainsmokers': 'The Chainsmokers',
+            'coldplay': 'Coldplay',
+            'imagine dragons': 'Imagine Dragons',
+            'hozier': 'Hozier',
+            'brody': 'Brody',
+            'luca': 'Luca',
+            'conan': 'Conan',
+            'amaiyah': 'Amaiyah',
+            'charleigh': 'Charleigh',
+            'morgan': 'Morgan'
         };
 
-        // Common artists for song association (expand as needed)
+        // Expanded known artists and songs
         const knownArtists = {
             'Paranoid': 'Black Sabbath',
-            'Master of Puppets': 'Metallica',
-            'Seek & Destroy': 'Metallica',
-            'Seven Nation Army': 'The White Stripes',
             'Running': 'OMA',
             'Friday I\'m In Love': 'The Cure',
+            'Seven Nation Army': 'The White Stripes',
             'Radioactive': 'Imagine Dragons',
             'I Will Survive': 'Gloria Gaynor',
+            'Master of Puppets': 'Metallica',
             'Creep': 'Radiohead',
-            'CREAM': 'OMA'
+            'CREAM': 'OMA',
+            'Seek & Destroy': 'Metallica',
+            'Something Just Like This': 'The Chainsmokers & Coldplay',
+            'Bones': 'Imagine Dragons',
+            'Too Sweet': 'Hozier'
         };
 
         const examples = {
@@ -313,73 +339,106 @@
             luca: `Luca - Went through triplets from 60-70bpm. doing great, try for 80 next week. played through seven nation army, just the chorus to work on. played through radioactive which sounds very good! lastly we started to learn i will survive. nice work!`,
             conan: `Conan - Worked through bosa nova, playing it to a couple different songs but looking to keep it nice and consistent. Then we broke into master of puppets by metalica and worked out some of the timing. sounding really good its a come a long way. lastly we went through some foot techniques.`,
             amaiyah: `Amaiyah - worked through creep, broke down the main patterns including the cross stick at the end. Went through learning sixtuplets and played them over the song CREAM by oma. Nice work with these. for sticking its 6 hits on the snare then 2, 2, 2 startingon the snare, tom, low tom. Sorry for going over your time, we spoke about what kind of drum kit to get which i suggest to not spend over $500 to start. A nice kit to start off with is Quest Loves Pocket kit or the breakbeats kit. You will need to get cymbals and hardware as well, which i would find used on facebook market place or ebay`,
-            seek: `Started learning Seek & Destroy by Metallica. Mapped out the song structure and began working through the main groove with single strokes. Keep practicing the single-stroke groove slowly, making sure it stays steady and even. Review the mapped-out sections of the song and try playing along with the track at a reduced speed. Focus on consistency — clear hits and solid timing.`
+            seek: `Started learning Seek & Destroy by Metallica. Mapped out the song structure and began working through the main groove with single strokes. Keep practicing the single-stroke groove slowly, making sure it stays steady and even. Review the mapped-out sections of the song and try playing along with the track at a reduced speed. Focus on consistency — clear hits and solid timing.`,
+            brody: `Brody played through The Chainsmokers & Coldplay - Something Just Like This and picked out the kick pattern in the chorus that we worked on a bit and brody did great with it! Also played Bones Imagine Dragons and also too sweet by hozier.`
         };
 
         function fixSpelling(text) {
-            let fixed = text.toLowerCase();  // Work in lowercase for matching
+            let fixed = text;
             
-            // Fix common misspellings
+            // Fix common misspellings and capitalizations
             for (const [wrong, right] of Object.entries(spellFixes)) {
                 const regex = new RegExp('\\b' + wrong + '\\b', 'gi');
-                fixed = fixed.replace(regex, right.toLowerCase());
+                fixed = fixed.replace(regex, right);
             }
             
             // Expand music terms
             for (const [abbrev, full] of Object.entries(musicTerms)) {
                 const regex = new RegExp('\\b' + abbrev + '\\b', 'gi');
-                fixed = fixed.replace(regex, full.toLowerCase());
+                fixed = fixed.replace(regex, full);
             }
             
             return fixed;
         }
 
         function capitalizeProperly(text) {
-            // Capitalize first letter, and proper nouns/artists/songs
+            // Capitalize first letter of sentence
             text = text.charAt(0).toUpperCase() + text.slice(1);
-            // Capitalize known artists and terms
-            Object.values(knownArtists).forEach(artist => {
-                const regex = new RegExp('\\b' + artist.toLowerCase() + '\\b', 'gi');
+            
+            // Capitalize known artists, songs, and proper nouns
+            Object.entries(knownArtists).forEach(([song, artist]) => {
+                let regex = new RegExp('\\b' + song.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'gi');
+                text = text.replace(regex, song);
+                regex = new RegExp('\\b' + artist.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'gi');
                 text = text.replace(regex, artist);
             });
-            Object.keys(knownArtists).forEach(song => {
-                const regex = new RegExp('\\b' + song.toLowerCase() + '\\b', 'gi');
-                text = text.replace(regex, song);
-            });
+            
+            // Capitalize student names and common words
+            for (const right of Object.values(spellFixes)) {
+                if (right[0] === right[0].toUpperCase()) {  // If starts with capital
+                    const regex = new RegExp('\\b' + right.toLowerCase() + '\\b', 'gi');
+                    text = text.replace(regex, right);
+                }
+            }
+            
             return text;
         }
 
         function extractSongs(text) {
             const songs = [];
             
-            // Improved patterns to capture song and optional artist
+            // Patterns for song extraction
             const patterns = [
-                /played? (?:through |on |with )?["']?(.+?)(?: by (.+?))?["']?(?:,|\.|which|focusing|most)/gi,
-                /worked? (?:through |on |with )?["']?(.+?)(?: by (.+?))?["']?(?:,|\.|which|most|focusing)/gi,
-                /started? (?:to learn |learning )?["']?(.+?)(?: by (.+?))?["']?(?:,|\.|which)/gi,
-                /learned? ["']?(.+?)(?: by (.+?))?["']?(?:,|\.|which)/gi,
-                /ran ["']?(.+?)(?: by (.+?))?["']?(?:,|\.|which)/gi
+                /played? (?:through |on |with )?["']?(.+?)(?: by (.+?))?["']?(?:,|\.|which|focusing|most|and)/gi,
+                /worked? (?:through |on |with )?["']?(.+?)(?: by (.+?))?["']?(?:,|\.|which|most|focusing|and)/gi,
+                /started? (?:to learn |learning )?["']?(.+?)(?: by (.+?))?["']?(?:,|\.|which|and)/gi,
+                /learned? ["']?(.+?)(?: by (.+?))?["']?(?:,|\.|which|and)/gi,
+                /ran ["']?(.+?)(?: by (.+?))?["']?(?:,|\.|which|and)/gi
             ];
             
             patterns.forEach(pattern => {
                 let match;
                 while ((match = pattern.exec(text)) !== null) {
-                    let song = match[1].trim();
-                    let artist = match[2] ? match[2].trim() : knownArtists[song] || '';
+                    let song = match[1].trim().replace(/^(the |a |an )/i, '');
+                    let artist = match[2] ? match[2].trim() : '';
                     
-                    // Clean up song name
-                    song = capitalizeProperly(song.replace(/^(the |a |an )/i, ''));
+                    // Handle "Artist - Song" format
+                    if (!artist && song.includes('-')) {
+                        const parts = song.split('-').map(p => p.trim());
+                        song = parts.pop();
+                        artist = parts.join(' & ');
+                    }
+                    
+                    // Handle "Song Artist" without "by" using known artists
+                    if (!artist) {
+                        const words = song.split(' ').map(w => w.trim());
+                        if (words.length > 1) {
+                            for (let i = words.length - 1; i > 0; i--) {
+                                const possibleArtist = words.slice(i).join(' ');
+                                if (Object.values(knownArtists).includes(possibleArtist)) {
+                                    song = words.slice(0, i).join(' ');
+                                    artist = possibleArtist;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    
+                    // Fallback to known artists if song matches a key
+                    if (!artist && knownArtists[song]) {
+                        artist = knownArtists[song];
+                    }
                     
                     if (song && !song.match(/^(it|this|that|them|through|on|with)$/i)) {
-                        songs.push({ song, artist });
+                        songs.push({ song: capitalizeProperly(song), artist: capitalizeProperly(artist) });
                     }
                 }
             });
             
-            // Deduplicate by song name
-            const uniqueSongs = new Map();
-            songs.forEach(s => uniqueSongs.set(s.song.toLowerCase(), s));
-            return Array.from(uniqueSongs.values());
+            // Deduplicate
+            const unique = new Map();
+            songs.forEach(s => unique.set(s.song.toLowerCase(), s));
+            return Array.from(unique.values());
         }
 
         function extractTechniques(text) {
@@ -407,7 +466,22 @@
                 /roll[s]?/gi,
                 /buzz[\s-]?roll/gi,
                 /independence/gi,
-                /metronome/gi
+                /metronome/gi,
+                /chord[s]?/gi,
+                /scale[s]?/gi,
+                /arpeggio[s]?/gi,
+                /fingering/gi,
+                /posture/gi,
+                /breathing/gi,
+                /vocal/gi,
+                /major|minor|diminished|augmented|suspended/gi,
+                /key/gi,
+                /tempo/gi,
+                /dynamics/gi,
+                /legato/gi,
+                /staccato/gi,
+                /pizzicato/gi,
+                /tremolo/gi
             ];
             
             techPatterns.forEach(pattern => {
@@ -420,24 +494,19 @@
             return Array.from(techniques);
         }
 
-        function classifySentence(sentence, songs, techniques) {
+        function classifySentence(sentence) {
             const lower = sentence.toLowerCase();
             
-            // Achievement indicators
-            const achIndicators = ['worked', 'played', 'went', 'learned', 'started', 'practiced', 'focused', 'spent', 'ran', 'broke', 'mapped', 'began'];
+            // Achievement indicators (past tense actions)
+            const achIndicators = ['worked', 'played', 'went', 'learned', 'started', 'practiced', 'focused', 'spent', 'ran', 'broke', 'mapped', 'began', 'did', 'sounded', 'picked'];
             if (achIndicators.some(ind => lower.includes(ind))) {
                 return 'achievement';
             }
             
-            // Homework indicators
-            const hwIndicators = ['try', 'keep', 'practice', 'work on', 'focus on', 'aim for', 'next week', 'homework', 'review', 'continue', 'build'];
+            // Homework indicators (future/imperative)
+            const hwIndicators = ['try', 'keep', 'practice', 'work on', 'focus on', 'aim for', 'next week', 'homework', 'review', 'continue', 'build', 'maintain'];
             if (hwIndicators.some(ind => lower.includes(ind))) {
                 return 'homework';
-            }
-            
-            // Fallback: if mentions song or technique, likely achievement
-            if (songs.some(s => lower.includes(s.song.toLowerCase())) || techniques.some(t => lower.includes(t))) {
-                return 'achievement';
             }
             
             return 'other';
@@ -446,23 +515,27 @@
         function formatAchievement(sentence, songs) {
             let formatted = capitalizeProperly(sentence);
             
-            // Remove leading verbs if needed for conciseness
-            formatted = formatted.replace(/^(We |Then we |Lastly we |First we )/i, '');
+            // Clean up unnecessary prefixes
+            formatted = formatted.replace(/^(We |Then we |Lastly we |First we |Also |And )/i, '');
             
             // Adjust pronouns to third person
-            formatted = formatted.replace(/\bwe\b/gi, 'They');
+            formatted = formatted.replace(/\bwe\b/gi, 'they');
             formatted = formatted.replace(/\bi\b/gi, 'the instructor');
             formatted = formatted.replace(/\byou\b/gi, 'they');
             formatted = formatted.replace(/\byour\b/gi, 'their');
             
-            // Add quotes and artists to songs
+            // Insert song quotes and artists
             songs.forEach(({ song, artist }) => {
                 const songRegex = new RegExp('\\b' + song.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'gi');
                 const replacement = artist ? `“${song}” (${artist})` : `“${song}”`;
                 formatted = formatted.replace(songRegex, replacement);
             });
             
-            // Ensure ends with period if not
+            // Remove duplicate praises or clean up
+            formatted = formatted.replace(/great job|nice work|doing great|did great|sounds very good|sounding really good/gi, m => m + '.');
+            
+            // Ensure it's a complete sentence
+            formatted = formatted.trim();
             if (!formatted.match(/[.!?]$/)) {
                 formatted += '.';
             }
@@ -470,35 +543,33 @@
             return `* ${formatted}`;
         }
 
-        function formatHomework(sentence, songs, techniques) {
+        function formatHomework(sentence, songs) {
             let formatted = capitalizeProperly(sentence);
             
-            // Make imperative
-            formatted = formatted.replace(/^try (?:to |for )/i, '');
+            // Convert to imperative form
+            formatted = formatted.replace(/^try (?:to |for )?/i, '');
             formatted = formatted.replace(/^keep /i, 'Keep ');
             formatted = formatted.replace(/^practice /i, 'Practice ');
             formatted = formatted.replace(/^work on /i, 'Work on ');
             formatted = formatted.replace(/^focus on /i, 'Focus on ');
             formatted = formatted.replace(/^review /i, 'Review ');
             formatted = formatted.replace(/^continue /i, 'Continue ');
+            formatted = formatted.replace(/^aim for /i, 'Aim for ');
+            formatted = formatted.replace(/^maintain /i, 'Maintain ');
             
-            // Adjust pronouns to second person (student-facing)
+            // Adjust pronouns to second person (you/your)
             formatted = formatted.replace(/\bthey\b/gi, 'you');
             formatted = formatted.replace(/\btheir\b/gi, 'your');
             
-            // Add song quotes
+            // Insert song quotes
             songs.forEach(({ song, artist }) => {
                 const songRegex = new RegExp('\\b' + song.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'gi');
                 const replacement = artist ? `“${song}” (${artist})` : `“${song}”`;
                 formatted = formatted.replace(songRegex, replacement);
             });
             
-            // Enhance with common phrases if short
-            if (formatted.length < 20) {
-                formatted = `Keep working on ${formatted.toLowerCase()}.`;
-            }
-            
-            // Ensure ends with period
+            // Ensure complete sentence
+            formatted = formatted.trim();
             if (!formatted.match(/[.!?]$/)) {
                 formatted += '.';
             }
@@ -506,30 +577,32 @@
             return `* ${formatted}`;
         }
 
-        function generateInferredHomework(songs, techniques, achievements) {
+        function generateInferredHomework(songs, techniques) {
             const hw = [];
             
             if (songs.length > 0) {
                 songs.forEach(({ song, artist }) => {
                     const fullSong = artist ? `“${song}” (${artist})` : `“${song}”`;
-                    hw.push(`* Review and practice ${fullSong} at a comfortable speed.`);
+                    hw.push(`* Practice ${fullSong} slowly, focusing on accuracy and feel.`);
                 });
             }
             
             if (techniques.length > 0) {
-                hw.push('* Focus on technique: work on ' + techniques.slice(0, 3).join(', ') + ' with a metronome.');
+                const techList = techniques.slice(0, 3).map(t => capitalizeProperly(t)).join(', ');
+                hw.push(`* Work on ${techList} with deliberate practice.`);
             }
             
-            if (achievements.some(a => a.toLowerCase().includes('bpm'))) {
-                hw.push('* Build up speed gradually while maintaining accuracy.');
+            if (techniques.some(t => t.includes('bpm') || t.includes('metronome'))) {
+                hw.push('* Build speed and consistency using a metronome.');
             }
             
-            if (achievements.some(a => a.toLowerCase().includes('endurance'))) {
-                hw.push('* Practice endurance by playing through full sections without stopping.');
+            if (techniques.some(t => t.includes('endurance') || t.includes('stamina'))) {
+                hw.push('* Build endurance by playing longer sessions without breaks.');
             }
             
             if (hw.length === 0) {
-                hw.push('* Continue practicing this week’s material with focus on timing and consistency.');
+                hw.push('* Review and practice the material covered in the lesson.');
+                hw.push('* Focus on technique and musical expression.');
             }
             
             return hw;
@@ -538,37 +611,37 @@
         function extractExtraNote(cleanText) {
             let extraNote = '';
             
-            // Equipment discussion
-            const kitRegex = /(?:spoke|talked|discussed|suggest|recommend).*?(?:drum kit|equipment|gear|kit|cymbals|hardware).*?(?:\.|$)/gi;
+            // Equipment/gear discussion
+            const kitRegex = /(?:spoke|talked|discussed|suggest|recommend).*?(?:drum kit|equipment|gear|kit|cymbals|hardware|instrument).*?(?:\.|$)/gi;
             const kitMatch = cleanText.match(kitRegex);
             if (kitMatch) {
-                extraNote = kitMatch.map(m => 
-                    capitalizeProperly(m.replace(/^(?:spoke|talked|discussed) (?:about|on) /i, 'Discussed '))
-                ).join(' ');
+                extraNote += kitMatch.map(m => 
+                    capitalizeProperly(m.replace(/^(?:spoke|talked|discussed) (?:about|on )?/i, 'Discussed '))
+                ).join(' ').trim();
                 
-                // Add price if mentioned
+                // Budget
                 const priceMatch = cleanText.match(/\$(\d+)/);
                 if (priceMatch) {
                     extraNote += ` Suggested budget under $${priceMatch[1]}.`;
                 }
                 
-                // Specific kits
-                const kits = ['Questlove\'s Pocket Kit', 'Breakbeats Kit'];
+                // Specific recommendations
+                const kits = ["Questlove's Pocket Kit", 'Breakbeats Kit'];
                 kits.forEach(kit => {
                     if (cleanText.toLowerCase().includes(kit.toLowerCase())) {
                         extraNote += ` Recommended ${kit}.`;
                     }
                 });
                 
-                // Used sources
-                if (cleanText.toLowerCase().includes('facebook') || cleanText.toLowerCase().includes('marketplace') || cleanText.toLowerCase().includes('ebay')) {
-                    extraNote += ' Look for used options on Facebook Marketplace or eBay.';
+                // Sources
+                if (cleanText.toLowerCase().match(/facebook|marketplace|ebay|used/)) {
+                    extraNote += ' Consider used options from Facebook Marketplace or eBay.';
                 }
             }
             
-            // Time overrun
+            // Time apology
             if (cleanText.toLowerCase().includes('sorry for going over')) {
-                extraNote += ' Apologies for running over time.';
+                extraNote += ' Apologies for extending the lesson time.';
             }
             
             return extraNote.trim();
@@ -581,40 +654,49 @@
                 return;
             }
             
-            // Extract student name if present
-            const studentMatch = input.match(/^(\w+)\s*[-:]/);
-            const studentName = studentMatch ? studentMatch[1] : '';
+            // Extract student name
+            const studentMatch = input.match(/^(\w+)\s*[-:]\s*/);
+            const studentName = studentMatch ? capitalizeProperly(studentMatch[1]) : '';
             
-            // Clean the text
-            let cleanText = input.replace(/^(\w+)\s*[-:]/, '').trim();  // Remove student name
+            // Clean text
+            let cleanText = input.replace(/^(\w+)\s*[-:]\s*/, '').trim();
             cleanText = fixSpelling(cleanText);
             
-            // Extract key info
+            // Extract info
             const songs = extractSongs(cleanText);
             const techniques = extractTechniques(cleanText);
             
-            // Split into sentences, handling more punctuation
+            // Improved sentence splitting (handle abbreviations, etc.)
             const sentences = cleanText
-                .replace(/([.!?])\s*/g, '$1|')  // Mark sentence ends
-                .split('|')
-                .map(s => s.trim())
+                .replace(/(\w\w+)\./g, '$1|')  // Temp replace abbr. like U.S.
+                .split(/[\.\!\?]\s*/)
+                .map(s => s.replace(/\|/g, '.').trim())
                 .filter(s => s);
             
-            // Classify and collect
+            // Classify sentences
             const achievements = [];
             const homework = [];
+            const others = [];
             sentences.forEach(s => {
-                const type = classifySentence(s, songs, techniques);
+                const type = classifySentence(s);
                 if (type === 'achievement') {
-                    achievements.push(formatAchievement(s, songs));
+                    const formatted = formatAchievement(s, songs);
+                    if (!achievements.includes(formatted)) {
+                        achievements.push(formatted);
+                    }
                 } else if (type === 'homework') {
-                    homework.push(formatHomework(s, songs));
+                    const formatted = formatHomework(s, songs);
+                    if (!homework.includes(formatted)) {
+                        homework.push(formatted);
+                    }
+                } else {
+                    others.push(s);
                 }
             });
             
-            // Infer homework if none or few detected
-            if (homework.length < 2) {
-                const inferred = generateInferredHomework(songs, techniques, achievements);
+            // Infer homework if insufficient
+            if (homework.length < achievements.length / 2 + 1) {
+                const inferred = generateInferredHomework(songs, techniques);
                 inferred.forEach(h => {
                     if (!homework.includes(h)) {
                         homework.push(h);
@@ -622,38 +704,36 @@
                 });
             }
             
-            // Extract extra note
+            // Extra note
             const extraNote = extractExtraNote(cleanText);
             
             // Build output
-            let output = 'Today’s Achievements\n\n';
+            let output = `Today’s Achievements\n\n`;
             
             if (achievements.length > 0) {
                 output += achievements.join('\n') + '\n\n';
             } else {
-                output += '* Worked through lesson material';
-                if (studentName) output += ` with ${studentName}`;
-                output += '.\n';
+                output += `* Covered lesson material${studentName ? ` with ${studentName}` : ''}.\n`;
                 if (songs.length > 0) {
                     const songList = songs.map(({ song, artist }) => artist ? `“${song}” (${artist})` : `“${song}”`).join(', ');
-                    output += `* Practiced songs including ${songList}.\n`;
+                    output += `* Explored songs including ${songList}.\n`;
                 }
                 if (techniques.length > 0) {
-                    output += '* Focused on techniques such as ' + techniques.join(', ') + '.\n\n';
+                    output += `* Developed techniques such as ${techniques.map(t => capitalizeProperly(t)).join(', ')}.\n\n`;
                 }
             }
             
             output += 'Homework\n\n';
             
             if (homework.length > 0) {
-                output += homework.join('\n');
+                output += homework.join('\n') + '\n';
             } else {
-                output += '* Review this week’s material.\n';
-                output += '* Practice daily with a focus on technique and tempo.';
+                output += '* Practice the material from today’s lesson.\n';
+                output += '* Emphasize precision and musicality in your playing.\n';
             }
             
             if (extraNote) {
-                output += '\n\nExtra Note\n\n' + `* ${capitalizeProperly(extraNote)}`;
+                output += '\nExtra Note\n\n* ' + capitalizeProperly(extraNote) + '\n';
             }
             
             document.getElementById('output').textContent = output;
