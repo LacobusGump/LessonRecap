@@ -3,25 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Music Lesson Recap AI</title>
+    <title>School of Rock - Lesson Formatter</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        
-        :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --secondary: #f1f5f9;
-            --accent: #10b981;
-            --warning: #f59e0b;
-            --text: #1e293b;
-            --text-light: #64748b;
-            --border: #e2e8f0;
-            --bg-primary: #ffffff;
-            --bg-secondary: #f8fafc;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         
         * {
             margin: 0;
@@ -31,218 +15,149 @@
         
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            color: var(--text);
-            background: linear-gradient(135deg, #f0f4ff 0%, #e0e7ff 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            -webkit-font-smoothing: antialiased;
+            padding: 20px;
         }
         
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem;
         }
         
         .header {
             text-align: center;
-            margin-bottom: 3rem;
+            color: white;
+            margin-bottom: 30px;
         }
         
         .header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 0.5rem;
+            font-size: 28px;
+            margin-bottom: 5px;
         }
         
-        .subtitle {
-            color: var(--text-light);
-            font-size: 1.125rem;
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
         }
         
-        .main-grid {
+        .workspace {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-bottom: 2rem;
+            gap: 20px;
         }
         
-        .card {
-            background: var(--bg-primary);
-            border-radius: 16px;
-            padding: 2rem;
-            box-shadow: var(--shadow-lg);
-            border: 1px solid var(--border);
-        }
-        
-        .card-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .input-section {
-            grid-column: 1;
-        }
-        
-        .output-section {
-            grid-column: 2;
-        }
-        
-        .textarea {
-            width: 100%;
-            padding: 1rem;
-            border: 2px solid var(--border);
+        .panel {
+            background: white;
             border-radius: 12px;
-            font-size: 0.95rem;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .panel-header {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #6c757d;
+            margin-bottom: 15px;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 500px;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
             font-family: inherit;
             resize: vertical;
-            min-height: 400px;
-            transition: all 0.2s ease;
-            background: var(--bg-secondary);
+            line-height: 1.6;
         }
         
-        .textarea:focus {
+        textarea:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-            background: var(--bg-primary);
+            border-color: #667eea;
         }
         
-        .output-area {
-            background: var(--bg-secondary);
-            padding: 1.5rem;
-            border-radius: 12px;
-            min-height: 400px;
-            font-size: 0.95rem;
-            line-height: 1.7;
+        #output {
+            width: 100%;
+            min-height: 500px;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            line-height: 1.8;
             white-space: pre-wrap;
-            border: 1px solid var(--border);
+            background: #f8f9fa;
+            overflow-y: auto;
         }
         
-        .controls {
+        .btn-group {
             display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
+            gap: 10px;
+            margin-top: 15px;
         }
         
         .btn {
-            padding: 0.75rem 1.5rem;
+            padding: 10px 20px;
             border: none;
-            border-radius: 10px;
+            border-radius: 6px;
             font-weight: 600;
+            font-size: 14px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.2s;
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            font-size: 0.95rem;
+            gap: 5px;
         }
         
         .btn-primary {
-            background: var(--gradient);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
         
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 15px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
         
         .btn-secondary {
-            background: var(--bg-secondary);
-            color: var(--text);
-            border: 1px solid var(--border);
+            background: #e9ecef;
+            color: #495057;
         }
         
         .btn-secondary:hover {
-            background: var(--border);
+            background: #dee2e6;
         }
         
         .examples {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 0.75rem;
-            margin-top: 1.5rem;
-        }
-        
-        .example-chip {
-            padding: 0.625rem 1rem;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.875rem;
-            transition: all 0.2s ease;
-            text-align: center;
-        }
-        
-        .example-chip:hover {
-            background: var(--primary);
-            color: white;
-            transform: translateY(-1px);
-        }
-        
-        .status-bar {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.75rem 1rem;
-            background: rgba(16, 185, 129, 0.1);
-            border-radius: 8px;
-            margin-top: 1rem;
-            font-size: 0.875rem;
-            color: var(--accent);
-            border: 1px solid rgba(16, 185, 129, 0.2);
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
         }
         
-        .processing {
-            display: none;
-            align-items: center;
-            gap: 0.5rem;
+        .example {
+            padding: 6px 12px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
         }
         
-        .spinner {
-            width: 16px;
-            height: 16px;
-            border: 2px solid var(--border);
-            border-top: 2px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        .example:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
         }
         
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        @media (max-width: 968px) {
-            .main-grid {
+        @media (max-width: 768px) {
+            .workspace {
                 grid-template-columns: 1fr;
-            }
-            
-            .input-section, .output-section {
-                grid-column: 1;
-            }
-        }
-        
-        @media (max-width: 640px) {
-            .container {
-                padding: 1rem;
-            }
-            
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .controls {
-                flex-wrap: wrap;
             }
         }
     </style>
@@ -250,550 +165,528 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎼 Music Lesson Recap AI</h1>
-            <p class="subtitle">Transform teaching notes into professional parent communications</p>
+            <h1>🎸 School of Rock Lesson Formatter</h1>
+            <p>Transform your lesson notes into professional recaps</p>
         </div>
         
-        <div class="main-grid">
-            <div class="card input-section">
-                <h2 class="card-title">
-                    <span>📝</span> Quick Notes
-                </h2>
-                <textarea 
-                    id="inputNotes" 
-                    class="textarea" 
-                    placeholder="Example: Morgan - worked on Friday I'm in Love by the cure. Played at 90% then full speed. talked about keeping hh light for endurance..."
-                ></textarea>
-                <div class="controls">
-                    <button class="btn btn-primary" onclick="transformNotes()">
-                        <span>✨</span> Transform
+        <div class="workspace">
+            <div class="panel">
+                <div class="panel-header">Raw Notes</div>
+                <textarea id="input" placeholder="Example: Sarah - worked on Come As You Are by Nirvana, getting the main riff down. Also started Hey Joe by hendrix. practice slowly with metronome at 80bpm then build up speed"></textarea>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="formatLesson()">
+                        Format ✨
                     </button>
-                    <button class="btn btn-secondary" onclick="clearAll()">
+                    <button class="btn btn-secondary" onclick="clearInput()">
                         Clear
                     </button>
                 </div>
                 <div class="examples">
-                    <div class="example-chip" onclick="loadExample('beginner')">Beginner Progress</div>
-                    <div class="example-chip" onclick="loadExample('intermediate')">Song Work</div>
-                    <div class="example-chip" onclick="loadExample('advanced')">Technical Focus</div>
-                    <div class="example-chip" onclick="loadExample('equipment')">Equipment Chat</div>
-                    <div class="example-chip" onclick="loadExample('multiple')">Multiple Songs</div>
-                    <div class="example-chip" onclick="loadExample('challenge')">Challenge Piece</div>
+                    <span class="example" onclick="loadExample(1)">Metal/Timing</span>
+                    <span class="example" onclick="loadExample(2)">Pop/Endurance</span>
+                    <span class="example" onclick="loadExample(3)">Beginner/Multiple</span>
+                    <span class="example" onclick="loadExample(4)">Jazz/Technique</span>
+                    <span class="example" onclick="loadExample(5)">Punk/Speed</span>
+                    <span class="example" onclick="loadExample(6)">Modern/Grooves</span>
                 </div>
             </div>
             
-            <div class="card output-section">
-                <h2 class="card-title">
-                    <span>📋</span> Professional Recap
-                </h2>
-                <div id="outputArea" class="output-area">Your professional recap will appear here...</div>
-                <div class="controls">
-                    <button class="btn btn-secondary" onclick="copyOutput()">
-                        <span>📋</span> Copy
+            <div class="panel">
+                <div class="panel-header">Formatted Output</div>
+                <div id="output">Your formatted lesson recap will appear here...</div>
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="copyToClipboard()">
+                        📋 Copy
                     </button>
-                    <button class="btn btn-secondary" onclick="downloadOutput()">
-                        <span>💾</span> Download
+                    <button class="btn btn-secondary" onclick="downloadText()">
+                        💾 Download
                     </button>
-                </div>
-                <div class="status-bar">
-                    <span id="statusText">Ready</span>
-                    <div class="processing" id="processing">
-                        <div class="spinner"></div>
-                        Processing...
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Advanced AI-like transformation engine
-        class LessonTransformer {
+        class SmartLessonFormatter {
             constructor() {
-                // Knowledge base for enriching content
-                this.musicKnowledge = {
-                    techniques: {
-                        '16th notes': 'sixteenth note patterns that require precise timing and coordination',
-                        '8th notes': 'eighth note rhythms fundamental to groove development',
-                        'triplets': 'triplet subdivisions that add rhythmic variety and swing feel',
-                        'sextuplets': 'advanced six-note groupings for developing speed and fluidity',
-                        'cross-stick': 'cross-stick technique for Latin and jazz styles',
-                        'hi-hat': 'hi-hat control and dynamics',
-                        'kick drum': 'bass drum patterns and foot technique',
-                        'fills': 'transitional drum fills',
-                        'groove': 'rhythmic pocket and feel',
-                        'independence': 'limb independence and coordination',
-                        'bossa nova': 'Brazilian bossa nova rhythm patterns',
-                        'metronome': 'timing precision with metronome practice',
-                        'endurance': 'stamina and muscle memory development'
-                    },
-                    
-                    songContext: {
-                        'paranoid': 'This classic rock anthem provides excellent practice for steady eighth-note grooves and dynamic fills',
-                        'master of puppets': 'This progressive metal piece challenges both technical precision and endurance',
-                        'seven nation army': 'The iconic rhythm of this modern rock classic helps develop groove consistency',
-                        'radioactive': 'This contemporary hit offers opportunities for exploring modern production-influenced drum patterns',
-                        'friday im in love': 'The upbeat pop-rock energy requires light touch and consistent tempo maintenance',
-                        'seek & destroy': 'This thrash metal standard develops power and precision in both hands and feet',
-                        'creep': 'The dynamic contrasts in this alternative rock ballad teach control and emotional expression'
-                    },
-                    
-                    progressIndicators: {
-                        'great': 'demonstrated excellent progress',
-                        'good': 'showed solid improvement',
-                        'nice': 'displayed good understanding',
-                        'well': 'performed effectively',
-                        'improved': 'showed marked advancement',
-                        'struggled': 'working through challenges with',
-                        'worked on': 'focused attention on developing',
-                        'practiced': 'dedicated time to refining'
-                    }
-                };
-                
-                // Smart corrections
+                // Common spelling mistakes to fix
                 this.corrections = {
-                    'hh': 'hi-hat',
-                    '16s': '16th notes',
-                    '8s': '8th notes',
-                    'bpm': 'BPM',
                     'metalica': 'Metallica',
+                    'metalicca': 'Metallica',
+                    'beetles': 'Beatles',
+                    'sabbeth': 'Sabbath',
                     'sabath': 'Sabbath',
-                    'rhthm': 'rhythm',
-                    'rythm': 'rhythm',
-                    'brough': 'brought',
+                    'zepplin': 'Zeppelin',
+                    'zeplin': 'Zeppelin',
+                    'hendrix': 'Hendrix',
+                    'rhcp': 'Red Hot Chili Peppers',
+                    'gnr': "Guns N' Roses",
+                    'acdc': 'AC/DC',
+                    'ac dc': 'AC/DC',
+                    'bosa nova': 'bossa nova',
+                    'bosa': 'bossa',
+                    'hh': 'hi-hat',
+                    'hihat': 'hi-hat',
+                    '16s': '16th notes',
+                    '16ths': '16th notes',
+                    '8s': '8th notes',
+                    '8ths': '8th notes',
                     'tp': 'to',
                     'lite': 'light',
-                    'endurence': 'endurance',
-                    'indepence': 'independence',
-                    'bosa nova': 'bossa nova',
-                    'sixtuplets': 'sextuplets'
-                };
-            }
-            
-            transform(rawNotes) {
-                // Extract core information
-                const data = this.extractData(rawNotes);
-                
-                // Generate rich, professional recap
-                return this.generateProfessionalRecap(data);
-            }
-            
-            extractData(text) {
-                const data = {
-                    student: '',
-                    songs: [],
-                    techniques: [],
-                    tempos: [],
-                    achievements: [],
-                    challenges: [],
-                    equipment: null,
-                    rawSentences: []
+                    'rhthm': 'rhythm',
+                    'rythm': 'rhythm',
+                    'sixtuplets': 'sextuplets',
+                    'triplet': 'triplets'
                 };
                 
-                // Apply corrections first
-                let processed = text;
-                for (const [wrong, right] of Object.entries(this.corrections)) {
-                    const regex = new RegExp(`\\b${wrong}\\b`, 'gi');
-                    processed = processed.replace(regex, right);
-                }
-                
-                // Extract student name
-                const nameMatch = processed.match(/^([A-Z][a-z]+)\s*[-:]/i);
-                if (nameMatch) {
-                    data.student = nameMatch[1];
-                    processed = processed.replace(nameMatch[0], '').trim();
-                }
-                
-                // Extract songs with context
-                const songPatterns = [
-                    /(?:worked (?:through|on)|played|learned?|practiced?)\s+([^,.]+?)(?:\s+by\s+([^,.]+?))?(?=[,.]|$)/gi,
-                    /([A-Z][^,.]*)?\s+by\s+([A-Z][^,.]+)/gi
+                // Pattern indicators for music context
+                this.musicIndicators = [
+                    'by', 'played', 'worked', 'learned', 'practiced', 
+                    'covered', 'song', 'tune', 'piece', 'track'
                 ];
                 
-                songPatterns.forEach(pattern => {
-                    let match;
-                    while ((match = pattern.exec(processed)) !== null) {
-                        const title = this.cleanSongTitle(match[1]);
-                        const artist = match[2] ? this.cleanArtistName(match[2]) : '';
-                        if (title && !title.match(/^(it|this|that|the)$/i)) {
-                            data.songs.push({ title, artist });
+                // Common technique keywords
+                this.techniques = [
+                    'metronome', 'bpm', 'tempo', 'timing', 'rhythm',
+                    'fills', 'groove', 'grooves', 'beat', 'pattern',
+                    'technique', 'techniques', 'independence', 'coordination',
+                    'dynamics', 'accents', 'ghost notes', 'flams',
+                    'paradiddles', 'rudiments', 'sticking', 'speed',
+                    'endurance', 'stamina', 'control', 'precision'
+                ];
+            }
+            
+            format(input) {
+                if (!input || input.trim().length < 10) {
+                    return 'Please enter your lesson notes...';
+                }
+                
+                // Step 1: Clean and prepare text
+                let text = this.cleanText(input);
+                
+                // Step 2: Extract student name
+                const studentName = this.extractStudentName(text);
+                text = text.replace(/^[^-:]*[-:]/, '').trim();
+                
+                // Step 3: Extract all the data
+                const songs = this.extractSongs(text);
+                const techniques = this.extractTechniques(text);
+                const homework = this.extractHomework(text, songs, techniques);
+                
+                // Step 4: Build the formatted output
+                return this.buildOutput(studentName, songs, techniques, homework);
+            }
+            
+            cleanText(text) {
+                // Apply corrections
+                let cleaned = text;
+                for (const [wrong, right] of Object.entries(this.corrections)) {
+                    const regex = new RegExp(`\\b${wrong}\\b`, 'gi');
+                    cleaned = cleaned.replace(regex, right);
+                }
+                
+                // Fix spacing around punctuation
+                cleaned = cleaned
+                    .replace(/\s+/g, ' ')
+                    .replace(/\s*([,.!?])/g, '$1')
+                    .replace(/([,.!?])([A-Za-z])/g, '$1 $2');
+                
+                return cleaned;
+            }
+            
+            extractStudentName(text) {
+                const match = text.match(/^([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)\s*[-:]/i);
+                return match ? match[1] : '';
+            }
+            
+            extractSongs(text) {
+                const songs = [];
+                
+                // Pattern 1: "Song Title" by Artist
+                const pattern1 = /"([^"]+)"\s+by\s+([A-Z][^,.!?]+)/gi;
+                let match;
+                while ((match = pattern1.exec(text)) !== null) {
+                    songs.push({
+                        title: match[1].trim(),
+                        artist: this.cleanArtistName(match[2].trim())
+                    });
+                }
+                
+                // Pattern 2: Song by Artist (without quotes)
+                const pattern2 = /(?:played|worked on|learned|practiced|covered|started)\s+([A-Z][^,]+?)\s+by\s+([A-Z][^,.!?]+)/gi;
+                while ((match = pattern2.exec(text)) !== null) {
+                    const title = match[1].trim();
+                    if (!songs.some(s => s.title.toLowerCase() === title.toLowerCase())) {
+                        songs.push({
+                            title: this.cleanSongTitle(title),
+                            artist: this.cleanArtistName(match[2].trim())
+                        });
+                    }
+                }
+                
+                // Pattern 3: Artist - Song format
+                const pattern3 = /([A-Z][^-,]+?)\s*-\s*([A-Z][^,.!?]+?)(?:\.|,|!|\?|$)/gi;
+                while ((match = pattern3.exec(text)) !== null) {
+                    const possibleArtist = match[1].trim();
+                    const possibleSong = match[2].trim();
+                    
+                    // Check if this looks like artist - song (not student - notes)
+                    if (this.looksLikeMusic(possibleArtist) || this.looksLikeMusic(possibleSong)) {
+                        if (!songs.some(s => s.title.toLowerCase() === possibleSong.toLowerCase())) {
+                            songs.push({
+                                title: this.cleanSongTitle(possibleSong),
+                                artist: this.cleanArtistName(possibleArtist)
+                            });
                         }
                     }
-                });
-                
-                // Extract tempos
-                const tempoMatches = processed.match(/(\d+)\s*(?:-\s*(\d+))?\s*bpm/gi);
-                if (tempoMatches) {
-                    data.tempos = tempoMatches.map(t => t.replace(/\s+/g, ' '));
                 }
                 
-                // Extract techniques used
-                Object.keys(this.musicKnowledge.techniques).forEach(technique => {
-                    const regex = new RegExp(`\\b${technique}s?\\b`, 'gi');
-                    if (regex.test(processed)) {
-                        data.techniques.push(technique);
-                    }
-                });
-                
-                // Extract equipment mentions
-                if (/drum kit|cymbals|hardware|kit/i.test(processed)) {
-                    const equipMatch = processed.match(/(?:suggest|recommend).*?(?:\$\d+|kit|cymbals|hardware)[^.!?]*/i);
-                    if (equipMatch) {
-                        data.equipment = equipMatch[0];
+                // Pattern 4: Just song titles after music verbs
+                const pattern4 = /(?:played|worked on|learned|practiced|covered|started|did)\s+([A-Z][^,.]+?)(?:\.|,|and|also|then)/gi;
+                while ((match = pattern4.exec(text)) !== null) {
+                    const title = match[1].trim();
+                    // Only add if it doesn't contain "by" (those are caught above)
+                    if (!title.includes(' by ') && !songs.some(s => s.title.toLowerCase() === title.toLowerCase())) {
+                        // Check if next words might be "by Artist"
+                        const afterMatch = text.slice(match.index + match[0].length);
+                        const byArtist = afterMatch.match(/^\s*by\s+([A-Z][^,.!?]+)/i);
+                        
+                        if (byArtist) {
+                            songs.push({
+                                title: this.cleanSongTitle(title),
+                                artist: this.cleanArtistName(byArtist[1].trim())
+                            });
+                        } else if (this.looksLikeSongTitle(title)) {
+                            songs.push({
+                                title: this.cleanSongTitle(title),
+                                artist: ''
+                            });
+                        }
                     }
                 }
                 
-                // Split into meaningful segments
-                data.rawSentences = processed
-                    .split(/[.!?]+/)
-                    .map(s => s.trim())
-                    .filter(s => s.length > 5);
-                
-                // Classify achievements and challenges
-                data.rawSentences.forEach(sentence => {
-                    const lower = sentence.toLowerCase();
-                    if (lower.includes('great') || lower.includes('good') || lower.includes('nice') || lower.includes('well')) {
-                        data.achievements.push(sentence);
-                    }
-                    if (lower.includes('try') || lower.includes('work on') || lower.includes('keep') || lower.includes('focus')) {
-                        data.challenges.push(sentence);
-                    }
-                });
-                
-                return data;
+                return this.deduplicateSongs(songs);
             }
             
-            generateProfessionalRecap(data) {
-                let recap = '';
+            extractTechniques(text) {
+                const found = [];
+                const lowerText = text.toLowerCase();
                 
-                // Header
-                recap += `LESSON RECAP`;
-                if (data.student) {
-                    recap += ` - ${data.student.toUpperCase()}`;
-                }
-                recap += `\n${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}\n\n`;
-                
-                // Session Overview
-                recap += `SESSION OVERVIEW\n\n`;
-                
-                // Songs section with rich context
-                if (data.songs.length > 0) {
-                    recap += this.generateSongSection(data.songs);
+                // Look for BPM/tempo mentions
+                const bpmMatch = text.match(/\d+\s*(?:bpm|BPM)/g);
+                if (bpmMatch) {
+                    found.push(...bpmMatch);
                 }
                 
-                // Technical Development
-                if (data.techniques.length > 0) {
-                    recap += `\nTECHNICAL DEVELOPMENT\n\n`;
-                    recap += this.generateTechnicalSection(data.techniques, data.tempos);
-                }
-                
-                // Progress Highlights
-                recap += `\nPROGRESS HIGHLIGHTS\n\n`;
-                recap += this.generateProgressSection(data.achievements, data.songs, data.techniques);
-                
-                // Practice Recommendations
-                recap += `\nPRACTICE RECOMMENDATIONS\n\n`;
-                recap += this.generateHomework(data.songs, data.techniques, data.challenges, data.tempos);
-                
-                // Equipment notes if present
-                if (data.equipment) {
-                    recap += `\nEQUIPMENT NOTES\n\n`;
-                    recap += this.formatEquipmentNote(data.equipment);
-                }
-                
-                // Next Steps
-                recap += `\nLOOKING AHEAD\n\n`;
-                recap += this.generateNextSteps(data);
-                
-                return recap;
-            }
-            
-            generateSongSection(songs) {
-                let section = '';
-                
-                songs.forEach((song, index) => {
-                    const songKey = song.title.toLowerCase();
-                    const context = this.musicKnowledge.songContext[songKey] || 
-                                   'This piece provides valuable practice for developing rhythm and timing skills';
-                    
-                    section += `• "${song.title}"`;
-                    if (song.artist) {
-                        section += ` by ${song.artist}`;
+                // Look for technique keywords
+                this.techniques.forEach(technique => {
+                    if (lowerText.includes(technique.toLowerCase())) {
+                        found.push(technique);
                     }
-                    section += `\n  ${context}.\n\n`;
                 });
                 
-                return section;
+                // Look for specific patterns
+                if (/16th notes?|16s/i.test(text)) found.push('16th notes');
+                if (/8th notes?|8s/i.test(text)) found.push('8th notes');
+                if (/triplets?/i.test(text)) found.push('triplets');
+                if (/sextuplets?|sixtuplets?/i.test(text)) found.push('sextuplets');
+                if (/cross[- ]?stick/i.test(text)) found.push('cross-stick');
+                if (/hi[- ]?hat/i.test(text)) found.push('hi-hat control');
+                if (/kick|bass drum/i.test(text)) found.push('kick patterns');
+                if (/bossa nova/i.test(text)) found.push('bossa nova');
+                if (/foot technique/i.test(text)) found.push('foot technique');
+                
+                return [...new Set(found)];
             }
             
-            generateTechnicalSection(techniques, tempos) {
-                let section = 'Today\'s session concentrated on several key areas:\n\n';
+            extractHomework(text, songs, techniques) {
+                const homework = [];
                 
-                techniques.forEach(technique => {
-                    const description = this.musicKnowledge.techniques[technique];
-                    section += `• ${this.capitalize(technique)}: Worked on ${description}`;
-                    
-                    // Add tempo context if relevant
-                    if (tempos.length > 0 && (technique.includes('notes') || technique === 'metronome')) {
-                        section += `, practicing at ${tempos.join(' to ')}`;
-                    }
-                    section += '.\n';
-                });
+                // Look for explicit homework indicators
+                const tryMatch = text.match(/try\s+(?:to\s+)?([^.!?]+)/gi);
+                const keepMatch = text.match(/keep\s+([^.!?]+)/gi);
+                const practiceMatch = text.match(/practice\s+([^.!?]+)/gi);
+                const workOnMatch = text.match(/work\s+on\s+([^.!?]+)/gi);
+                const focusMatch = text.match(/focus\s+on\s+([^.!?]+)/gi);
                 
-                return section + '\n';
-            }
-            
-            generateProgressSection(achievements, songs, techniques) {
-                let section = '';
-                
-                // Create meaningful progress statements
+                // Generate homework based on content
                 if (songs.length > 0) {
-                    section += `• Successfully navigated the rhythmic complexities of ${songs.length} ${songs.length === 1 ? 'piece' : 'pieces'}, `;
-                    section += `demonstrating improved musical comprehension and execution.\n`;
+                    songs.slice(0, 2).forEach(song => {
+                        const songRef = song.artist ? 
+                            `***"${song.title}" (${song.artist})***` : 
+                            `***"${song.title}"***`;
+                        homework.push(`Play along with ${songRef} — focus on staying locked with the recording`);
+                    });
+                }
+                
+                // Add technique-based homework
+                if (techniques.some(t => t.includes('bpm') || t.includes('BPM'))) {
+                    const bpmValues = text.match(/\d+\s*(?:bpm|BPM)/g);
+                    if (bpmValues) {
+                        homework.push(`Continue metronome work at ${bpmValues.join(', ')} — gradually increase tempo as comfort improves`);
+                    }
+                }
+                
+                if (techniques.includes('16th notes')) {
+                    homework.push('Practice 16th note patterns slowly first, then bring up to tempo');
+                }
+                
+                if (techniques.includes('fills')) {
+                    homework.push('Work on fills in isolation, then practice transitioning in and out smoothly');
+                }
+                
+                if (techniques.includes('independence') || techniques.includes('coordination')) {
+                    homework.push('Spend 5-10 minutes daily on independence exercises — start slow and focus on separation');
+                }
+                
+                if (techniques.includes('endurance') || techniques.includes('stamina')) {
+                    homework.push('Build endurance with longer practice sessions — remember to stay relaxed and use proper technique');
+                }
+                
+                // Parse explicit instructions from text
+                if (tryMatch || keepMatch || practiceMatch || workOnMatch || focusMatch) {
+                    // Add specific instructions found in text
+                    [tryMatch, keepMatch, practiceMatch, workOnMatch, focusMatch].forEach(matches => {
+                        if (matches) {
+                            matches.forEach(match => {
+                                const instruction = match.replace(/^(try|keep|practice|work on|focus on)\s+/i, '');
+                                if (instruction.length > 10 && instruction.length < 100) {
+                                    homework.push(this.formatHomeworkItem(instruction));
+                                }
+                            });
+                        }
+                    });
+                }
+                
+                // Ensure we have at least 2 homework items
+                if (homework.length === 0) {
+                    homework.push('Review today\'s material — focus on problem spots');
+                    homework.push('Record yourself playing and listen back for areas to improve');
+                }
+                
+                return [...new Set(homework)].slice(0, 5); // Max 5 items, no duplicates
+            }
+            
+            buildOutput(studentName, songs, techniques, homework) {
+                let output = '';
+                
+                // Add student name if present
+                if (studentName) {
+                    output += `**${studentName}**\n\n`;
+                }
+                
+                output += '**Today\'s Achievements**\n';
+                
+                // Build achievements from songs and techniques
+                if (songs.length > 0) {
+                    songs.forEach(song => {
+                        const songRef = song.artist ? 
+                            `***"${song.title}" (${song.artist})***` : 
+                            `***"${song.title}"***`;
+                        output += `* Worked on ${songRef} — making solid progress through the arrangement\n`;
+                    });
                 }
                 
                 if (techniques.length > 0) {
-                    section += `• Showed notable advancement in ${techniques.slice(0, 2).join(' and ')}, `;
-                    section += `with particular attention to precision and consistency.\n`;
+                    // Group related techniques
+                    const techGroups = this.groupTechniques(techniques);
+                    techGroups.forEach(group => {
+                        output += `* ${group}\n`;
+                    });
                 }
                 
-                if (achievements.length > 0) {
-                    section += `• Exhibited strong focus and determination throughout the session, `;
-                    section += `particularly when tackling challenging passages.\n`;
+                // If no songs or techniques found, add generic achievement
+                if (songs.length === 0 && techniques.length === 0) {
+                    output += '* Focused practice session with good attention to detail\n';
                 }
                 
-                // Always include at least one positive
-                if (section === '') {
-                    section = `• Maintained excellent focus and engagement throughout the lesson, showing readiness to tackle new challenges.\n`;
-                }
+                output += '\n**Homework**\n';
+                homework.forEach(item => {
+                    output += `* ${item}\n`;
+                });
                 
-                return section;
+                return output;
             }
             
-            generateHomework(songs, techniques, challenges, tempos) {
-                const homework = [];
-                
-                // Song-specific practice
-                if (songs.length > 0) {
-                    const primarySong = songs[0];
-                    homework.push(
-                        `• Daily practice: "${primarySong.title}" - Focus on maintaining steady tempo throughout. ` +
-                        `Start each practice session at a comfortable speed, gradually increasing only when accuracy is consistent.`
-                    );
-                }
-                
-                // Technique-specific practice
-                if (techniques.includes('16th notes') || techniques.includes('fills')) {
-                    homework.push(
-                        `• Technical drills: Practice 16th note patterns for 5-10 minutes daily, ` +
-                        `starting at 60 BPM and increasing by 5 BPM increments when comfortable.`
-                    );
-                }
-                
-                if (techniques.includes('independence')) {
-                    homework.push(
-                        `• Coordination exercises: Dedicate 10 minutes to independence patterns, ` +
-                        `focusing on separating hand and foot movements while maintaining steady time.`
-                    );
-                }
-                
-                // Metronome work if tempos mentioned
-                if (tempos.length > 0) {
-                    homework.push(
-                        `• Metronome practice: Continue working with click track at various tempos, ` +
-                        `spending extra time at challenging transition points.`
-                    );
-                }
-                
-                // General practice if nothing specific
-                if (homework.length === 0) {
-                    homework.push(
-                        `• Regular practice: Aim for 15-20 minutes of focused daily practice, ` +
-                        `reviewing today's material with emphasis on accuracy over speed.`
-                    );
-                    homework.push(
-                        `• Listening assignment: Actively listen to professional recordings of studied pieces, ` +
-                        `paying attention to dynamics and articulation.`
-                    );
-                }
-                
-                return homework.join('\n\n') + '\n';
+            // Helper methods
+            looksLikeMusic(text) {
+                const lower = text.toLowerCase();
+                return this.musicIndicators.some(indicator => lower.includes(indicator)) ||
+                       /^[A-Z]/.test(text) && text.length > 2 && text.length < 50;
             }
             
-            formatEquipmentNote(equipment) {
-                return `Based on our discussion about equipment needs, ${equipment}. ` +
-                       `Quality starter kits from brands like Ludwig Breakbeats or PDP offer excellent value. ` +
-                       `Remember to budget for cymbals and hardware if not included in the kit.\n`;
-            }
-            
-            generateNextSteps(data) {
-                const steps = [];
-                
-                // Based on current progress
-                if (data.songs.length > 0) {
-                    steps.push(`As proficiency with current repertoire solidifies, we'll introduce more complex arrangements`);
-                }
-                
-                if (data.techniques.includes('16th notes')) {
-                    steps.push(`Continue developing speed and accuracy with subdivision exercises`);
-                }
-                
-                if (data.tempos.some(t => parseInt(t) > 140)) {
-                    steps.push(`Work toward performance-ready tempos while maintaining clean execution`);
-                }
-                
-                // Always include forward-looking statement
-                if (steps.length === 0) {
-                    steps.push(`Building on today's foundation to explore new rhythmic concepts and repertoire`);
-                }
-                
-                return `${steps.join('. ')}. The progress shown today indicates readiness for increasingly sophisticated material in upcoming sessions.\n`;
+            looksLikeSongTitle(text) {
+                // Song titles typically start with capital letters and are 1-8 words
+                const words = text.split(' ').length;
+                return /^[A-Z]/.test(text) && words >= 1 && words <= 8 && 
+                       !text.includes('worked') && !text.includes('played') &&
+                       !text.includes('practiced') && !text.includes('learned');
             }
             
             cleanSongTitle(title) {
-                if (!title) return '';
-                return title.trim()
-                    .replace(/^(the|a|an)\s+/i, '')
-                    .replace(/\s+/g, ' ')
-                    .split(' ')
-                    .map(word => this.capitalize(word))
-                    .join(' ');
+                // Remove common prefixes that aren't part of the title
+                title = title.replace(/^(the|a|an)\s+/i, '');
+                
+                // Proper capitalization
+                return title.split(' ')
+                    .map(word => {
+                        // Keep small words lowercase unless first word
+                        if (['of', 'the', 'in', 'on', 'at', 'to', 'a', 'an'].includes(word.toLowerCase())) {
+                            return word.toLowerCase();
+                        }
+                        return word.charAt(0).toUpperCase() + word.slice(1);
+                    })
+                    .join(' ')
+                    .replace(/^./, char => char.toUpperCase()); // Ensure first letter is capital
             }
             
             cleanArtistName(artist) {
-                if (!artist) return '';
-                const special = {
-                    'metallica': 'Metallica',
-                    'the cure': 'The Cure',
-                    'the chainsmokers': 'The Chainsmokers'
-                };
-                const lower = artist.toLowerCase().trim();
-                return special[lower] || artist.trim()
-                    .split(' ')
-                    .map(word => this.capitalize(word))
+                // Handle special cases
+                if (/^the\s+/i.test(artist)) {
+                    return 'The ' + artist.slice(4).split(' ')
+                        .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+                        .join(' ');
+                }
+                
+                // Standard capitalization
+                return artist.split(' ')
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
                     .join(' ');
             }
             
-            capitalize(word) {
-                if (!word) return '';
-                return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+            deduplicateSongs(songs) {
+                const seen = new Map();
+                songs.forEach(song => {
+                    const key = song.title.toLowerCase();
+                    if (!seen.has(key) || (song.artist && !seen.get(key).artist)) {
+                        seen.set(key, song);
+                    }
+                });
+                return Array.from(seen.values());
+            }
+            
+            groupTechniques(techniques) {
+                const groups = [];
+                
+                // Group timing-related
+                const timing = techniques.filter(t => 
+                    t.includes('bpm') || t.includes('BPM') || 
+                    t.includes('metronome') || t.includes('tempo') || 
+                    t.includes('timing')
+                );
+                if (timing.length > 0) {
+                    groups.push(`Focused on timing and tempo control — ${timing.join(', ')}`);
+                }
+                
+                // Group rhythm patterns
+                const patterns = techniques.filter(t => 
+                    t.includes('notes') || t.includes('triplets') || 
+                    t.includes('sextuplets') || t.includes('groove') || 
+                    t.includes('pattern') || t.includes('fills')
+                );
+                if (patterns.length > 0) {
+                    groups.push(`Practiced rhythm patterns — ${patterns.join(', ')}`);
+                }
+                
+                // Group technique work
+                const technical = techniques.filter(t => 
+                    t.includes('technique') || t.includes('independence') || 
+                    t.includes('coordination') || t.includes('control') || 
+                    t.includes('foot') || t.includes('hi-hat') || 
+                    t.includes('kick') || t.includes('cross-stick')
+                );
+                if (technical.length > 0) {
+                    groups.push(`Developed technique — ${technical.join(', ')}`);
+                }
+                
+                // Anything else
+                const other = techniques.filter(t => 
+                    !timing.includes(t) && !patterns.includes(t) && !technical.includes(t)
+                );
+                if (other.length > 0) {
+                    groups.push(`Additional focus areas — ${other.join(', ')}`);
+                }
+                
+                return groups;
+            }
+            
+            formatHomeworkItem(instruction) {
+                // Clean up the instruction and make it actionable
+                instruction = instruction.trim();
+                
+                // Ensure it starts with a capital
+                instruction = instruction.charAt(0).toUpperCase() + instruction.slice(1);
+                
+                // Remove trailing punctuation
+                instruction = instruction.replace(/[.,!?]+$/, '');
+                
+                // Make it imperative if it isn't already
+                if (!instruction.match(/^(Practice|Work|Focus|Keep|Continue|Play|Review|Record)/i)) {
+                    instruction = 'Practice ' + instruction.toLowerCase();
+                }
+                
+                return instruction;
             }
         }
-
-        // Example data
+        
+        // Examples
         const examples = {
-            beginner: `Luca - Went through triplets from 60-70bpm. doing great, try for 80 next week. played seven nation army chorus. started learning i will survive.`,
-            
-            intermediate: `Morgan - Worked through Friday I'm In Love by the cure. Played at 90% speed then full. talked about hh technique keeping it lite for endurance through whole song.`,
-            
-            advanced: `Conan - Worked through bosa nova patterns. Then broke into master of puppets by metalica working out timing. sounding really good. went through foot techniques.`,
-            
-            equipment: `Amaiyah - worked through creep with cross stick patterns. Learning sixtuplets. spoke about drum kit to get, suggest not spending over $500 to start.`,
-            
-            multiple: `Brody played Something Just Like This by Chainsmokers, worked kick pattern in chorus. Also played Bones by Imagine Dragons and Too Sweet.`,
-            
-            challenge: `Started work on seek & destroy. Long song but structure not too complicated. The hardest part will be the fills.`
+            1: "Conan - Worked through bossa nova, playing to couple different songs keeping it consistent. broke into master of puppets by metallica and worked out some of timing. sounding really good its come a long way. lastly went through foot techniques",
+            2: "Morgan - Worked through The Cure - Friday I'm In Love most of episode. played through first at 90% speed then cranked it at full. great job, spoke about technique with hh and keeping it light so we can play through whole song. keep kick nice and steady",
+            3: "Luca - Went through triplets from 60-70bpm. doing great, try for 80 next week. played seven nation army, just chorus to work on. played radioactive which sounds very good! lastly started to learn i will survive",
+            4: "Jazz session with Maya - worked on take five by dave brubeck, focusing on the 5/4 time signature. Also started autumn leaves, working on brush technique. Keep practicing the jazz swing feel with metronome at 120bpm",
+            5: "Alex worked on Blitzkrieg Bop by the ramones at full speed! Also started learning basket case by green day. Try to keep the punk energy but stay in control. Work on down strokes for that authentic punk sound",
+            6: "Emma - played Levitating by Dua Lipa, nailed the disco groove. Also worked on Good 4 U by Olivia Rodrigo - the dynamics between verse and chorus are getting better. Keep practicing those ghost notes on the snare"
         };
         
-        // Global transformer
-        const transformer = new LessonTransformer();
+        // Initialize formatter
+        const formatter = new SmartLessonFormatter();
         
-        // Main functions
-        function transformNotes() {
-            const input = document.getElementById('inputNotes').value.trim();
-            
-            if (!input || input.length < 10) {
-                showStatus('Please enter at least 10 characters of notes', 'warning');
-                return;
-            }
-            
-            showProcessing(true);
-            
-            setTimeout(() => {
-                try {
-                    const output = transformer.transform(input);
-                    document.getElementById('outputArea').textContent = output;
-                    showStatus('Transformation complete!', 'success');
-                    showProcessing(false);
-                } catch (error) {
-                    console.error('Transform error:', error);
-                    showStatus('Error during transformation', 'error');
-                    showProcessing(false);
-                }
-            }, 500);
+        // Functions
+        function formatLesson() {
+            const input = document.getElementById('input').value;
+            const output = formatter.format(input);
+            document.getElementById('output').innerText = output;
         }
         
-        function loadExample(key) {
-            document.getElementById('inputNotes').value = examples[key] || '';
-            showStatus(`Loaded ${key} example`, 'info');
+        function clearInput() {
+            document.getElementById('input').value = '';
+            document.getElementById('output').innerText = 'Your formatted lesson recap will appear here...';
         }
         
-        function clearAll() {
-            document.getElementById('inputNotes').value = '';
-            document.getElementById('outputArea').textContent = 'Your professional recap will appear here...';
-            showStatus('Cleared', 'info');
+        function loadExample(num) {
+            document.getElementById('input').value = examples[num] || '';
+            formatLesson();
         }
         
-        function copyOutput() {
-            const text = document.getElementById('outputArea').textContent;
-            if (text === 'Your professional recap will appear here...') {
-                showStatus('No content to copy', 'warning');
-                return;
-            }
-            
+        function copyToClipboard() {
+            const text = document.getElementById('output').innerText;
             navigator.clipboard.writeText(text).then(() => {
-                showStatus('Copied to clipboard!', 'success');
-            }).catch(() => {
-                showStatus('Copy failed', 'error');
+                // Visual feedback
+                const btn = event.target;
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '✅ Copied!';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                }, 2000);
             });
         }
         
-        function downloadOutput() {
-            const text = document.getElementById('outputArea').textContent;
-            if (text === 'Your professional recap will appear here...') {
-                showStatus('No content to download', 'warning');
-                return;
-            }
-            
+        function downloadText() {
+            const text = document.getElementById('output').innerText;
             const blob = new Blob([text], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
             a.download = `lesson-recap-${new Date().toISOString().split('T')[0]}.txt`;
             a.click();
-            URL.revokeObjectURL(url);
-            showStatus('Downloaded!', 'success');
         }
         
-        function showStatus(message, type = 'info') {
-            const statusText = document.getElementById('statusText');
-            statusText.textContent = message;
-            statusText.style.color = type === 'error' ? 'var(--danger)' : 
-                                    type === 'warning' ? 'var(--warning)' :
-                                    type === 'success' ? 'var(--accent)' : 'var(--text-light)';
-            
-            if (type === 'success' || type === 'info') {
-                setTimeout(() => {
-                    statusText.textContent = 'Ready';
-                    statusText.style.color = 'var(--accent)';
-                }, 3000);
-            }
-        }
-        
-        function showProcessing(show) {
-            document.getElementById('processing').style.display = show ? 'flex' : 'none';
-        }
-        
-        // Keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-            if (e.ctrlKey || e.metaKey) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    transformNotes();
-                } else if (e.key === 'd') {
-                    e.preventDefault();
-                    clearAll();
-                }
+        // Auto-format on Enter with Ctrl/Cmd
+        document.getElementById('input').addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                formatLesson();
             }
         });
     </script>
