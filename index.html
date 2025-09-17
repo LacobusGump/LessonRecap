@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Lesson Notes Formatter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .app-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .input-section, .output-section {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .secondary-button {
+            background: #6c757d;
+        }
+        
+        .output-content {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            min-height: 200px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .status {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .status.loading {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffc107;
+        }
+        
+        .status.ready {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #28a745;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #dc3545;
+        }
+        
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0,0,0,.1);
+            border-radius: 50%;
+            border-top-color: #856404;
+            animation: spin 1s ease-in-out infinite;
+            vertical-align: middle;
+            margin-left: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .examples {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .example-button {
+            background: #e9ecef;
+            color: #495057;
+            font-size: 14px;
+            padding: 8px 16px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .example-button:hover {
+            background: #dee2e6;
+        }
+
+        .format-section {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .format-section h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .format-section ul {
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 Music Lesson Notes Formatter</h1>
+        
+        <div class="app-card">
+            <div id="status" class="status loading">
+                Initializing AI Model... This may take a moment on first load.
+                <span class="loader"></span>
+            </div>
+            
+            <div class="input-section">
+                <label for="lessonNotes">Enter Raw Lesson Notes:</label>
+                <textarea 
+                    id="lessonNotes" 
+                    rows="8" 
+                    placeholder="Example: Charleigh - Worked through Black Sabbath Paranoid which I sent home through the app. You did great with it, went over some of the 16s fills..."
+                ></textarea>
+            </div>
+            
+            <div class="button-group">
+                <button id="formatBtn" onclick="formatNotes()" disabled>
+                    Format Notes
+                </button>
+                <button class="secondary-button" onclick="clearAll()">
+                    Clear All
+                </button>
+                <button class="secondary-button" onclick="copyOutput()">
+                    Copy Output
+                </button>
+            </div>
+            
+            <div class="output-section">
+                <label>Formatted Lesson Recap:</label>
+                <div id="output" class="output-content">
+                    Formatted notes will appear here...
+                </div>
+            </div>
+            
+            <div class="examples">
+                <label>Quick Examples:</label>
+                <button class="example-button" onclick="loadExample('charleigh')">Charleigh (Drums)</button>
+                <button class="example-button" onclick="loadExample('morgan')">Morgan (Drums)</button>
+                <button class="example-button" onclick="loadExample('luca')">Luca (Beginner)</button>
+                <button class="example-button" onclick="loadExample('conan')">Conan (Advanced)</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { CreateMLCEngine } from "https://esm.run/@mlc-ai/web-llm";
+
+        let engine = null;
+        let isInitialized = false;
+
+        const examples = {
+            charleigh: `Charleigh - Worked through Black Sabbath Paranoid which I sent home through the app. You did great with it, went over some of the 16s fills which brought us into playing 16s to a metronome! (classic) Started at 100bpm and worked it up to 170. Great job, try to keep everything nice and balanced, while maintaining even strokes! Then we started to learn Running by OMA. This will help with working on your kick independence, breaking the bond your right hand and right foot naturally have. This busy beat has a lot of kick in between your hh 8th, so keep steady with this one.`,
+            morgan: `Morgan - Worked through The Cure - Friday I'm In Love most of the episode. We played through first at 90% speed then cranked it out at full. Great job with this, spoke about technique with hh and keeping it light so we can play through the whole song. Keep your kick nice and steady with the rhythm, after a bit can start to miss. Try to stay focused and keep this beat and driving! Great job. Again, to keep endurance try to stay light on your right hand.`,
+            luca: `Luca - Went through triplets from 60-70bpm. Doing great, try for 80 next week. Played through Seven Nation Army, just the chorus to work on. Played through Radioactive which sounds very good! Lastly we started to learn I Will Survive. Nice work!`,
+            conan: `Conan - Worked through bossa nova, playing it to a couple different songs but looking to keep it nice and consistent. Then we broke into Master of Puppets by Metallica and worked out some of the timing. Sounding really good, it's come a long way. Lastly we went through some foot techniques.`
+        };
+
+        async function initializeEngine() {
+            const statusDiv = document.getElementById('status');
+            const formatBtn = document.getElementById('formatBtn');
+            
+            try {
+                statusDiv.className = 'status loading';
+                statusDiv.innerHTML = 'Loading AI Model... This may take 1-2 minutes on first load.<span class="loader"></span>';
+                
+                // Using a smaller model that works well in browser
+                engine = await CreateMLCEngine("Llama-3.2-1B-Instruct-q4f16_1-MLC", {
+                    initProgressCallback: (progress) => {
+                        const percent = Math.round(progress.progress * 100);
+                        statusDiv.innerHTML = `Loading AI Model: ${percent}%<span class="loader"></span>`;
+                    }
+                });
+                
+                isInitialized = true;
+                statusDiv.className = 'status ready';
+                statusDiv.innerHTML = '✅ AI Model Ready - Enter your lesson notes and click Format';
+                formatBtn.disabled = false;
+                
+            } catch (error) {
+                console.error('Initialization error:', error);
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = '❌ Error loading AI model. Please refresh the page.';
+            }
+        }
+
+        window.formatNotes = async function() {
+            if (!isInitialized || !engine) {
+                alert('Please wait for the AI model to initialize');
+                return;
+            }
+            
+            const input = document.getElementById('lessonNotes').value.trim();
+            if (!input) {
+                alert('Please enter lesson notes to format');
+                return;
+            }
+            
+            const outputDiv = document.getElementById('output');
+            const formatBtn = document.getElementById('formatBtn');
+            
+            formatBtn.disabled = true;
+            outputDiv.innerHTML = 'Formatting your notes...';
+            
+            try {
+                const prompt = `You are a music lesson note formatter. Convert the raw lesson notes into a structured format.
+
+Input: ${input}
+
+Create a formatted lesson recap with these sections:
+1. "Today's Achievements" - List what was practiced/accomplished
+2. "Homework" - List practice assignments for next lesson
+3. "Extra Note" (if applicable) - Any additional important information
+
+Format the output exactly like this example:
+
+Here's a recap for [Student]'s lesson:
+
+**Today's Achievements**
+• [Achievement 1 - be specific about songs, techniques, tempos]
+• [Achievement 2]
+• [Achievement 3]
+
+**Homework**
+• [Assignment 1 - be specific about what to practice]
+• [Assignment 2]
+• [Assignment 3]
+
+Be concise but specific. Include song names, tempos, and technical details mentioned. Keep the tone encouraging and professional.`;
+
+                const response = await engine.chat.completions.create({
+                    messages: [{ role: "user", content: prompt }],
+                    temperature: 0.3,
+                    max_tokens: 500
+                });
+                
+                outputDiv.innerHTML = response.choices[0].message.content;
+                
+            } catch (error) {
+                console.error('Formatting error:', error);
+                outputDiv.innerHTML = 'Error formatting notes. Please try again.';
+            } finally {
+                formatBtn.disabled = false;
+            }
+        }
+
+        window.loadExample = function(exampleKey) {
+            const textarea = document.getElementById('lessonNotes');
+            textarea.value = examples[exampleKey];
+        }
+
+        window.clearAll = function() {
+            document.getElementById('lessonNotes').value = '';
+            document.getElementById('output').innerHTML = 'Formatted notes will appear here...';
+        }
+
+        window.copyOutput = function() {
+            const outputText = document.getElementById('output').innerText;
+            navigator.clipboard.writeText(outputText).then(() => {
+                alert('Output copied to clipboard!');
+            }).catch(err => {
+                alert('Failed to copy text');
+            });
+        }
+
+        // Initialize on load
+        initializeEngine();
+    </script>
+</body>
+</html>
