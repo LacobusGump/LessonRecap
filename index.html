@@ -911,24 +911,50 @@
             }
 
             // Show processing indicator
-            document.getElementById('processing').style.display = 'flex';
+            const processing = document.getElementById('processing');
+            processing.style.display = 'flex';
             
-            // Simulate processing time for better UX
+            // Add error handling and debugging
             setTimeout(() => {
                 try {
+                    console.log('Starting to format notes...');
+                    
                     const formatter = new LessonFormatter();
+                    console.log('Formatter created');
+                    
                     formatter.parseSentences(input);
+                    console.log('Sentences parsed');
+                    
                     const output = formatter.generateOutput();
+                    console.log('Output generated:', output);
                     
                     document.getElementById('output').textContent = output;
-                    document.getElementById('processing').style.display = 'none';
+                    processing.style.display = 'none';
+                    
+                    console.log('Format completed successfully');
                     
                 } catch (error) {
                     console.error('Formatting error:', error);
-                    document.getElementById('output').textContent = 'Error formatting notes. Please try again.';
-                    document.getElementById('processing').style.display = 'none';
+                    console.error('Error stack:', error.stack);
+                    
+                    // Fallback simple formatting
+                    const lines = input.split(/[.!?]+/).filter(line => line.trim());
+                    let simpleOutput = 'Lesson Recap\n\nToday\'s Achievements\n\n';
+                    
+                    lines.forEach(line => {
+                        if (line.trim()) {
+                            simpleOutput += `* ${line.trim().charAt(0).toUpperCase() + line.trim().slice(1)}.\n`;
+                        }
+                    });
+                    
+                    simpleOutput += '\nPractice Assignments\n\n* Practice the material covered in this lesson.\n* Focus on accuracy and timing.\n';
+                    
+                    document.getElementById('output').textContent = simpleOutput;
+                    processing.style.display = 'none';
+                    
+                    alert('Used simplified formatting due to processing error. Check console for details.');
                 }
-            }, 1500); // Simulate processing time
+            }, 500);
         }
 
         function loadExample(exampleKey) {
