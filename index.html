@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Music Lesson Formatter 2025</title>
+    <title>Music Lesson Formatter Pro</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         
@@ -12,6 +12,8 @@
             --primary-dark: #4f46e5;
             --secondary: #f1f5f9;
             --accent: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
             --text: #1e293b;
             --text-light: #64748b;
             --border: #e2e8f0;
@@ -173,6 +175,11 @@
             transform: translateY(0);
         }
         
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
         .output-section {
             margin-top: 2rem;
         }
@@ -187,6 +194,7 @@
             line-height: 1.7;
             border: 1px solid var(--border);
             color: var(--text);
+            position: relative;
         }
         
         .examples-section {
@@ -258,6 +266,37 @@
             margin-left: 1rem;
         }
         
+        .error-message {
+            display: none;
+            padding: 1rem;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: var(--border-radius);
+            color: var(--danger);
+            margin-top: 1rem;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .success-message {
+            display: none;
+            padding: 1rem;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: var(--border-radius);
+            color: var(--accent);
+            margin-top: 1rem;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .char-count {
+            text-align: right;
+            color: var(--text-light);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+        
         @media (max-width: 768px) {
             .container {
                 padding: 1rem;
@@ -284,14 +323,14 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎵 Music Lesson Formatter</h1>
-            <p class="subtitle">Professional lesson recaps with AI-powered proofreading</p>
+            <h1>🎵 Music Lesson Formatter Pro</h1>
+            <p class="subtitle">Transform raw lesson notes into professional recaps</p>
             <div class="status-indicator">
                 <span>✨</span>
-                Ready to create professional lesson summaries
+                System Ready
                 <span class="quality-badge">
                     <span>🔍</span>
-                    Auto Proofread
+                    Auto-Correct Enabled
                 </span>
             </div>
         </div>
@@ -305,10 +344,11 @@
                     rows="6"
                     placeholder="Example: Charleigh - worked through Black Sabbath Paranoid which I sent home through the app. You did great with it, went over some of the 16s fills..."
                 ></textarea>
+                <div class="char-count" id="charCount">0 characters</div>
             </div>
             
             <div class="button-group">
-                <button class="btn btn-primary" onclick="formatNotes()">
+                <button class="btn btn-primary" onclick="formatNotes()" id="formatBtn">
                     <span>✨</span>
                     Generate Professional Recap
                 </button>
@@ -327,13 +367,23 @@
                 Processing and proofreading...
             </div>
             
+            <div class="error-message" id="errorMessage">
+                <span>⚠️</span>
+                <span id="errorText">An error occurred</span>
+            </div>
+            
+            <div class="success-message" id="successMessage">
+                <span>✅</span>
+                <span id="successText">Operation successful</span>
+            </div>
+            
             <div class="output-section">
                 <label class="form-label">Professional Lesson Recap</label>
-                <div id="output" class="output-content">Click "Generate Professional Recap" to create your formatted lesson summary...</div>
+                <div id="output" class="output-content">Your formatted lesson recap will appear here...</div>
             </div>
             
             <div class="examples-section">
-                <label class="form-label">Quick Examples</label>
+                <label class="form-label">Quick Examples (Click to Load)</label>
                 <div class="examples-grid">
                     <button class="example-btn" onclick="loadExample('charleigh')">Charleigh - Drums & Fills</button>
                     <button class="example-btn" onclick="loadExample('morgan')">Morgan - Endurance Focus</button>
@@ -341,58 +391,47 @@
                     <button class="example-btn" onclick="loadExample('conan')">Conan - Advanced Techniques</button>
                     <button class="example-btn" onclick="loadExample('amaiyah')">Amaiyah - Equipment Discussion</button>
                     <button class="example-btn" onclick="loadExample('brody')">Brody - Multiple Songs</button>
-                    <button class="example-btn" onclick="loadExample('seek_destroy')">Seek & Destroy - Test Case</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Enhanced music terminology with better context awareness
+        // Configuration and Data
+        const CONFIG = {
+            MAX_HOMEWORK_ITEMS: 4,
+            MIN_TEXT_LENGTH: 10,
+            MAX_PROCESSING_TIME: 5000,
+            DEBOUNCE_DELAY: 300
+        };
+
         const musicTerms = {
             'hh': 'hi-hat',
             'hihat': 'hi-hat',
             'hi hat': 'hi-hat',
             '16s': '16th notes',
-            '16ths': '16th notes', 
-            '16th': '16th notes',
+            '16ths': '16th notes',
             '8s': '8th notes',
             '8ths': '8th notes',
-            '8th': '8th notes',
             'bpm': 'BPM',
             'kick': 'kick drum',
             'bd': 'bass drum',
-            'tom': 'tom',
-            'toms': 'toms',
-            'snare': 'snare drum',
             'sd': 'snare drum',
             'fill': 'fill',
             'fills': 'fills',
             'groove': 'groove',
+            'grooves': 'grooves',
             'beat': 'beat',
-            'pattern': 'pattern',
+            'beats': 'beats',
             'cross stick': 'cross-stick',
             'crossstick': 'cross-stick',
             'rim shot': 'rim shot',
-            'rimshot': 'rim shot',
-            'bossa nova': 'bossa nova',
-            'bosa nova': 'bossa nova',
-            'triplet': 'triplets',
-            'triplets': 'triplets',
-            'sixtuplet': 'sixtuplets',
-            'sixtuplets': 'sixtuplets',
-            'sextuplet': 'sixtuplets',
-            'sextuplets': 'sixtuplets',
-            'metronome': 'metronome',
-            'indepence': 'independence',
-            'independance': 'independence'
+            'rimshot': 'rim shot'
         };
 
-        // Comprehensive spelling and grammar corrections
-        const corrections = {
-            // Common typos - keep original case patterns
+        const spellingCorrections = {
             'metalica': 'Metallica',
-            'metallica': 'Metallica', 
+            'metallica': 'Metallica',
             'sabath': 'Sabbath',
             'sabbath': 'Sabbath',
             'oma': 'OMA',
@@ -404,9 +443,6 @@
             'tp': 'to',
             'lite': 'light',
             'avail': 'available',
-            'hieght': 'height',
-            'stedy': 'steady',
-            'consistant': 'consistent',
             'practise': 'practice',
             'practis': 'practice',
             'foccus': 'focus',
@@ -416,35 +452,19 @@
             'endurace': 'endurance',
             'techinque': 'technique',
             'technqiue': 'technique',
-            'fillls': 'fills',
-            'groov': 'groove',
             'patern': 'pattern',
             'pattrn': 'pattern',
             'creap': 'Creep',
             'paraniod': 'Paranoid',
             'parnoid': 'Paranoid',
-            'chainsmokers': 'The Chainsmokers',
-            'coldplay': 'Coldplay',
-            'imagine dragons': 'Imagine Dragons',
-            'hozier': 'Hozier',
+            'bosa nova': 'bossa nova',
+            'bosa': 'bossa',
             'indepence': 'independence',
             'independance': 'independence',
-            'drumm': 'drum',
-            'fillls': 'fills',
-            'stong': 'song',
-            'songg': 'song',
-            'structue': 'structure',
-            'struture': 'structure',
-            'compicated': 'complicated',
-            'complicted': 'complicated',
-            'compliceted': 'complicated',
-            'porton': 'portion',
-            'portoin': 'portion',
-            'hardest': 'most challenging',
-            'easiest': 'most accessible'
+            'sixtuplets': 'sextuplets',
+            'sixtuplet': 'sextuplet'
         };
 
-        // Known songs with proper formatting
         const knownSongs = {
             'paranoid': { title: 'Paranoid', artist: 'Black Sabbath' },
             'running': { title: 'Running', artist: 'OMA' },
@@ -459,25 +479,16 @@
             'seek & destroy': { title: 'Seek & Destroy', artist: 'Metallica' },
             'something just like this': { title: 'Something Just Like This', artist: 'The Chainsmokers & Coldplay' },
             'bones': { title: 'Bones', artist: 'Imagine Dragons' },
-            'too sweet': { title: 'Too Sweet', artist: 'Hozier' },
-            'back to friends': { title: 'Back to Friends', artist: 'Sombr' },
-            'golden': { title: 'Golden', artist: 'Huntrix' }
+            'too sweet': { title: 'Too Sweet', artist: 'Hozier' }
         };
 
         const examples = {
-            charleigh: `Charleigh - Worked through Black sabath Paranoid which i sent home through the app. you did great with it, went over some of the 16s fills which brough us into playing 16s to a metronome! (classic) Startwed at 100bpm and worked it up to 170. great job, try to keep everything nice and balanced, while maintaining even strokes! then we started to learned Running by oma. this will help with working on your kick indepence, breaking the bond your right hand and right foot naturally have. this busy beat has a lot of kick in between you hh 8th, so keep steady with this one`,
-            
-            morgan: `Morgan - Worked through The Cure - Friday I'm In Love most of the episode. We played through first at 90% speed then cranked it out at full. great job with this, spoke about technique with hh and keeping it light so we can play through the whole song. keep your kick nice and steady with the rhthm, after a bit can start to miss. try tp stay focused and keep this beat and driving! great job Again, to keep endurance try to stay lite on your right hand.`,
-            
-            luca: `Luca - Went through triplets from 60-70bpm. doing great, try for 80 next week. played through seven nation army, just the chorus to work on. played through radioactive which sounds very good! lastly we started to learn i will survive. nice work!`,
-            
-            conan: `Conan - Worked through bosa nova, playing it to a couple different songs but looking to keep it nice and consistent. Then we broke into master of puppets by metalica and worked out some of the timing. sounding really good its a come a long way. lastly we went through some foot techniques.`,
-            
-            amaiyah: `Amaiyah - worked through creep, broke down the main patterns including the cross stick at the end. Went through learning sixtuplets and played them over the song CREAM by oma. Nice work with these. for sticking its 6 hits on the snare then 2, 2, 2 startingon the snare, tom, low tom. Sorry for going over your time, we spoke about what kind of drum kit to get which i suggest to not spend over $500 to start. A nice kit to start off with is Quest Loves Pocket kit or the breakbeats kit. You will need to get cymbals and hardware as well, which i would find used on facebook market place or ebay`,
-            
-            brody: `Brody played through The Chainsmokers & Coldplay - Something Just Like This and picked out the kick pattern in the chorus that we worked on a bit and brody did great with it! Also played Bones Imagine Dragons and also too sweet by hozier.`,
-            
-            seek_destroy: `Wonderful playing today. We started work on seek and destroy and although it is a very long song the song structure is not too complicated. I will be sending you the music and review it. The hardest portion of the song will be the drum fills and we can break them down as we go.`
+            charleigh: `Charleigh - Worked through Black sabath Paranoid which i sent home through the app. you did great with it, went over some of the 16s fills which brough us into playing 16s to a metronome! Startwed at 100bpm and worked it up to 170. great job, try to keep everything nice and balanced`,
+            morgan: `Morgan - Worked through The Cure - Friday I'm In Love. We played through first at 90% speed then cranked it out at full. spoke about technique with hh and keeping it light so we can play through the whole song. keep your kick nice and steady`,
+            luca: `Luca - Went through triplets from 60-70bpm. doing great, try for 80 next week. played through seven nation army, just the chorus. played through radioactive which sounds very good! lastly started to learn i will survive`,
+            conan: `Conan - Worked through bosa nova, playing it to different songs but looking to keep it nice and consistent. Then we broke into master of puppets by metalica and worked out timing. sounding really good. lastly went through some foot techniques`,
+            amaiyah: `Amaiyah - worked through creep, broke down the main patterns including the cross stick. Went through learning sixtuplets. for sticking its 6 hits on the snare then 2, 2, 2 starting on the snare, tom, low tom. spoke about what kind of drum kit to get which i suggest not spend over $500 to start`,
+            brody: `Brody played through The Chainsmokers & Coldplay - Something Just Like This and picked out the kick pattern in the chorus. Also played Bones by Imagine Dragons and too sweet by hozier`
         };
 
         class LessonFormatter {
@@ -487,111 +498,70 @@
                 this.homework = [];
                 this.techniques = new Set();
                 this.songs = [];
-                this.extraNotes = [];
+                this.errors = [];
             }
 
-            // Enhanced text preprocessing with better grammar correction
+            reset() {
+                this.studentName = '';
+                this.achievements = [];
+                this.homework = [];
+                this.techniques = new Set();
+                this.songs = [];
+                this.errors = [];
+            }
+
             preprocessText(text) {
+                if (!text) return '';
+                
                 let processed = text.trim();
                 
-                // First pass: Fix common spelling errors
-                Object.entries(corrections).forEach(([wrong, right]) => {
-                    const regex = new RegExp(`\\b${wrong.replace(/[.*+?^${}()|[\]\\]/g, '\\            // Enhanced text preprocessing with better grammar correction
-            preprocessText(text) {
-                let processed = text.toLowerCase().trim();
-                
-                // Fix common abbreviations and music terms
-                Object.entries(musicTerms).forEach(([abbrev, full]) => {
-                    const regex = new RegExp(`\\b${abbrev}\\b`, 'gi');
-                    processed = processed.replace(regex, full);
-                });
-                
-                // Apply corrections
-                Object.entries(corrections).forEach(([wrong, right]) => {
-                    const regex = new RegExp(`\\b${wrong}\\b`, 'gi');
+                // Apply spelling corrections
+                for (const [wrong, right] of Object.entries(spellingCorrections)) {
+                    const regex = new RegExp(`\\b${this.escapeRegex(wrong)}\\b`, 'gi');
                     processed = processed.replace(regex, right);
-                });
+                }
                 
-                return processed;
-            }')}\\b`, 'gi');
-                    processed = processed.replace(regex, right);
-                });
-                
-                // Second pass: Fix music terminology
-                Object.entries(musicTerms).forEach(([abbrev, full]) => {
-                    const regex = new RegExp(`\\b${abbrev.replace(/[.*+?^${}()|[\]\\]/g, '\\            // Enhanced text preprocessing with better grammar correction
-            preprocessText(text) {
-                let processed = text.toLowerCase().trim();
-                
-                // Fix common abbreviations and music terms
-                Object.entries(musicTerms).forEach(([abbrev, full]) => {
-                    const regex = new RegExp(`\\b${abbrev}\\b`, 'gi');
+                // Apply music term corrections
+                for (const [abbrev, full] of Object.entries(musicTerms)) {
+                    const regex = new RegExp(`\\b${this.escapeRegex(abbrev)}\\b`, 'gi');
                     processed = processed.replace(regex, full);
-                });
+                }
                 
-                // Apply corrections
-                Object.entries(corrections).forEach(([wrong, right]) => {
-                    const regex = new RegExp(`\\b${wrong}\\b`, 'gi');
-                    processed = processed.replace(regex, right);
-                });
-                
-                return processed;
-            }')}\\b`, 'gi');
-                    processed = processed.replace(regex, full);
-                });
-                
-                // Third pass: Normalize to "we" language - avoid pronouns entirely
+                // Clean up spacing
                 processed = processed
-                    // Clean up spacing and punctuation
                     .replace(/\s+/g, ' ')
-                    .replace(/([.!?])\s*([a-z])/g, '$1 $2')
-                    // Fix common grammatical issues
-                    .replace(/\bi\s+sent\b/gi, 'sent')
-                    .replace(/\bi\s+will\s+be\s+sending\b/gi, 'will send')
-                    .replace(/\bi\s+suggest\b/gi, 'suggest')
-                    .replace(/\bi\s+recommend\b/gi, 'recommend')
-                    // Remove awkward constructions
-                    .replace(/\b(you|they)\s+did\s+great\b/gi, 'great work')
-                    .replace(/\b(you|they)\s+worked\b/gi, 'worked')
-                    .replace(/\b(you|they)\s+played\b/gi, 'played')
-                    .replace(/\b(you|they)\s+started\b/gi, 'started')
-                    .replace(/\byour\s+/gi, 'the ')
-                    .replace(/\btheir\s+/gi, 'the ')
-                    // Fix sentence starters
-                    .replace(/\bwe\s+will\s+be\s+/gi, 'will be ')
-                    .replace(/\bthen\s+we\s+/gi, 'then ')
-                    .replace(/\blast\s+we\s+/gi, 'then ')
-                    .replace(/\bfirst\s+we\s+/gi, 'first ')
-                    // Clean up double spaces
-                    .replace(/\s+/g, ' ');
+                    .replace(/\s*([,.!?])/g, '$1')
+                    .replace(/([.!?])\s*([a-z])/g, (match, p1, p2) => `${p1} ${p2.toUpperCase()}`);
                 
                 return processed;
             }
 
-            // Extract student name with better parsing
+            escapeRegex(string) {
+                return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            }
+
             extractStudentName(text) {
                 const nameMatch = text.match(/^([A-Z][a-z]+)\s*[-:–]\s*/i);
                 if (nameMatch) {
-                    this.studentName = this.capitalizeProperNouns(nameMatch[1]);
+                    this.studentName = this.capitalizeWord(nameMatch[1]);
                     return text.replace(nameMatch[0], '').trim();
                 }
                 return text;
             }
 
-            // Enhanced song extraction with better artist detection
             extractSongs(text) {
-                const songPatterns = [
-                    /(?:worked through|played through|started learning|learned|practiced)\s+([^,.!?]+?)(?:\s+by\s+([^,.!?]+?))?(?:[,.!?]|$)/gi,
-                    /(?:song|track)\s+([^,.!?]+?)(?:\s+by\s+([^,.!?]+?))?(?:[,.!?]|$)/gi
+                const patterns = [
+                    /(?:worked through|played through|started learning|learned|practiced|played)\s+([^,.!?]+?)(?:\s+by\s+([^,.!?]+?))?(?:[,.!?]|$)/gi,
+                    /(?:song|track)\s+["']?([^"',.!?]+?)["']?(?:\s+by\s+([^,.!?]+?))?(?:[,.!?]|$)/gi
                 ];
 
-                songPatterns.forEach(pattern => {
+                for (const pattern of patterns) {
                     let match;
                     while ((match = pattern.exec(text)) !== null) {
                         let songTitle = match[1].trim();
                         let artist = match[2] ? match[2].trim() : '';
 
-                        // Handle "Artist - Song" format
+                        // Check for "Artist - Song" format
                         if (!artist && songTitle.includes('-')) {
                             const parts = songTitle.split('-').map(p => p.trim());
                             if (parts.length === 2) {
@@ -600,15 +570,14 @@
                             }
                         }
 
-                        // Check against known songs
+                        // Check against known songs database
                         const songKey = songTitle.toLowerCase();
                         if (knownSongs[songKey]) {
-                            const known = knownSongs[songKey];
-                            songTitle = known.title;
-                            artist = artist || known.artist;
+                            songTitle = knownSongs[songKey].title;
+                            artist = artist || knownSongs[songKey].artist;
                         }
 
-                        // Clean up and validate
+                        // Clean and validate
                         songTitle = this.capitalizeProperNouns(songTitle);
                         artist = artist ? this.capitalizeProperNouns(artist) : '';
 
@@ -616,56 +585,58 @@
                             this.songs.push({ title: songTitle, artist });
                         }
                     }
-                });
+                }
 
                 // Remove duplicates
-                this.songs = this.songs.filter((song, index, self) => 
-                    index === self.findIndex(s => s.title.toLowerCase() === song.title.toLowerCase())
-                );
+                const uniqueSongs = new Map();
+                this.songs.forEach(song => {
+                    const key = song.title.toLowerCase();
+                    if (!uniqueSongs.has(key)) {
+                        uniqueSongs.set(key, song);
+                    }
+                });
+                this.songs = Array.from(uniqueSongs.values());
             }
 
-            // Extract techniques and skills practiced
             extractTechniques(text) {
-                const techniquePatterns = [
-                    /(\d+)\s*(?:-\s*)?(\d+)?\s*bpm/gi,
-                    /triplets?/gi,
-                    /sixtuplets?|sextuplets?/gi,
-                    /16th\s*notes?|16s/gi,
-                    /8th\s*notes?|8s/gi,
-                    /cross[\s-]?stick/gi,
-                    /kick\s*(?:drum|independence|pattern)?/gi,
-                    /hi[\s-]?hat/gi,
-                    /foot\s*techniques?/gi,
-                    /fills?/gi,
-                    /grooves?|beats?|patterns?/gi,
-                    /bossa\s*nova/gi,
-                    /endurance|stamina/gi,
-                    /single\s*stroke/gi,
-                    /double\s*stroke/gi,
-                    /independence/gi,
-                    /metronome/gi
+                const patterns = [
+                    /\b\d+(?:\s*-\s*\d+)?\s*bpm\b/gi,
+                    /\btriplets?\b/gi,
+                    /\bsextuplets?\b/gi,
+                    /\b16th\s+notes?\b/gi,
+                    /\b8th\s+notes?\b/gi,
+                    /\bcross[\s-]?stick\b/gi,
+                    /\bkick\s+(?:drum|independence|pattern)?\b/gi,
+                    /\bhi[\s-]?hat\b/gi,
+                    /\bfills?\b/gi,
+                    /\bgrooves?\b/gi,
+                    /\bbeats?\b/gi,
+                    /\bbossa\s+nova\b/gi,
+                    /\bendurance\b/gi,
+                    /\bmetronome\b/gi,
+                    /\bindependence\b/gi
                 ];
 
-                techniquePatterns.forEach(pattern => {
+                patterns.forEach(pattern => {
                     const matches = text.match(pattern);
                     if (matches) {
-                        matches.forEach(match => this.techniques.add(match.toLowerCase()));
+                        matches.forEach(match => {
+                            this.techniques.add(match.toLowerCase());
+                        });
                     }
                 });
             }
 
-            // Better sentence parsing and classification
             parseSentences(text) {
-                const cleanedText = this.extractStudentName(text);
-                const preprocessed = this.preprocessText(cleanedText);
+                const cleanText = this.extractStudentName(text);
+                const processed = this.preprocessText(cleanText);
                 
-                this.extractSongs(preprocessed);
-                this.extractTechniques(preprocessed);
+                this.extractSongs(processed);
+                this.extractTechniques(processed);
 
-                // Split into sentences more intelligently
-                const sentences = preprocessed
-                    .replace(/([.!?])\s*([A-Z])/g, '$1|$2')
-                    .split('|')
+                // Split into sentences
+                const sentences = processed
+                    .split(/[.!?]+/)
                     .map(s => s.trim())
                     .filter(s => s.length > 5);
 
@@ -673,128 +644,70 @@
                     const classification = this.classifySentence(sentence);
                     const formatted = this.formatSentence(sentence, classification);
                     
-                    if (classification === 'achievement') {
-                        this.achievements.push(formatted);
-                    } else if (classification === 'homework') {
-                        this.homework.push(formatted);
+                    if (formatted) {
+                        if (classification === 'achievement') {
+                            this.achievements.push(formatted);
+                        } else if (classification === 'homework') {
+                            this.homework.push(formatted);
+                        }
                     }
                 });
 
-                // Generate inferred homework if needed
                 this.generateInferredHomework();
             }
 
-            // Improved sentence classification
             classifySentence(sentence) {
-                const achievementIndicators = [
-                    'worked', 'played', 'went', 'learned', 'started', 'practiced', 
-                    'focused', 'spent', 'broke', 'mapped', 'began', 'did', 'sounds'
+                const lower = sentence.toLowerCase();
+                
+                const achievementKeywords = [
+                    'worked', 'played', 'went through', 'learned', 'started',
+                    'practiced', 'broke down', 'covered', 'sounds'
                 ];
                 
-                const homeworkIndicators = [
-                    'try', 'keep', 'practice', 'work on', 'focus on', 'aim for', 
-                    'next week', 'homework', 'review', 'continue', 'maintain'
+                const homeworkKeywords = [
+                    'try', 'keep', 'practice', 'work on', 'focus on',
+                    'next week', 'homework', 'continue', 'maintain'
                 ];
 
-                const lowerSentence = sentence.toLowerCase();
-                
-                if (achievementIndicators.some(indicator => lowerSentence.includes(indicator))) {
+                if (achievementKeywords.some(keyword => lower.includes(keyword))) {
                     return 'achievement';
                 }
                 
-                if (homeworkIndicators.some(indicator => lowerSentence.includes(indicator))) {
+                if (homeworkKeywords.some(keyword => lower.includes(keyword))) {
                     return 'homework';
                 }
                 
                 return 'other';
             }
 
-            // Enhanced sentence formatting with proper "we" language
             formatSentence(sentence, type) {
+                if (!sentence) return '';
+                
                 let formatted = sentence.trim();
                 
-                // Ensure proper capitalization
+                // Capitalize first letter
                 formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1);
                 
-                // Convert to proper "we" format for achievements
+                // Convert to "we" language for achievements
                 if (type === 'achievement') {
-                    // Start with "we" constructions
-                    if (!formatted.match(/^(we|today|this|first|then|also|additionally)/i)) {
-                        // Add "We" prefix for actions
-                        if (formatted.match(/^(worked|played|started|learned|practiced|went|focused|covered)/i)) {
+                    if (!formatted.match(/^(We|Today|This|First|Then|Also|Additionally)/i)) {
+                        if (formatted.match(/^(Worked|Played|Started|Learned|Practiced|Went|Focused|Covered)/i)) {
                             formatted = 'We ' + formatted.toLowerCase();
                             formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1);
                         }
                     }
-                    
-                    // Clean up common awkward phrases
-                    formatted = formatted
-                        .replace(/wonderful playing today\.?\s*/i, 'Great progress today. ')
-                        .replace(/great work\.?\s*/i, 'Excellent work. ')
-                        .replace(/nice work\.?\s*/i, 'Solid progress. ')
-                        .replace(/doing great\.?\s*/i, 'Making excellent progress. ')
-                        .replace(/sounds very good\.?\s*/i, 'Sounding great. ')
-                        .replace(/sounding really good\.?\s*/i, 'Sounding excellent. ')
-                        .replace(/\s+/g, ' ');
                 }
                 
-                // Convert to proper homework format
-                if (type === 'homework') {
-                    // Convert to action items
-                    formatted = formatted
-                        .replace(/^try\s+(?:to\s+)?/i, '')
-                        .replace(/^keep\s+/i, 'Continue ')
-                        .replace(/^practice\s+/i, 'Practice ')
-                        .replace(/^work\s+on\s+/i, 'Work on ')
-                        .replace(/^focus\s+on\s+/i, 'Focus on ')
-                        .replace(/^review\s+/i, 'Review ')
-                        .replace(/^aim\s+for\s+/i, 'Aim for ')
-                        .replace(/^maintain\s+/i, 'Maintain ');
-                    
-                    // Ensure imperative voice
-                    formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1);
-                }
-                
-                // Insert properly formatted song titles
+                // Format song references
                 this.songs.forEach(song => {
-                    const songPattern = new RegExp(`\\b${song.title.replace(/[.*+?^${}()|[\]\\]/g, '\\            // Enhanced sentence formatting with grammar correction
-            formatSentence(sentence, type) {
-                let formatted = sentence;
-                
-                // Convert to proper case
-                formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1);
-                
-                // Insert song titles with proper formatting
-                this.songs.forEach(song => {
-                    const songRegex = new RegExp(`\\b${song.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
-                    const replacement = song.artist ? `"${song.title}" by ${song.artist}` : `"${song.title}"`;
-                    formatted = formatted.replace(songRegex, replacement);
-                });
-
-                // Clean up common issues
-                formatted = formatted
-                    .replace(/\s+/g, ' ')
-                    .replace(/\s*([,.!?])/g, '$1')
-                    .replace(/([.!?])\s*$/, '$1');
-                
-                // Ensure proper ending
-                if (!formatted.match(/[.!?]$/)) {
-                    formatted += '.';
-                }
-
-                return formatted;
-            }')}\\b`, 'gi');
-                    const replacement = song.artist ? `"${song.title}" by ${song.artist}` : `"${song.title}"`;
-                    formatted = formatted.replace(songPattern, replacement);
+                    const pattern = new RegExp(`\\b${this.escapeRegex(song.title)}\\b`, 'gi');
+                    const replacement = song.artist ? 
+                        `"${song.title}" by ${song.artist}` : 
+                        `"${song.title}"`;
+                    formatted = formatted.replace(pattern, replacement);
                 });
                 
-                // Final cleanup
-                formatted = formatted
-                    .replace(/\s*([,.!?])/g, '$1')  // Fix punctuation spacing
-                    .replace(/\s+/g, ' ')           // Remove extra spaces
-                    .trim();
-                
-                // Ensure proper sentence ending
+                // Ensure sentence ends properly
                 if (!formatted.match(/[.!?]$/)) {
                     formatted += '.';
                 }
@@ -802,67 +715,62 @@
                 return formatted;
             }
 
-            // Generate intelligent homework suggestions  
             generateInferredHomework() {
-                if (this.homework.length < 2) {
-                    // Add song-specific practice
-                    this.songs.forEach(song => {
-                        const songRef = song.artist ? `"${song.title}" by ${song.artist}` : `"${song.title}"`;
-                        this.homework.push(`Practice ${songRef} slowly, focusing on accuracy and timing.`);
-                    });
-
-                    // Add technique-specific homework
-                    if (this.techniques.has('metronome') || Array.from(this.techniques).some(t => t.includes('bpm'))) {
-                        this.homework.push('Continue practicing with a metronome to build consistency and speed.');
-                    }
-
-                    if (this.techniques.has('fills') || this.techniques.has('16th notes')) {
-                        this.homework.push('Work on drum fills, starting slowly and gradually increasing tempo.');
-                    }
-
-                    if (this.techniques.has('independence')) {
-                        this.homework.push('Practice independence exercises to improve limb coordination.');
-                    }
-
-                    if (this.techniques.has('endurance') || this.techniques.has('stamina')) {
-                        this.homework.push('Build endurance by practicing for longer sessions.');
-                    }
-
-                    // General practice homework if still insufficient
-                    if (this.homework.length === 0) {
-                        this.homework.push('Review and practice the material covered in this lesson.');
-                        this.homework.push('Focus on maintaining proper technique and timing.');
-                    }
+                // Add specific homework based on content
+                if (this.songs.length > 0 && this.homework.length < 2) {
+                    const song = this.songs[0];
+                    const songRef = song.artist ? 
+                        `"${song.title}" by ${song.artist}` : 
+                        `"${song.title}"`;
+                    this.homework.push(`Practice ${songRef} focusing on accuracy and timing.`);
                 }
 
-                // Remove duplicates and limit to 4 items
-                this.homework = [...new Set(this.homework)].slice(0, 4);
+                if (this.techniques.has('metronome') || Array.from(this.techniques).some(t => t.includes('bpm'))) {
+                    this.homework.push('Continue metronome practice to build consistency.');
+                }
+
+                if (this.techniques.has('fills') || this.techniques.has('16th notes')) {
+                    this.homework.push('Work on drum fills, starting slowly and building speed.');
+                }
+
+                if (this.homework.length === 0) {
+                    this.homework.push('Practice the material covered in today\'s lesson.');
+                    this.homework.push('Focus on maintaining proper technique and timing.');
+                }
+
+                // Remove duplicates and limit
+                this.homework = [...new Set(this.homework)].slice(0, CONFIG.MAX_HOMEWORK_ITEMS);
             }
 
-            // Proper noun capitalization
-            capitalizeProperNouns(text) {
-                return text.replace(/\b\w+/g, word => {
-                    const lower = word.toLowerCase();
-                    
-                    // Handle known proper nouns
-                    const properNouns = {
-                        'metallica': 'Metallica',
-                        'sabbath': 'Sabbath',
-                        'oma': 'OMA',
-                        'cure': 'The Cure',
-                        'chainsmokers': 'The Chainsmokers',
-                        'coldplay': 'Coldplay',
-                        'radiohead': 'Radiohead',
-                        'hozier': 'Hozier',
-                        'sombr': 'Sombr',
-                        'huntrix': 'Huntrix'
-                    };
+            capitalizeWord(word) {
+                return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+            }
 
-                    return properNouns[lower] || (word.charAt(0).toUpperCase() + word.slice(1).toLowerCase());
+            capitalizeProperNouns(text) {
+                const properNouns = {
+                    'metallica': 'Metallica',
+                    'sabbath': 'Sabbath',
+                    'oma': 'OMA',
+                    'the cure': 'The Cure',
+                    'chainsmokers': 'The Chainsmokers',
+                    'coldplay': 'Coldplay',
+                    'radiohead': 'Radiohead',
+                    'hozier': 'Hozier'
+                };
+
+                let result = text;
+                for (const [lower, proper] of Object.entries(properNouns)) {
+                    const regex = new RegExp(`\\b${this.escapeRegex(lower)}\\b`, 'gi');
+                    result = result.replace(regex, proper);
+                }
+
+                // Capitalize first letter of each word not in properNouns
+                return result.replace(/\b\w+/g, word => {
+                    const lower = word.toLowerCase();
+                    return properNouns[lower] || this.capitalizeWord(word);
                 });
             }
 
-            // Generate final professional output
             generateOutput() {
                 let output = `Lesson Recap`;
                 
@@ -870,149 +778,187 @@
                     output += ` - ${this.studentName}`;
                 }
                 
-                output += `\n\nToday's Achievements\n\n`;
+                output += `\n\nToday's Achievements:\n\n`;
                 
                 if (this.achievements.length > 0) {
                     this.achievements.forEach(achievement => {
-                        output += `* ${achievement}\n`;
+                        output += `• ${achievement}\n`;
                     });
                 } else {
-                    output += `* Successfully completed lesson activities`;
-                    if (this.songs.length > 0) {
-                        const songList = this.songs.map(s => s.artist ? `"${s.title}" by ${s.artist}` : `"${s.title}"`).join(', ');
-                        output += ` including work on ${songList}`;
-                    }
-                    output += `.\n`;
+                    output += `• Successfully completed lesson activities.\n`;
                 }
                 
-                output += `\nPractice Assignments\n\n`;
+                output += `\nPractice Assignments:\n\n`;
                 
                 this.homework.forEach(hw => {
-                    output += `* ${hw}\n`;
+                    output += `• ${hw}\n`;
                 });
 
-                // Add techniques summary if significant
                 if (this.techniques.size > 2) {
-                    const techniqueList = Array.from(this.techniques).slice(0, 3).join(', ');
-                    output += `\nKey Techniques Covered\n\n* ${techniqueList}\n`;
+                    output += `\nTechniques Covered:\n\n`;
+                    const techniqueList = Array.from(this.techniques).slice(0, 5);
+                    techniqueList.forEach(technique => {
+                        output += `• ${technique}\n`;
+                    });
                 }
 
                 return output;
             }
         }
 
-        // Main formatting function
+        // Global formatter instance
+        const formatter = new LessonFormatter();
+
+        // Main functions
         function formatNotes() {
             const input = document.getElementById('lessonNotes').value.trim();
             
-            if (!input) {
-                alert('Please enter lesson notes to format.');
+            if (!input || input.length < CONFIG.MIN_TEXT_LENGTH) {
+                showError('Please enter at least 10 characters of lesson notes.');
                 return;
             }
 
-            // Show processing indicator
-            const processing = document.getElementById('processing');
-            processing.style.display = 'flex';
+            hideMessages();
+            showProcessing(true);
             
-            // Add error handling and debugging
+            // Use setTimeout to allow UI to update
             setTimeout(() => {
                 try {
-                    console.log('Starting to format notes...');
-                    
-                    const formatter = new LessonFormatter();
-                    console.log('Formatter created');
-                    
+                    formatter.reset();
                     formatter.parseSentences(input);
-                    console.log('Sentences parsed');
-                    
                     const output = formatter.generateOutput();
-                    console.log('Output generated:', output);
                     
                     document.getElementById('output').textContent = output;
-                    processing.style.display = 'none';
-                    
-                    console.log('Format completed successfully');
+                    showProcessing(false);
+                    showSuccess('Lesson recap generated successfully!');
                     
                 } catch (error) {
-                    console.error('Formatting error:', error);
-                    console.error('Error stack:', error.stack);
+                    console.error('Error formatting notes:', error);
+                    showProcessing(false);
+                    showError('An error occurred while formatting. Please try again.');
                     
-                    // Fallback simple formatting
-                    const lines = input.split(/[.!?]+/).filter(line => line.trim());
-                    let simpleOutput = 'Lesson Recap\n\nToday\'s Achievements\n\n';
-                    
-                    lines.forEach(line => {
-                        if (line.trim()) {
-                            simpleOutput += `* ${line.trim().charAt(0).toUpperCase() + line.trim().slice(1)}.\n`;
-                        }
-                    });
-                    
-                    simpleOutput += '\nPractice Assignments\n\n* Practice the material covered in this lesson.\n* Focus on accuracy and timing.\n';
-                    
-                    document.getElementById('output').textContent = simpleOutput;
-                    processing.style.display = 'none';
-                    
-                    alert('Used simplified formatting due to processing error. Check console for details.');
+                    // Fallback formatting
+                    const fallbackOutput = createFallbackOutput(input);
+                    document.getElementById('output').textContent = fallbackOutput;
                 }
-            }, 500);
+            }, 100);
         }
 
-        function loadExample(exampleKey) {
-            const textarea = document.getElementById('lessonNotes');
-            textarea.value = examples[exampleKey] || '';
+        function createFallbackOutput(input) {
+            const lines = input.split(/[.!?]+/).filter(line => line.trim());
+            let output = 'Lesson Recap\n\nToday\'s Achievements:\n\n';
+            
+            lines.slice(0, 3).forEach(line => {
+                if (line.trim()) {
+                    output += `• ${line.trim()}.\n`;
+                }
+            });
+            
+            output += '\nPractice Assignments:\n\n';
+            output += '• Practice the material covered in today\'s lesson.\n';
+            output += '• Focus on maintaining proper technique.\n';
+            
+            return output;
+        }
+
+        function loadExample(key) {
+            const example = examples[key];
+            if (example) {
+                document.getElementById('lessonNotes').value = example;
+                updateCharCount();
+                hideMessages();
+            }
         }
 
         function clearAll() {
             document.getElementById('lessonNotes').value = '';
-            document.getElementById('output').textContent = 'Click "Generate Professional Recap" to create your formatted lesson summary...';
+            document.getElementById('output').textContent = 'Your formatted lesson recap will appear here...';
+            updateCharCount();
+            hideMessages();
         }
 
         function copyOutput() {
-            const outputElement = document.getElementById('output');
-            const outputText = outputElement.textContent;
+            const output = document.getElementById('output').textContent;
             
-            if (!outputText || outputText === 'Click "Generate Professional Recap" to create your formatted lesson summary...') {
-                alert('No content to copy. Please generate a lesson recap first.');
+            if (!output || output === 'Your formatted lesson recap will appear here...') {
+                showError('No content to copy. Please generate a recap first.');
                 return;
             }
             
-            navigator.clipboard.writeText(outputText).then(() => {
-                // Create visual feedback
-                const copyBtn = document.querySelector('.btn-secondary:last-of-type');
-                const originalContent = copyBtn.innerHTML;
-                copyBtn.innerHTML = '<span>✅</span> Copied!';
-                copyBtn.style.background = 'var(--accent)';
-                copyBtn.style.color = 'white';
-                
-                setTimeout(() => {
-                    copyBtn.innerHTML = originalContent;
-                    copyBtn.style.background = '';
-                    copyBtn.style.color = '';
-                }, 2000);
-            }).catch(err => {
-                // Fallback for older browsers
-                const textArea = document.createElement('textarea');
-                textArea.value = outputText;
-                document.body.appendChild(textArea);
-                textArea.select();
-                textArea.setSelectionRange(0, 99999);
-                
-                try {
-                    document.execCommand('copy');
-                    alert('Copied to clipboard!');
-                } catch (err) {
-                    alert('Unable to copy automatically. Please select the text and copy manually.');
-                }
-                
-                document.body.removeChild(textArea);
-            });
+            navigator.clipboard.writeText(output)
+                .then(() => {
+                    showSuccess('Copied to clipboard!');
+                })
+                .catch(() => {
+                    // Fallback method
+                    const textarea = document.createElement('textarea');
+                    textarea.value = output;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    
+                    try {
+                        document.execCommand('copy');
+                        showSuccess('Copied to clipboard!');
+                    } catch (err) {
+                        showError('Unable to copy. Please select and copy manually.');
+                    }
+                    
+                    document.body.removeChild(textarea);
+                });
         }
 
-        // Add keyboard shortcut for formatting
-        document.addEventListener('keydown', function(e) {
-            if (e.ctrlKey && e.key === 'Enter') {
-                formatNotes();
-            }
+        function showProcessing(show) {
+            document.getElementById('processing').style.display = show ? 'flex' : 'none';
+            document.getElementById('formatBtn').disabled = show;
+        }
+
+        function showError(message) {
+            const errorElement = document.getElementById('errorMessage');
+            document.getElementById('errorText').textContent = message;
+            errorElement.style.display = 'flex';
+            setTimeout(hideMessages, 5000);
+        }
+
+        function showSuccess(message) {
+            const successElement = document.getElementById('successMessage');
+            document.getElementById('successText').textContent = message;
+            successElement.style.display = 'flex';
+            setTimeout(hideMessages, 3000);
+        }
+
+        function hideMessages() {
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+        }
+
+        function updateCharCount() {
+            const text = document.getElementById('lessonNotes').value;
+            document.getElementById('charCount').textContent = `${text.length} characters`;
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Character count update
+            document.getElementById('lessonNotes').addEventListener('input', updateCharCount);
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey || e.metaKey) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        formatNotes();
+                    } else if (e.key === 'Delete' || e.key === 'Backspace') {
+                        e.preventDefault();
+                        clearAll();
+                    }
+                }
+            });
+        });
+
+        // Error handling for uncaught errors
+        window.addEventListener('error', function(event) {
+            console.error('Global error:', event.error);
+            showError('An unexpected error occurred. Please refresh and try again.');
         });
     </script>
 </body>
