@@ -138,7 +138,6 @@
         .example-button:hover {
             background: #dee2e6;
         }
-
         .speed-badge {
             display: inline-block;
             background: #28a745;
@@ -161,9 +160,9 @@
             
             <div class="input-section">
                 <label for="lessonNotes">Enter Raw Lesson Notes:</label>
-                <textarea 
-                    id="lessonNotes" 
-                    rows="8" 
+                <textarea
+                    id="lessonNotes"
+                    rows="8"
                     placeholder="Example: Charleigh - Worked through Black Sabbath Paranoid which I sent home through the app. You did great with it, went over some of the 16s fills..."
                 ></textarea>
             </div>
@@ -192,12 +191,12 @@
                 <button class="example-button" onclick="loadExample('luca')">Luca (Beginner)</button>
                 <button class="example-button" onclick="loadExample('conan')">Conan (Advanced)</button>
                 <button class="example-button" onclick="loadExample('amaiyah')">Amaiyah (With Gear)</button>
+                <button class="example-button" onclick="loadExample('seek')">Seek & Destroy</button>
             </div>
         </div>
     </div>
-
     <script>
-        // Music terminology dictionary
+        // Expanded music terminology dictionary
         const musicTerms = {
             'hh': 'hi-hat',
             'hihat': 'hi-hat',
@@ -221,8 +220,8 @@
             'groove': 'groove',
             'beat': 'beat',
             'pattern': 'pattern',
-            'cross stick': 'cross stick',
-            'crossstick': 'cross stick',
+            'cross stick': 'cross-stick',
+            'crossstick': 'cross-stick',
             'rim shot': 'rim shot',
             'rimshot': 'rim shot',
             'bossa nova': 'bossa nova',
@@ -241,10 +240,17 @@
             'roll': 'roll',
             'buzz': 'buzz roll',
             'double stroke': 'double stroke',
-            'single stroke': 'single stroke'
+            'single stroke': 'single stroke',
+            'metronome': 'metronome',
+            'chorus': 'chorus',
+            'verse': 'verse',
+            'bridge': 'bridge',
+            'intro': 'intro',
+            'outro': 'outro',
+            'independence': 'independence'
         };
 
-        // Common misspellings
+        // Expanded common misspellings and fixes
         const spellFixes = {
             'metalica': 'Metallica',
             'metallica': 'Metallica',
@@ -261,7 +267,44 @@
             'startwed': 'started',
             'tp': 'to',
             'lite': 'light',
-            'avail': 'available'
+            'avail': 'available',
+            'either': 'hi-hat',  // Assuming common typo for 'hi-hat'
+            'hieght': 'height',
+            'stedy': 'steady',
+            'consistant': 'consistent',
+            'practise': 'practice',
+            'practis': 'practice',
+            'foccus': 'focus',
+            'focuss': 'focus',
+            'tempos': 'tempo',
+            'spead': 'speed',
+            'speeds': 'speed',
+            'endurence': 'endurance',
+            'endurace': 'endurance',
+            'techinque': 'technique',
+            'technqiue': 'technique',
+            'fillls': 'fills',
+            'groov': 'groove',
+            'patern': 'pattern',
+            'pattrn': 'pattern',
+            'creap': 'Creep',
+            'creep': 'Creep',
+            'paraniod': 'Paranoid',
+            'parnoid': 'Paranoid'
+        };
+
+        // Common artists for song association (expand as needed)
+        const knownArtists = {
+            'Paranoid': 'Black Sabbath',
+            'Master of Puppets': 'Metallica',
+            'Seek & Destroy': 'Metallica',
+            'Seven Nation Army': 'The White Stripes',
+            'Running': 'OMA',
+            'Friday I\'m In Love': 'The Cure',
+            'Radioactive': 'Imagine Dragons',
+            'I Will Survive': 'Gloria Gaynor',
+            'Creep': 'Radiohead',
+            'CREAM': 'OMA'
         };
 
         const examples = {
@@ -269,56 +312,78 @@
             morgan: `Morgan - Worked through The Cure - Friday I'm In Love most of the episode. We played through first at 90% speed then cranked it out at full. great job with this, spoke about technique with hh and keeping it light so we can play through the whole song. keep your kick nice and steady with the rhthm, after a bit can start to miss. try tp stay focused and keep this beat and driving! great job Again, to keep endurance try to stay lite on your right hand.`,
             luca: `Luca - Went through triplets from 60-70bpm. doing great, try for 80 next week. played through seven nation army, just the chorus to work on. played through radioactive which sounds very good! lastly we started to learn i will survive. nice work!`,
             conan: `Conan - Worked through bosa nova, playing it to a couple different songs but looking to keep it nice and consistent. Then we broke into master of puppets by metalica and worked out some of the timing. sounding really good its a come a long way. lastly we went through some foot techniques.`,
-            amaiyah: `Amaiyah - worked through creep, broke down the main patterns including the cross stick at the end. Went through learning sixtuplets and played them over the song CREAM by oma. Nice work with these. for sticking its 6 hits on the snare then 2, 2, 2 startingon the snare, tom, low tom. Sorry for going over your time, we spoke about what kind of drum kit to get which i suggest to not spend over $500 to start. A nice kit to start off with is Quest Loves Pocket kit or the breakbeats kit. You will need to get cymbals and hardware as well, which i would find used on facebook market place or ebay`
+            amaiyah: `Amaiyah - worked through creep, broke down the main patterns including the cross stick at the end. Went through learning sixtuplets and played them over the song CREAM by oma. Nice work with these. for sticking its 6 hits on the snare then 2, 2, 2 startingon the snare, tom, low tom. Sorry for going over your time, we spoke about what kind of drum kit to get which i suggest to not spend over $500 to start. A nice kit to start off with is Quest Loves Pocket kit or the breakbeats kit. You will need to get cymbals and hardware as well, which i would find used on facebook market place or ebay`,
+            seek: `Started learning Seek & Destroy by Metallica. Mapped out the song structure and began working through the main groove with single strokes. Keep practicing the single-stroke groove slowly, making sure it stays steady and even. Review the mapped-out sections of the song and try playing along with the track at a reduced speed. Focus on consistency — clear hits and solid timing.`
         };
 
         function fixSpelling(text) {
-            let fixed = text;
+            let fixed = text.toLowerCase();  // Work in lowercase for matching
             
             // Fix common misspellings
             for (const [wrong, right] of Object.entries(spellFixes)) {
                 const regex = new RegExp('\\b' + wrong + '\\b', 'gi');
-                fixed = fixed.replace(regex, right);
+                fixed = fixed.replace(regex, right.toLowerCase());
             }
             
             // Expand music terms
             for (const [abbrev, full] of Object.entries(musicTerms)) {
                 const regex = new RegExp('\\b' + abbrev + '\\b', 'gi');
-                fixed = fixed.replace(regex, full);
+                fixed = fixed.replace(regex, full.toLowerCase());
             }
             
             return fixed;
         }
 
+        function capitalizeProperly(text) {
+            // Capitalize first letter, and proper nouns/artists/songs
+            text = text.charAt(0).toUpperCase() + text.slice(1);
+            // Capitalize known artists and terms
+            Object.values(knownArtists).forEach(artist => {
+                const regex = new RegExp('\\b' + artist.toLowerCase() + '\\b', 'gi');
+                text = text.replace(regex, artist);
+            });
+            Object.keys(knownArtists).forEach(song => {
+                const regex = new RegExp('\\b' + song.toLowerCase() + '\\b', 'gi');
+                text = text.replace(regex, song);
+            });
+            return text;
+        }
+
         function extractSongs(text) {
             const songs = [];
             
-            // Pattern for songs with quotes or specific markers
+            // Improved patterns to capture song and optional artist
             const patterns = [
-                /played? (?:through |on |with )?["']?([^,\.]+?)["']?(?:,|\.|which|focusing|most)/gi,
-                /worked? (?:through |on |with )?["']?([^,\.]+?)["']?(?:,|\.|which|most|focusing)/gi,
-                /started? (?:to learn |learning )?["']?([^,\.]+?)["']?(?:,|\.|which)/gi,
-                /learned? ["']?([^,\.]+?)["']?(?:,|\.|which)/gi,
-                /ran ["']?([^,\.]+?)["']?(?:,|\.|which)/gi
+                /played? (?:through |on |with )?["']?(.+?)(?: by (.+?))?["']?(?:,|\.|which|focusing|most)/gi,
+                /worked? (?:through |on |with )?["']?(.+?)(?: by (.+?))?["']?(?:,|\.|which|most|focusing)/gi,
+                /started? (?:to learn |learning )?["']?(.+?)(?: by (.+?))?["']?(?:,|\.|which)/gi,
+                /learned? ["']?(.+?)(?: by (.+?))?["']?(?:,|\.|which)/gi,
+                /ran ["']?(.+?)(?: by (.+?))?["']?(?:,|\.|which)/gi
             ];
             
             patterns.forEach(pattern => {
                 let match;
                 while ((match = pattern.exec(text)) !== null) {
                     let song = match[1].trim();
+                    let artist = match[2] ? match[2].trim() : knownArtists[song] || '';
+                    
                     // Clean up song name
-                    song = song.replace(/^(the |a |an )/i, '');
+                    song = capitalizeProperly(song.replace(/^(the |a |an )/i, ''));
+                    
                     if (song && !song.match(/^(it|this|that|them|through|on|with)$/i)) {
-                        songs.push(song);
+                        songs.push({ song, artist });
                     }
                 }
             });
             
-            return [...new Set(songs)]; // Remove duplicates
+            // Deduplicate by song name
+            const uniqueSongs = new Map();
+            songs.forEach(s => uniqueSongs.set(s.song.toLowerCase(), s));
+            return Array.from(uniqueSongs.values());
         }
 
         function extractTechniques(text) {
-            const techniques = [];
+            const techniques = new Set();
             const techPatterns = [
                 /(\d+)\s*(?:-\s*)?(\d+)?\s*bpm/gi,
                 /triplet[s]?/gi,
@@ -332,17 +397,181 @@
                 /fill[s]?/gi,
                 /groove[s]?|beat[s]?|pattern[s]?/gi,
                 /bossa[\s-]?nova/gi,
-                /endurance|stamina/gi
+                /endurance|stamina/gi,
+                /single[\s-]?stroke/gi,
+                /double[\s-]?stroke/gi,
+                /rudiment[s]?/gi,
+                /paradiddle[s]?/gi,
+                /flam[s]?/gi,
+                /drag[s]?/gi,
+                /roll[s]?/gi,
+                /buzz[\s-]?roll/gi,
+                /independence/gi,
+                /metronome/gi
             ];
             
             techPatterns.forEach(pattern => {
                 let match;
                 while ((match = pattern.exec(text)) !== null) {
-                    techniques.push(match[0]);
+                    techniques.add(match[0].toLowerCase());
                 }
             });
             
-            return techniques;
+            return Array.from(techniques);
+        }
+
+        function classifySentence(sentence, songs, techniques) {
+            const lower = sentence.toLowerCase();
+            
+            // Achievement indicators
+            const achIndicators = ['worked', 'played', 'went', 'learned', 'started', 'practiced', 'focused', 'spent', 'ran', 'broke', 'mapped', 'began'];
+            if (achIndicators.some(ind => lower.includes(ind))) {
+                return 'achievement';
+            }
+            
+            // Homework indicators
+            const hwIndicators = ['try', 'keep', 'practice', 'work on', 'focus on', 'aim for', 'next week', 'homework', 'review', 'continue', 'build'];
+            if (hwIndicators.some(ind => lower.includes(ind))) {
+                return 'homework';
+            }
+            
+            // Fallback: if mentions song or technique, likely achievement
+            if (songs.some(s => lower.includes(s.song.toLowerCase())) || techniques.some(t => lower.includes(t))) {
+                return 'achievement';
+            }
+            
+            return 'other';
+        }
+
+        function formatAchievement(sentence, songs) {
+            let formatted = capitalizeProperly(sentence);
+            
+            // Remove leading verbs if needed for conciseness
+            formatted = formatted.replace(/^(We |Then we |Lastly we |First we )/i, '');
+            
+            // Adjust pronouns to third person
+            formatted = formatted.replace(/\bwe\b/gi, 'They');
+            formatted = formatted.replace(/\bi\b/gi, 'the instructor');
+            formatted = formatted.replace(/\byou\b/gi, 'they');
+            formatted = formatted.replace(/\byour\b/gi, 'their');
+            
+            // Add quotes and artists to songs
+            songs.forEach(({ song, artist }) => {
+                const songRegex = new RegExp('\\b' + song.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'gi');
+                const replacement = artist ? `“${song}” (${artist})` : `“${song}”`;
+                formatted = formatted.replace(songRegex, replacement);
+            });
+            
+            // Ensure ends with period if not
+            if (!formatted.match(/[.!?]$/)) {
+                formatted += '.';
+            }
+            
+            return `* ${formatted}`;
+        }
+
+        function formatHomework(sentence, songs, techniques) {
+            let formatted = capitalizeProperly(sentence);
+            
+            // Make imperative
+            formatted = formatted.replace(/^try (?:to |for )/i, '');
+            formatted = formatted.replace(/^keep /i, 'Keep ');
+            formatted = formatted.replace(/^practice /i, 'Practice ');
+            formatted = formatted.replace(/^work on /i, 'Work on ');
+            formatted = formatted.replace(/^focus on /i, 'Focus on ');
+            formatted = formatted.replace(/^review /i, 'Review ');
+            formatted = formatted.replace(/^continue /i, 'Continue ');
+            
+            // Adjust pronouns to second person (student-facing)
+            formatted = formatted.replace(/\bthey\b/gi, 'you');
+            formatted = formatted.replace(/\btheir\b/gi, 'your');
+            
+            // Add song quotes
+            songs.forEach(({ song, artist }) => {
+                const songRegex = new RegExp('\\b' + song.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'gi');
+                const replacement = artist ? `“${song}” (${artist})` : `“${song}”`;
+                formatted = formatted.replace(songRegex, replacement);
+            });
+            
+            // Enhance with common phrases if short
+            if (formatted.length < 20) {
+                formatted = `Keep working on ${formatted.toLowerCase()}.`;
+            }
+            
+            // Ensure ends with period
+            if (!formatted.match(/[.!?]$/)) {
+                formatted += '.';
+            }
+            
+            return `* ${formatted}`;
+        }
+
+        function generateInferredHomework(songs, techniques, achievements) {
+            const hw = [];
+            
+            if (songs.length > 0) {
+                songs.forEach(({ song, artist }) => {
+                    const fullSong = artist ? `“${song}” (${artist})` : `“${song}”`;
+                    hw.push(`* Review and practice ${fullSong} at a comfortable speed.`);
+                });
+            }
+            
+            if (techniques.length > 0) {
+                hw.push('* Focus on technique: work on ' + techniques.slice(0, 3).join(', ') + ' with a metronome.');
+            }
+            
+            if (achievements.some(a => a.toLowerCase().includes('bpm'))) {
+                hw.push('* Build up speed gradually while maintaining accuracy.');
+            }
+            
+            if (achievements.some(a => a.toLowerCase().includes('endurance'))) {
+                hw.push('* Practice endurance by playing through full sections without stopping.');
+            }
+            
+            if (hw.length === 0) {
+                hw.push('* Continue practicing this week’s material with focus on timing and consistency.');
+            }
+            
+            return hw;
+        }
+
+        function extractExtraNote(cleanText) {
+            let extraNote = '';
+            
+            // Equipment discussion
+            const kitRegex = /(?:spoke|talked|discussed|suggest|recommend).*?(?:drum kit|equipment|gear|kit|cymbals|hardware).*?(?:\.|$)/gi;
+            const kitMatch = cleanText.match(kitRegex);
+            if (kitMatch) {
+                extraNote = kitMatch.map(m => 
+                    capitalizeProperly(m.replace(/^(?:spoke|talked|discussed) (?:about|on) /i, 'Discussed '))
+                ).join(' ');
+                
+                // Add price if mentioned
+                const priceMatch = cleanText.match(/\$(\d+)/);
+                if (priceMatch) {
+                    extraNote += ` Suggested budget under $${priceMatch[1]}.`;
+                }
+                
+                // Specific kits
+                const kits = ['Questlove\'s Pocket Kit', 'Breakbeats Kit'];
+                kits.forEach(kit => {
+                    if (cleanText.toLowerCase().includes(kit.toLowerCase())) {
+                        extraNote += ` Recommended ${kit}.`;
+                    }
+                });
+                
+                // Used sources
+                if (cleanText.toLowerCase().includes('facebook') || cleanText.toLowerCase().includes('marketplace') || cleanText.toLowerCase().includes('ebay')) {
+                    extraNote += ' Look for used options on Facebook Marketplace or eBay.';
+                }
+            }
+            
+            // Time overrun
+            if (cleanText.toLowerCase().includes('sorry for going over')) {
+                extraNote += ' Apologies for running over time.';
+            }
+            
+            return extraNote.trim();
         }
 
         function formatNotes() {
@@ -352,146 +581,79 @@
                 return;
             }
             
-            // Extract student name (first word before dash or colon)
+            // Extract student name if present
             const studentMatch = input.match(/^(\w+)\s*[-:]/);
-            const studentName = studentMatch ? studentMatch[1] : 'the student';
+            const studentName = studentMatch ? studentMatch[1] : '';
             
-            // Clean up the text
-            let cleanText = input.replace(/^(\w+)\s*[-:]/, ''); // Remove student name
+            // Clean the text
+            let cleanText = input.replace(/^(\w+)\s*[-:]/, '').trim();  // Remove student name
             cleanText = fixSpelling(cleanText);
             
-            // Extract key information
+            // Extract key info
             const songs = extractSongs(cleanText);
             const techniques = extractTechniques(cleanText);
             
-            // Parse into sentences for better analysis
-            const sentences = cleanText.split(/[.!]/).filter(s => s.trim());
+            // Split into sentences, handling more punctuation
+            const sentences = cleanText
+                .replace(/([.!?])\s*/g, '$1|')  // Mark sentence ends
+                .split('|')
+                .map(s => s.trim())
+                .filter(s => s);
             
-            // Build achievements and homework
+            // Classify and collect
             const achievements = [];
             const homework = [];
-            let extraNote = '';
-            
-            // Check for equipment/kit discussion
-            if (cleanText.match(/drum kit|cymbals|hardware|equipment|gear|pocket kit|breakbeats/i)) {
-                const kitMatch = cleanText.match(/(?:spoke|talked|discussed).*?(?:drum kit|equipment|gear).*?(?:\.|$)/gi);
-                if (kitMatch) {
-                    extraNote = kitMatch[0]
-                        .replace(/^(?:spoke|talked|discussed) about/i, 'Discussed')
-                        .replace(/\.$/, '')
-                        .trim();
-                    
-                    // Add specific recommendations if mentioned
-                    if (cleanText.match(/\$\d+/)) {
-                        const priceMatch = cleanText.match(/\$\d+/);
-                        extraNote += `. Recommended staying under ${priceMatch[0]} to start`;
-                    }
-                    if (cleanText.match(/Quest Love|Pocket kit|breakbeats/i)) {
-                        extraNote += `. Good starter options include Questlove's Pocket Kit or the Breakbeats Kit`;
-                    }
-                    if (cleanText.match(/facebook|marketplace|ebay|used/i)) {
-                        extraNote += `. Check Facebook Marketplace or eBay for used cymbals and hardware`;
-                    }
-                }
-            }
-            
-            // Process sentences into achievements
-            sentences.forEach(sentence => {
-                const s = sentence.trim();
-                if (!s) return;
-                
-                // Skip equipment-related sentences
-                if (s.match(/drum kit|cymbals|hardware|equipment|gear|sorry for going over/i)) {
-                    return;
-                }
-                
-                // Detect achievement-type sentences
-                if (s.match(/worked? |played? |went |learned? |started? |practiced? |focused? |spent |ran /i)) {
-                    // Format the achievement
-                    let achievement = s;
-                    
-                    // Capitalize first letter
-                    achievement = achievement.charAt(0).toUpperCase() + achievement.slice(1);
-                    
-                    // Fix "you" to "they" for third-person
-                    achievement = achievement.replace(/\byou\b/gi, 'they');
-                    achievement = achievement.replace(/\byour\b/gi, 'their');
-                    
-                    // Add song quotes if detected
-                    songs.forEach(song => {
-                        const songRegex = new RegExp('\\b' + song.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'gi');
-                        achievement = achievement.replace(songRegex, `"${song}"`);
-                    });
-                    
-                    achievements.push(`• ${achievement.trim()}`);
-                }
-                
-                // Detect homework-type content
-                if (s.match(/try |keep |practice |work on|focus on|aim for|next week|homework/i)) {
-                    let hw = s;
-                    
-                    // Make it imperative (command form)
-                    hw = hw.replace(/^try to /i, '');
-                    hw = hw.replace(/^they should /i, '');
-                    hw = hw.replace(/^need to /i, '');
-                    
-                    // Capitalize first letter
-                    hw = hw.charAt(0).toUpperCase() + hw.slice(1);
-                    
-                    // Fix pronouns for homework
-                    hw = hw.replace(/\byou\b/gi, 'your');
-                    hw = hw.replace(/\bthey\b/gi, 'your');
-                    
-                    homework.push(`• ${hw.trim()}`);
+            sentences.forEach(s => {
+                const type = classifySentence(s, songs, techniques);
+                if (type === 'achievement') {
+                    achievements.push(formatAchievement(s, songs));
+                } else if (type === 'homework') {
+                    homework.push(formatHomework(s, songs));
                 }
             });
             
-            // If no specific homework detected, generate based on achievements
-            if (homework.length === 0) {
-                if (songs.length > 0) {
-                    songs.forEach(song => {
-                        homework.push(`• Continue practicing "${song}"`);
-                    });
-                }
-                if (cleanText.match(/\d+\s*bpm/i)) {
-                    const bpmMatch = cleanText.match(/(\d+)\s*bpm/gi);
-                    if (bpmMatch) {
-                        homework.push(`• Work on tempo exercises, building up speed gradually`);
+            // Infer homework if none or few detected
+            if (homework.length < 2) {
+                const inferred = generateInferredHomework(songs, techniques, achievements);
+                inferred.forEach(h => {
+                    if (!homework.includes(h)) {
+                        homework.push(h);
                     }
-                }
-                if (techniques.length > 0) {
-                    homework.push(`• Focus on technique development and consistency`);
-                }
+                });
             }
             
-            // Build the output
-            let output = 'Today\'s Achievements\n\n';
+            // Extract extra note
+            const extraNote = extractExtraNote(cleanText);
+            
+            // Build output
+            let output = 'Today’s Achievements\n\n';
             
             if (achievements.length > 0) {
-                output += achievements.join('\n') + '\n';
+                output += achievements.join('\n') + '\n\n';
             } else {
-                // Fallback if no achievements detected
-                output += `• Worked through lesson material with ${studentName}\n`;
+                output += '* Worked through lesson material';
+                if (studentName) output += ` with ${studentName}`;
+                output += '.\n';
                 if (songs.length > 0) {
-                    output += `• Practiced songs including ${songs.map(s => `"${s}"`).join(', ')}\n`;
+                    const songList = songs.map(({ song, artist }) => artist ? `“${song}” (${artist})` : `“${song}”`).join(', ');
+                    output += `* Practiced songs including ${songList}.\n`;
                 }
                 if (techniques.length > 0) {
-                    output += `• Focused on technique development\n`;
+                    output += '* Focused on techniques such as ' + techniques.join(', ') + '.\n\n';
                 }
             }
             
-            output += '\n\nHomework\n\n';
+            output += 'Homework\n\n';
             
             if (homework.length > 0) {
                 output += homework.join('\n');
             } else {
-                output += '• Continue practicing this week\'s material\n';
-                output += '• Focus on maintaining steady tempo and technique';
+                output += '* Review this week’s material.\n';
+                output += '* Practice daily with a focus on technique and tempo.';
             }
             
             if (extraNote) {
-                output += '\n\n\nExtra Note\n\n';
-                output += extraNote;
+                output += '\n\nExtra Note\n\n' + `* ${capitalizeProperly(extraNote)}`;
             }
             
             document.getElementById('output').textContent = output;
