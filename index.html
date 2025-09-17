@@ -6,54 +6,54 @@
     <title>School of Rock Lesson Formatter</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        
+       
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+       
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
         }
-        
+       
         .container {
             max-width: 1200px;
             margin: 0 auto;
         }
-        
+       
         .header {
             text-align: center;
             color: white;
             margin-bottom: 30px;
         }
-        
+       
         .header h1 {
             font-size: 28px;
             margin-bottom: 5px;
         }
-        
+       
         .header p {
             opacity: 0.9;
             font-size: 14px;
         }
-        
+       
         .workspace {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
         }
-        
+       
         .panel {
             background: white;
             border-radius: 12px;
             padding: 25px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
-        
+       
         .panel-header {
             font-size: 12px;
             font-weight: 600;
@@ -62,7 +62,7 @@
             color: #6c757d;
             margin-bottom: 15px;
         }
-        
+       
         textarea {
             width: 100%;
             min-height: 500px;
@@ -74,12 +74,12 @@
             resize: vertical;
             line-height: 1.6;
         }
-        
+       
         textarea:focus {
             outline: none;
             border-color: #667eea;
         }
-        
+       
         #output {
             width: 100%;
             min-height: 500px;
@@ -93,13 +93,13 @@
             background: #f8f9fa;
             overflow-y: auto;
         }
-        
+       
         .btn-group {
             display: flex;
             gap: 10px;
             margin-top: 15px;
         }
-        
+       
         .btn {
             padding: 10px 20px;
             border: none;
@@ -112,33 +112,33 @@
             align-items: center;
             gap: 5px;
         }
-        
+       
         .btn-primary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
-        
+       
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
-        
+       
         .btn-secondary {
             background: #e9ecef;
             color: #495057;
         }
-        
+       
         .btn-secondary:hover {
             background: #dee2e6;
         }
-        
+       
         .examples {
             display: flex;
             gap: 8px;
             margin-top: 12px;
             flex-wrap: wrap;
         }
-        
+       
         .example {
             padding: 6px 12px;
             background: #f8f9fa;
@@ -148,13 +148,13 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-        
+       
         .example:hover {
             background: #667eea;
             color: white;
             border-color: #667eea;
         }
-        
+       
         @media (max-width: 768px) {
             .workspace {
                 grid-template-columns: 1fr;
@@ -168,14 +168,12 @@
             <h1>🎸 School of Rock Lesson Formatter</h1>
             <p>Transform your lesson notes into professional recaps</p>
         </div>
-        
+       
         <div class="workspace">
             <div class="panel">
                 <div class="panel-header">Raw Notes</div>
                 <textarea id="input" placeholder="Example: Today we went over the Paramore Tribute material. We got a handle on Running Out Of Time, Ignorance, and about halfway through Whoa.
-
 In addition, I gave Conan technical exercises to further assist the Paramore songs.
-
 please refer to the Method App for assignments."></textarea>
                 <div class="btn-group">
                     <button class="btn btn-primary" onclick="formatLesson()">
@@ -194,7 +192,7 @@ please refer to the Method App for assignments."></textarea>
                     <span class="example" onclick="loadExample(6)">Beginner</span>
                 </div>
             </div>
-            
+           
             <div class="panel">
                 <div class="panel-header">Formatted Output</div>
                 <div id="output">Your formatted lesson recap will appear here...</div>
@@ -209,7 +207,6 @@ please refer to the Method App for assignments."></textarea>
             </div>
         </div>
     </div>
-
     <script>
         class LessonFormatter {
             constructor() {
@@ -232,25 +229,28 @@ please refer to the Method App for assignments."></textarea>
                     'tp': 'to',
                     'lite': 'light',
                     'rhthm': 'rhythm',
-                    'rythm': 'rhythm'
+                    'rythm': 'rhythm',
+                    'oday': 'Today',
+                    'paramore': 'Paramore',
+                    'whoa': 'Whoa'
                 };
             }
-            
+           
             format(input) {
                 if (!input || input.trim().length < 5) {
                     return 'Please enter your lesson notes...';
                 }
-                
+               
                 // Clean the input
                 let text = this.cleanText(input);
-                
+               
                 // Extract all the components
                 const data = this.extractAllData(text);
-                
+               
                 // Build formatted output
                 return this.buildFormattedOutput(data);
             }
-            
+           
             cleanText(text) {
                 // Apply spelling corrections
                 let cleaned = text;
@@ -258,10 +258,13 @@ please refer to the Method App for assignments."></textarea>
                     const regex = new RegExp(`\\b${wrong}\\b`, 'gi');
                     cleaned = cleaned.replace(regex, right);
                 }
-                
+               
+                // Basic capitalization fixes for sentences
+                cleaned = cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+               
                 return cleaned;
             }
-            
+           
             extractAllData(text) {
                 const data = {
                     student: '',
@@ -271,38 +274,38 @@ please refer to the Method App for assignments."></textarea>
                     assignments: false,
                     rawContent: text
                 };
-                
+               
                 // Extract student name if present
                 const nameMatch = text.match(/^([A-Z][a-z]+)(?:\s+[A-Z][a-z]+)?\s*[-:]/);
                 if (nameMatch) {
                     data.student = nameMatch[1];
                     text = text.replace(nameMatch[0], '').trim();
                 }
-                
+               
                 // Look for mentions of students within the text (like "I gave Conan...")
-                const studentMentions = text.match(/(?:gave|worked with|helped|taught|showed)\s+([A-Z][a-z]+)/g);
+                const studentMentions = text.match(/(?:gave|worked with|helped|taught|showed|for)\s+([A-Z][a-z]+)/g);
                 if (studentMentions && !data.student) {
                     const match = studentMentions[0].match(/([A-Z][a-z]+)$/);
                     if (match) data.student = match[1];
                 }
-                
+               
                 // Extract songs - be aggressive about finding them
                 this.extractSongs(text, data);
-                
+               
                 // Extract techniques and activities
                 this.extractTechniquesAndActivities(text, data);
-                
+               
                 // Check for assignment mentions
                 if (/method app|assignment|homework|practice/i.test(text)) {
                     data.assignments = true;
                 }
-                
+               
                 return data;
             }
-            
+           
             extractSongs(text, data) {
                 const songs = [];
-                
+               
                 // Pattern 1: Songs in quotes
                 const quotedSongs = text.match(/"([^"]+)"/g);
                 if (quotedSongs) {
@@ -310,22 +313,24 @@ please refer to the Method App for assignments."></textarea>
                         songs.push({ title: match.replace(/"/g, ''), artist: '' });
                     });
                 }
-                
-                // Pattern 2: Known song patterns
+               
+                // Pattern 2: Known song patterns (expanded verbs)
                 const songIndicators = [
-                    /(?:played|worked on|learned|practiced|went over|got a handle on|started|covered|did)\s+([A-Z][^,.!?\n]+?)(?:\s+(?:by|from)\s+([A-Z][^,.!?\n]+?))?(?:[,.!?\n]|$)/gi,
-                    /([A-Z][^,.-]+?)\s+(?:by|from)\s+([A-Z][^,.!?\n]+)/gi
+                    /(?:played|worked on|learned|practiced|went over|got a handle on|started|covered|did|continued|refreshing|refreshed|reviewed|intro to|introduction to)\s+([A-Z][^,.!?\n]+?)(?:\s+(?:by|from)\s+([A-Z][^,.!?\n]+?))?(?:[,.!?\n]|$)/gi,
+                    /([A-Z][^,.-]+?)\s+(?:by|from)\s+([A-Z][^,.!?\n]+)/gi,
+                    /([A-Z][^,.!?\n]+?)\s+was the most difficult/gi
                 ];
-                
+               
                 songIndicators.forEach(pattern => {
                     let match;
                     while ((match = pattern.exec(text)) !== null) {
                         let title = match[1] ? match[1].trim() : '';
                         let artist = match[2] ? match[2].trim() : '';
-                        
+                       
                         // Clean up the title
                         title = title.replace(/\s+(and|the|we|i|he|she|it|they|then|also|after|before)$/gi, '');
-                        
+                        title = title.replace(/^(the|a|an|to|of|in|out|on|with|for|by|at)\s+/i, '');
+                       
                         if (title && title.length > 2 && title.length < 50) {
                             // Don't add if it's clearly not a song
                             if (!this.isNotASong(title)) {
@@ -334,9 +339,9 @@ please refer to the Method App for assignments."></textarea>
                         }
                     }
                 });
-                
-                // Pattern 3: Special case for lists (e.g., "Running Out Of Time, Ignorance, and about halfway through Whoa")
-                const listPattern = /(?:got a handle on|worked on|went over|played)\s+([A-Z][^.!?\n]+)/gi;
+               
+                // Pattern 3: Special case for lists (expanded triggers)
+                const listPattern = /(?:got a handle on|worked on|went over|played|continued|refreshing|refreshed|reviewed)\s+([A-Z][^.!?\n]+)/gi;
                 let listMatch;
                 while ((listMatch = listPattern.exec(text)) !== null) {
                     const content = listMatch[1];
@@ -346,13 +351,14 @@ please refer to the Method App for assignments."></textarea>
                         part = part.trim();
                         // Remove phrases like "about halfway through"
                         part = part.replace(/^(about\s+)?(halfway|partially|mostly)\s+(through|done\s+with)\s+/i, '');
-                        
+                        part = part.replace(/^(the\s+)?intro to\s+/i, '');
+                       
                         if (part && part.length > 2 && this.looksLikeSongTitle(part)) {
                             songs.push({ title: this.formatTitle(part), artist: '' });
                         }
                     });
                 }
-                
+               
                 // Pattern 4: Look for "Tribute" or "Cover" mentions
                 if (/tribute|cover/i.test(text)) {
                     // Extract the band being tributed
@@ -367,7 +373,7 @@ please refer to the Method App for assignments."></textarea>
                         });
                     }
                 }
-                
+               
                 // Deduplicate and add to data
                 const uniqueSongs = new Map();
                 songs.forEach(song => {
@@ -378,10 +384,10 @@ please refer to the Method App for assignments."></textarea>
                         }
                     }
                 });
-                
+               
                 data.songs = Array.from(uniqueSongs.values());
             }
-            
+           
             extractTechniquesAndActivities(text, data) {
                 // Look for technique keywords
                 const techniqueKeywords = [
@@ -395,26 +401,26 @@ please refer to the Method App for assignments."></textarea>
                     'hi-hat', 'kick', 'bass drum', 'snare', 'cross-stick',
                     'bossa nova', 'swing', 'shuffle', 'funk'
                 ];
-                
+               
                 const found = [];
                 const lowerText = text.toLowerCase();
-                
+               
                 techniqueKeywords.forEach(keyword => {
                     if (lowerText.includes(keyword)) {
                         found.push(keyword);
                     }
                 });
-                
+               
                 // Look for BPM values
                 const bpmMatches = text.match(/\d+\s*bpm/gi);
                 if (bpmMatches) {
                     found.push(...bpmMatches);
                 }
-                
+               
                 data.techniques = [...new Set(found)];
-                
+               
                 // Extract general activities
-                if (/went over|reviewed|covered|worked through/i.test(text)) {
+                if (/went over|reviewed|covered|worked through|refreshed|refreshing|continued/i.test(text)) {
                     data.activities.push('review');
                 }
                 if (/started|began|introduced/i.test(text)) {
@@ -426,38 +432,44 @@ please refer to the Method App for assignments."></textarea>
                 if (/tribute|cover|band/i.test(text)) {
                     data.activities.push('band repertoire');
                 }
+                if (/difficult|challenging|tricky/i.test(text)) {
+                    data.activities.push('addressed challenges');
+                }
             }
-            
+           
             buildFormattedOutput(data) {
                 let output = '';
-                
+               
                 // Add student name if we have it
                 if (data.student) {
                     output += `**${data.student}**\n\n`;
                 }
-                
+               
                 output += '**Today\'s Achievements**\n';
-                
+               
                 // Build achievements from extracted data
                 if (data.songs.length > 0) {
                     // Group songs by completion status
                     const completed = [];
                     const inProgress = [];
-                    
+                   
                     data.songs.forEach(song => {
-                        const songRef = song.artist ? 
-                            `***"${song.title}" (${song.artist})***` : 
+                        const lowerRaw = data.rawContent.toLowerCase();
+                        const lowerTitle = song.title.toLowerCase();
+                        const songRef = song.artist ?
+                            `***"${song.title}" (${song.artist})***` :
                             `***"${song.title}"***`;
-                        
-                        // Check if it's mentioned as partial/halfway
-                        if (data.rawContent.toLowerCase().includes('halfway') && 
-                            data.rawContent.toLowerCase().includes(song.title.toLowerCase())) {
+                       
+                        // Check if it's mentioned as partial/halfway or difficult
+                        if (lowerRaw.includes('halfway') && lowerRaw.includes(lowerTitle)) {
                             inProgress.push(songRef);
+                        } else if (lowerRaw.includes('difficult') && lowerRaw.includes(lowerTitle)) {
+                            inProgress.push(songRef + ' (addressed challenging sections)');
                         } else {
                             completed.push(songRef);
                         }
                     });
-                    
+                   
                     // Add completed songs
                     if (completed.length > 0) {
                         if (completed.length === 1) {
@@ -466,18 +478,18 @@ please refer to the Method App for assignments."></textarea>
                             output += `* Successfully worked through ${completed.join(', ')} — great focus on multiple pieces\n`;
                         }
                     }
-                    
+                   
                     // Add in-progress songs
                     if (inProgress.length > 0) {
                         output += `* Made progress on ${inProgress.join(', ')} — building familiarity with the structure\n`;
                     }
-                    
+                   
                     // Add band/tribute context if present
                     if (data.activities.includes('band repertoire')) {
                         output += '* Focused on band/tribute material — developing performance-ready arrangements\n';
                     }
                 }
-                
+               
                 // Add technique work if present
                 if (data.techniques.length > 0) {
                     if (data.techniques.includes('technical exercises') || data.techniques.includes('exercises')) {
@@ -486,104 +498,118 @@ please refer to the Method App for assignments."></textarea>
                         output += `* Worked on ${data.techniques.slice(0, 3).join(', ')} — developing core skills\n`;
                     }
                 }
-                
+               
+                // Add general activities
+                if (data.activities.includes('review')) {
+                    output += '* Reviewed material to reinforce key concepts\n';
+                }
+                if (data.activities.includes('addressed challenges')) {
+                    output += '* Addressed challenging areas for better execution\n';
+                }
+               
                 // If we have very little extracted, acknowledge what we can see
                 if (data.songs.length === 0 && data.techniques.length === 0) {
                     if (data.rawContent.length > 20) {
                         output += '* Focused practice session with attention to repertoire development\n';
                     }
                 }
-                
+               
                 // Homework section
                 output += '\n**Homework**\n';
-                
+               
                 // Generate appropriate homework based on content
                 if (data.songs.length > 0) {
                     // Pick primary songs for practice
                     const primarySongs = data.songs.slice(0, 2);
                     primarySongs.forEach(song => {
-                        const songRef = song.artist ? 
-                            `***"${song.title}" (${song.artist})***` : 
+                        const songRef = song.artist ?
+                            `***"${song.title}" (${song.artist})***` :
                             `***"${song.title}"***`;
                         output += `* Continue practicing ${songRef} — focus on challenging sections\n`;
                     });
-                    
+                   
                     // Add recording practice if multiple songs
                     if (data.songs.length > 2) {
                         output += '* Play along with original recordings to match timing and feel\n';
                     }
                 }
-                
+               
                 // Add technique homework
                 if (data.techniques.includes('technical exercises') || data.techniques.includes('exercises')) {
                     output += '* Complete technical exercises daily — start slowly and build speed gradually\n';
                 }
-                
+               
                 // Method App reference if mentioned
                 if (data.assignments) {
                     output += '* Check Method App for specific assignments and practice tracks\n';
                 }
-                
+               
                 // Ensure we always have some homework
                 if (!data.assignments && data.songs.length === 0) {
                     output += '* Review today\'s material — aim for 15-20 minutes of focused practice\n';
                     output += '* Record yourself to identify areas for improvement\n';
                 }
-                
+               
                 return output;
             }
-            
+           
             // Helper methods
             isNotASong(text) {
                 const notSongs = [
-                    'exercises', 'technique', 'technical', 'method app', 
+                    'exercises', 'technique', 'technical', 'method app',
                     'assignments', 'homework', 'addition', 'session',
-                    'material', 'practice', 'today', 'yesterday'
+                    'material', 'practice', 'today', 'yesterday',
+                    'paramore tribute', 'tribute'
                 ];
                 const lower = text.toLowerCase();
                 return notSongs.some(word => lower.includes(word));
             }
-            
+           
             looksLikeSongTitle(text) {
                 // Song titles are typically capitalized and 1-7 words
                 const words = text.split(' ').length;
-                return /^[A-Z]/.test(text) && 
-                       words >= 1 && 
-                       words <= 7 && 
+                return /^[A-Z]/.test(text) &&
+                       words >= 1 &&
+                       words <= 7 &&
                        !this.isNotASong(text);
             }
-            
+           
             formatTitle(title) {
                 if (!title) return '';
-                
+               
                 // Preserve capitalization for likely acronyms
                 const words = title.split(' ');
-                return words.map(word => {
+                return words.map((word, index) => {
                     // Keep all caps if it's an acronym (2-4 letters all caps)
                     if (/^[A-Z]{2,4}$/.test(word)) {
                         return word;
                     }
-                    // Otherwise use title case
+                    // Lowercase small words unless first
+                    const smallWords = ['of', 'to', 'the', 'a', 'an', 'in', 'out', 'on', 'with', 'for', 'by', 'at'];
+                    if (index > 0 && smallWords.includes(word.toLowerCase())) {
+                        return word.toLowerCase();
+                    }
+                    // Otherwise title case
                     return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
                 }).join(' ');
             }
-            
+           
             formatArtist(artist) {
                 if (!artist) return '';
-                
+               
                 // Handle "The" at the beginning
                 if (/^the\s+/i.test(artist)) {
                     return 'The ' + artist.slice(4).split(' ')
                         .map(w => w.charAt(0).toUpperCase() + w.slice(1))
                         .join(' ');
                 }
-                
+               
                 return artist.split(' ')
                     .map(w => w.charAt(0).toUpperCase() + w.slice(1))
                     .join(' ');
             }
         }
-        
+       
         // Examples
         const examples = {
             1: "Today we went over the Paramore Tribute material. We got a handle on Running Out Of Time, Ignorance, and about halfway through Whoa.\n\nIn addition, I gave Conan technical exercises to further assist the Paramore songs.\n\nplease refer to the Method App for assignments.",
@@ -593,27 +619,27 @@ please refer to the Method App for assignments."></textarea>
             5: "played Seven Nation Army, Radioactive by Imagine Dragons, and started learning I Will Survive. Also worked on triplets from 60-70bpm.",
             6: "Luca - went through basic beats and rhythms. Practiced kick and snare patterns. Try to practice 10 minutes daily with metronome."
         };
-        
+       
         // Initialize
         const formatter = new LessonFormatter();
-        
+       
         // Functions
         function formatLesson() {
             const input = document.getElementById('input').value;
             const output = formatter.format(input);
             document.getElementById('output').innerText = output;
         }
-        
+       
         function clearInput() {
             document.getElementById('input').value = '';
             document.getElementById('output').innerText = 'Your formatted lesson recap will appear here...';
         }
-        
+       
         function loadExample(num) {
             document.getElementById('input').value = examples[num] || '';
             formatLesson();
         }
-        
+       
         function copyToClipboard() {
             const text = document.getElementById('output').innerText;
             navigator.clipboard.writeText(text).then(() => {
@@ -625,7 +651,7 @@ please refer to the Method App for assignments."></textarea>
                 }, 2000);
             });
         }
-        
+       
         function downloadText() {
             const text = document.getElementById('output').innerText;
             const blob = new Blob([text], { type: 'text/plain' });
@@ -635,7 +661,7 @@ please refer to the Method App for assignments."></textarea>
             a.download = `lesson-recap-${new Date().toISOString().split('T')[0]}.txt`;
             a.click();
         }
-        
+       
         // Auto-format on Ctrl/Cmd+Enter
         document.getElementById('input').addEventListener('keydown', (e) => {
             if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
