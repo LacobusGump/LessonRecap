@@ -481,11 +481,11 @@
         </div>
     </div>
 
-    <!-- Compromise NLP Library for Intelligent Proofreading -->
-    <script src="https://unpkg.com/compromise"></script>
+    <!-- Switched to reliable CDN for Compromise (cdnjs) to fix loading bug -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/compromise/14.14.0/compromise.min.js"></script>
 
     <script>
-        // Configuration and Data
+        // Configuration and Data (full knownSongs list included for completeness)
         const CONFIG = {
             MAX_HOMEWORK_ITEMS: 4,
             MIN_TEXT_LENGTH: 10,
@@ -554,25 +554,144 @@
             'sixtuplet': 'sextuplet'
         };
 
-        // Basic offensive words filter
         const offensiveWords = ['damn', 'hell', 'shit', 'fuck', 'ass', 'bitch'];
 
-        // Basic grammar rules (enhanced with Compromise handling)
         const grammarRules = [
             { pattern: /\bi (\w)/gi, replacement: 'I $1' },
             { pattern: /\b(he|she|it|they|we|you) ([a-z])/gi, replacement: '$1 $2' }
         ];
 
-        // Known songs (abbreviated for brevity; full list as before)
+        // Full expanded knownSongs (from previous versions)
         const knownSongs = {
             'paranoid': { title: 'Paranoid', artist: 'Black Sabbath' },
-            // ... (include full expanded list from previous version)
+            'running': { title: 'Running', artist: 'OMA' },
+            'friday im in love': { title: "Friday I'm In Love", artist: 'The Cure' },
+            'seven nation army': { title: 'Seven Nation Army', artist: 'The White Stripes' },
+            'radioactive': { title: 'Radioactive', artist: 'Imagine Dragons' },
+            'i will survive': { title: 'I Will Survive', artist: 'Gloria Gaynor' },
+            'master of puppets': { title: 'Master of Puppets', artist: 'Metallica' },
+            'creep': { title: 'Creep', artist: 'Radiohead' },
+            'cream': { title: 'CREAM', artist: 'OMA' },
+            'seek and destroy': { title: 'Seek & Destroy', artist: 'Metallica' },
+            'something just like this': { title: 'Something Just Like This', artist: 'The Chainsmokers & Coldplay' },
+            'bones': { title: 'Bones', artist: 'Imagine Dragons' },
+            'too sweet': { title: 'Too Sweet', artist: 'Hozier' },
+            'back in black': { title: 'Back In Black', artist: 'AC/DC' },
+            'come together': { title: 'Come Together', artist: 'The Beatles' },
+            'funky drummer': { title: 'Funky Drummer Pt. 1 & 2', artist: 'James Brown' },
+            'take five': { title: 'Take Five', artist: 'The Dave Brubeck Quartet' },
+            'rat salad': { title: 'Rat Salad', artist: 'Black Sabbath' },
+            'stratus': { title: 'Stratus', artist: 'Billy Cobham' },
+            'in the air tonight': { title: 'In The Air Tonight', artist: 'Phil Collins' },
+            'got a match': { title: 'Got A Match?', artist: 'Chick Corea Elektric Band' },
+            'resolution': { title: 'Resolution', artist: 'John Coltrane' },
+            'toad': { title: 'Toad', artist: 'Cream' },
+            'footprints': { title: 'Footprints', artist: 'Miles Davis' },
+            'burn': { title: 'Burn', artist: 'Deep Purple' },
+            'digital bath': { title: 'Digital Bath', artist: 'Deftones' },
+            'the dance of eternity': { title: 'The Dance of Eternity', artist: 'Dream Theater' },
+            'go your own way': { title: 'Go Your Own Way', artist: 'Fleetwood Mac' },
+            'everlong': { title: 'Everlong', artist: 'Foo Fighters' },
+            'sing sing sing': { title: 'Sing, Sing, Sing', artist: 'Benny Goodman' },
+            'fire': { title: 'Fire', artist: 'Jimi Hendrix' },
+            'where eagles dare': { title: 'Where Eagles Dare', artist: 'Iron Maiden' },
+            'don’t stop believin’': { title: "Don’t Stop Believin’", artist: 'Journey' },
+            'moby dick': { title: 'Moby Dick', artist: 'Led Zeppelin' },
+            'wax simulacra': { title: 'Wax Simulacra', artist: 'The Mars Volta' },
+            'rust in peace polaris': { title: 'Rust In Peace…Polaris', artist: 'Megadeth' },
+            'bleed': { title: 'Bleed', artist: 'Meshuggah' },
+            'one': { title: 'One', artist: 'Metallica' },
+            'cissy strut': { title: 'Cissy Strut', artist: 'The Meters' },
+            'smells like teen spirit': { title: 'Smells Like Teen Spirit', artist: 'Nirvana' },
+            'mouth for war': { title: 'Mouth For War', artist: 'Pantera' },
+            '50 ways to leave your lover': { title: '50 Ways To Leave Your Lover', artist: 'Paul Simon' },
+            'message in a bottle': { title: 'Message In A Bottle', artist: 'The Police' },
+            'dance with the devil': { title: 'Dance With The Devil', artist: 'Cozy Powell' },
+            'no one knows': { title: 'No One Knows', artist: 'Queens Of The Stone Age' },
+            'killing in the name of': { title: 'Killing In The Name Of', artist: 'Rage Against The Machine' },
+            'channel one suite': { title: 'Channel One Suite', artist: 'Buddy Rich Big Band' },
+            'paint it black': { title: 'Paint It Black', artist: 'The Rolling Stones' },
+            'tom sawyer': { title: 'Tom Sawyer', artist: 'Rush' },
+            'blue matter': { title: 'Blue Matter', artist: 'John Scofield' },
+            'territory': { title: 'Territory', artist: 'Sepultura' },
+            'raining blood': { title: 'Raining Blood', artist: 'Slayer' },
+            'tonight tonight': { title: 'Tonight, Tonight', artist: 'Smashing Pumpkins' },
+            'spoonman': { title: 'Spoonman', artist: 'Soundgarden' },
+            'home at last': { title: 'Home At Last', artist: 'Steely Dan' },
+            'seven days': { title: 'Seven Days', artist: 'Sting' },
+            'wipeout': { title: 'Wipeout', artist: 'The Surfaris' },
+            'lateralus': { title: 'Lateralus', artist: 'Tool' },
+            'rosanna': { title: 'Rosanna', artist: 'Toto' },
+            'what is hip': { title: 'What Is Hip?', artist: 'Tower of Power' },
+            'hot for teacher': { title: 'Hot For Teacher', artist: 'Van Halen' },
+            'who are you': { title: 'Who Are You', artist: 'The Who' },
+            'the black page': { title: 'The Black Page #1', artist: 'Frank Zappa' },
             'we will rock you': { title: 'We Will Rock You', artist: 'Queen' },
-            // Add more as needed
+            'hold on': { title: 'Hold On', artist: 'Alabama Shakes' },
+            'rocky mountain way': { title: 'Rocky Mountain Way', artist: 'Joe Walsh' },
+            'tnt': { title: 'T.N.T.', artist: 'AC/DC' },
+            'bad moon rising': { title: 'Bad Moon Rising', artist: 'Creedence Clearwater Revival' },
+            'africa': { title: 'Africa', artist: 'Toto' },
+            'enter sandman': { title: 'Enter Sandman', artist: 'Metallica' },
+            'beat it': { title: 'Beat It', artist: 'Michael Jackson' },
+            'addicted to love': { title: 'Addicted To Love', artist: 'Robert Palmer' },
+            'all star': { title: 'All Star', artist: 'Smash Mouth' },
+            'billie jean': { title: 'Billie Jean', artist: 'Michael Jackson' },
+            'blinding lights': { title: 'Blinding Lights', artist: 'The Weeknd' },
+            'cant stop the feeling': { title: "Can't Stop The Feeling!", artist: 'Justin Timberlake' },
+            'castle on the hill': { title: 'Castle On The Hill', artist: 'Ed Sheeran' },
+            'circles': { title: 'Circles', artist: 'Post Malone' },
+            'crazy': { title: 'Crazy', artist: 'Gnarls Barkley' },
+            'crazy in love': { title: 'Crazy In Love', artist: 'Beyoncé' },
+            'dont you forget about me': { title: "Don't You (Forget About Me)", artist: 'Simple Minds' },
+            'drops of jupiter': { title: 'Drops Of Jupiter (Tell Me)', artist: 'Train' },
+            'dynamite': { title: 'Dynamite', artist: 'BTS' },
+            'every breath you take': { title: 'Every Breath You Take', artist: 'The Police' },
+            'everybody wants to rule the world': { title: 'Everybody Wants To Rule The World', artist: 'Tears For Fears' },
+            'fallin': { title: "Fallin'", artist: 'Alicia Keys' },
+            'get lucky': { title: 'Get Lucky', artist: 'Daft Punk' },
+            'gimme all your lovin': { title: 'Gimme All Your Lovin\'', artist: 'ZZ Top' },
+            'girls just want to have fun': { title: 'Girls Just Want To Have Fun', artist: 'Cyndi Lauper' },
+            'happy': { title: 'Happy', artist: 'Pharrell Williams' },
+            'heathens': { title: 'Heathens', artist: 'Twenty One Pilots' },
+            'i need to know': { title: 'I Need To Know', artist: 'Marc Anthony' },
+            'juice': { title: 'Juice', artist: 'Lizzo' },
+            'jump': { title: 'Jump', artist: 'Van Halen' },
+            'just dance': { title: 'Just Dance', artist: 'Lady Gaga' },
+            'levitating': { title: 'Levitating', artist: 'Dua Lipa' },
+            'livin la vida loca': { title: 'Livin\' La Vida Loca', artist: 'Ricky Martin' },
+            'livin on a prayer': { title: "Livin' On A Prayer", artist: 'Bon Jovi' },
+            'mercy': { title: 'Mercy', artist: 'Duffy' },
+            'moves like jagger': { title: 'Moves Like Jagger', artist: 'Maroon 5' },
+            'only wanna be with you': { title: 'Only Wanna Be With You', artist: 'Hootie & the Blowfish' },
+            'pour some sugar on me': { title: 'Pour Some Sugar On Me', artist: 'Def Leppard' },
+            'pride in the name of love': { title: 'Pride (In The Name Of Love)', artist: 'U2' },
+            'roar': { title: 'Roar', artist: 'Katy Perry' },
+            'rude': { title: 'Rude', artist: 'Magic!' },
+            'send my love': { title: 'Send My Love (To Your New Lover)', artist: 'Adele' },
+            'separate ways': { title: 'Separate Ways (Worlds Apart)', artist: 'Journey' },
+            'shut up and dance': { title: 'Shut Up And Dance', artist: 'Walk the Moon' },
+            'smooth': { title: 'Smooth', artist: 'Santana' },
+            'stayin alive': { title: 'Stayin\' Alive', artist: 'Bee Gees' },
+            'stronger what doesnt kill you': { title: 'Stronger (What Doesn\'t Kill You)', artist: 'Kelly Clarkson' },
+            'umbrella': { title: 'Umbrella', artist: 'Rihanna' },
+            'uptown funk': { title: 'Uptown Funk', artist: 'Mark Ronson ft. Bruno Mars' },
+            'valerie': { title: 'Valerie', artist: 'Amy Winehouse' },
+            'walking on sunshine': { title: 'Walking On Sunshine', artist: 'Katrina & The Waves' },
+            'what makes you beautiful': { title: 'What Makes You Beautiful', artist: 'One Direction' },
+            'who knew': { title: 'Who Knew', artist: 'Pink' },
+            'ymca': { title: 'Y.M.C.A.', artist: 'Village People' },
+            'you belong with me': { title: 'You Belong With Me', artist: 'Taylor Swift' },
+            'you oughta know': { title: 'You Oughta Know', artist: 'Alanis Morissette' }
         };
 
         const examples = {
-            // ... (same as before)
+            charleigh: `Charleigh - Worked through Black sabath Paranoid which i sent home through the app. you did great with it, went over some of the 16s fills which brough us into playing 16s to a metronome! Startwed at 100bpm and worked it up to 170. great job, try to keep everything nice and balanced`,
+            morgan: `Morgan - Worked through The Cure - Friday I'm In Love. We played through first at 90% speed then cranked it out at full. spoke about technique with hh and keeping it light so we can play through the whole song. keep your kick nice and steady`,
+            luca: `Luca - Went through triplets from 60-70bpm. doing great, try for 80 next week. played through seven nation army, just the chorus. played through radioactive which sounds very good! lastly started to learn i will survive`,
+            conan: `Conan - Worked through bosa nova, playing it to different songs but looking to keep it nice and consistent. Then we broke into master of puppets by metalica and worked out timing. sounding really good. lastly went through some foot techniques`,
+            amaiyah: `Amaiyah - worked through creep, broke down the main patterns including the cross stick. Went through learning sixtuplets. for sticking its 6 hits on the snare then 2, 2, 2 starting on the snare, tom, low tom. spoke about what kind of drum kit to get which i suggest not spend over $500 to start`,
+            brody: `Brody played through The Chainsmokers & Coldplay - Something Just Like This and picked out the kick pattern in the chorus. Also played Bones by Imagine Dragons and too sweet by hozier`
         };
 
         class LessonFormatter {
@@ -664,11 +783,78 @@
             }
 
             extractSongs(text) {
-                // ... (same as previous)
+                const patterns = [
+                    /(?:worked through|played through|started learning|learned|practiced|played)\s+([^,.!?]+?)(?:\s+by\s+([^,.!?]+?))?(?:[,.!?]|$)/gi,
+                    /(?:song|track)\s+["']?([^"',.!?]+?)["']?(?:\s+by\s+([^,.!?]+?))?(?:[,.!?]|$)/gi
+                ];
+
+                for (const pattern of patterns) {
+                    let match;
+                    while ((match = pattern.exec(text)) !== null) {
+                        let songTitle = match[1].trim();
+                        let artist = match[2] ? match[2].trim() : '';
+
+                        if (!artist && songTitle.includes('-')) {
+                            const parts = songTitle.split('-').map(p => p.trim());
+                            if (parts.length === 2) {
+                                artist = parts[0];
+                                songTitle = parts[1];
+                            }
+                        }
+
+                        const songKey = songTitle.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ');
+                        if (knownSongs[songKey]) {
+                            const known = knownSongs[songKey];
+                            songTitle = known.title;
+                            artist = artist || known.artist;
+                        }
+
+                        songTitle = this.capitalizeProperNouns(songTitle);
+                        artist = artist ? this.capitalizeProperNouns(artist) : '';
+
+                        if (songTitle && !songTitle.match(/^(it|this|that|them|the|a|an)$/i)) {
+                            this.songs.push({ title: songTitle, artist });
+                        }
+                    }
+                }
+
+                const uniqueSongs = new Map();
+                this.songs.forEach(song => {
+                    const key = song.title.toLowerCase();
+                    if (!uniqueSongs.has(key)) {
+                        uniqueSongs.set(key, song);
+                    }
+                });
+                this.songs = Array.from(uniqueSongs.values());
             }
 
             extractTechniques(text) {
-                // ... (same as previous)
+                const patterns = [
+                    /\b\d+(?:\s*-\s*\d+)?\s*bpm\b/gi,
+                    /\btriplets?\b/gi,
+                    /\bsextuplets?\b/gi,
+                    /\b16th\s+notes?\b/gi,
+                    /\b8th\s+notes?\b/gi,
+                    /\bcross[\s-]?stick\b/gi,
+                    /\bkick\s+(?:drum|independence|pattern)?\b/gi,
+                    /\bhi[\s-]?hat\b/gi,
+                    /\bfills?\b/gi,
+                    /\bgrooves?\b/gi,
+                    /\bbeats?\b/gi,
+                    /\bbossa\s+nova\b/gi,
+                    /\bendurance\b/gi,
+                    /\bmetronome\b/gi,
+                    /\bindependence\b/gi
+                ];
+
+                patterns.forEach(pattern => {
+                    const matches = text.match(pattern);
+                    if (matches) {
+                        matches.forEach(match => {
+                            this.techniques.add(match.toLowerCase());
+                        });
+                    }
+                });
             }
 
             splitIntoParts(text) {
@@ -703,51 +889,160 @@
             }
 
             classifySentence(sentence) {
-                // ... (same as previous)
+                const lower = sentence.toLowerCase();
+                
+                const achievementKeywords = [
+                    'worked', 'played', 'went through', 'learned', 'started',
+                    'practiced', 'broke down', 'covered', 'sounds', 'sounding',
+                    'good', 'great', 'excellent', 'awesome', 'did great'
+                ];
+                
+                const homeworkKeywords = [
+                    'try', 'keep', 'practice', 'work on', 'focus on',
+                    'next week', 'homework', 'continue', 'maintain'
+                ];
+
+                if (achievementKeywords.some(keyword => lower.includes(keyword))) {
+                    return 'achievement';
+                }
+                
+                if (homeworkKeywords.some(keyword => lower.includes(keyword))) {
+                    return 'homework';
+                }
+                
+                return 'other';
             }
 
             formatSentence(sentence, type) {
-                // ... (same as previous, with smart song formatting)
+                if (!sentence) return '';
+                
+                let formatted = sentence.trim();
+                
+                formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1);
+                
+                if (type === 'achievement') {
+                    const lowerFormatted = formatted.toLowerCase();
+                    if (lowerFormatted.match(/^(worked|played|started|learned|practiced|went|focused|covered)/)) {
+                        if (!formatted.match(/^(We|Today|This|First|Then|Also|Additionally)/i)) {
+                            formatted = 'We ' + lowerFormatted;
+                            formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1);
+                        }
+                    }
+                    if (lowerFormatted.includes('you ')) {
+                        formatted = formatted.replace(/\b(you)\s+([a-z])/gi, (m, p1, p2) => `${p1} ${p2.toUpperCase()}`);
+                    }
+                } else if (type === 'homework') {
+                    const lowerFormatted = formatted.toLowerCase();
+                    if (lowerFormatted.match(/^(try|keep|practice|work|focus)/)) {
+                        formatted = 'You ' + lowerFormatted;
+                        formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1);
+                    }
+                }
+                
+                this.songs.forEach(song => {
+                    const titlePattern = new RegExp(`\\b${this.escapeRegex(song.title)}\\b`, 'gi');
+                    if (song.artist) {
+                        const hasArtistBefore = new RegExp(`(${this.escapeRegex(song.artist)})\\s+${this.escapeRegex(song.title)}\\b`, 'gi').test(formatted);
+                        const replacement = hasArtistBefore ? song.title : `${song.title} by ${song.artist}`;
+                        formatted = formatted.replace(titlePattern, replacement);
+                    }
+                });
+                
+                Object.values(knownSongs).forEach(data => {
+                    if (data.artist) {
+                        const dupPattern = new RegExp(`(${this.escapeRegex(data.artist)})\\s+${this.escapeRegex(data.title)}\\s+by\\s+${this.escapeRegex(data.artist)}`, 'gi');
+                        formatted = formatted.replace(dupPattern, '$1 $2');
+                    }
+                });
+                
+                if (!formatted.match(/[.!?]$/)) {
+                    formatted += '.';
+                }
+                
+                return formatted;
             }
 
             generateInferredHomework() {
-                // ... (same as previous)
+                if (this.songs.length > 0 && this.homework.length < 2) {
+                    const song = this.songs[0];
+                    const songRef = song.artist ? `${song.title} by ${song.artist}` : song.title;
+                    this.homework.push(`Practice ${songRef} focusing on accuracy and timing.`);
+                }
+
+                if (this.techniques.has('metronome') || Array.from(this.techniques).some(t => t.includes('bpm'))) {
+                    this.homework.push('Continue metronome practice to build consistency.');
+                }
+
+                if (this.techniques.has('fills') || this.techniques.has('16th notes')) {
+                    this.homework.push('Work on drum fills, starting slowly and building speed.');
+                }
+
+                if (this.homework.length === 0) {
+                    this.homework.push('Practice the material covered in today\'s lesson.');
+                    this.homework.push('Focus on maintaining proper technique and timing.');
+                }
+
+                this.homework = [...new Set(this.homework)].slice(0, CONFIG.MAX_HOMEWORK_ITEMS);
             }
 
             capitalizeWord(word) {
-                // ... (same)
+                return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
             }
 
             capitalizeProperNouns(text) {
-                // ... (same)
+                const properNouns = {
+                    'metallica': 'Metallica',
+                    'sabbath': 'Sabbath',
+                    'oma': 'OMA',
+                    'the cure': 'The Cure',
+                    'chainsmokers': 'The Chainsmokers',
+                    'coldplay': 'Coldplay',
+                    'radiohead': 'Radiohead',
+                    'hozier': 'Hozier',
+                    'ac/dc': 'AC/DC',
+                    'guns n roses': "Guns N' Roses",
+                    'led zeppelin': 'Led Zeppelin',
+                    'the beatles': 'The Beatles',
+                    'james brown': 'James Brown',
+                    'the dave brubeck quartet': 'The Dave Brubeck Quartet'
+                };
+
+                let result = text;
+                for (const [lower, proper] of Object.entries(properNouns)) {
+                    const regex = new RegExp(`\\b${this.escapeRegex(lower)}\\b`, 'gi');
+                    result = result.replace(regex, proper);
+                }
+
+                return result.replace(/\b\w+/g, word => {
+                    const lower = word.toLowerCase();
+                    return properNouns[lower] || this.capitalizeWord(word);
+                });
             }
 
-            // NEW: Intelligent Proofreading with Compromise
+            // Intelligent Proofreading with Compromise (wrapped in try-catch for robustness)
             proofreadText(text) {
-                if (!window.nlp || !document.getElementById('grammarCheck').checked) return text;
+                try {
+                    if (!window.nlp || !document.getElementById('grammarCheck').checked) return text;
 
-                let doc = nlp(text);
+                    let doc = nlp(text);
 
-                // Normalize tense for achievements/homework (assume sections)
-                // Past tense for achievements
-                doc.match('Today\'s Achievements: #Sentence+').sentences().verbs().toPastTense();
+                    // Past tense for achievements
+                    doc.match('Today\'s Achievements: #Sentence+').sentences().verbs().toPastTense();
 
-                // Imperative/future for homework
-                doc.match('Practice Assignments: #Sentence+').sentences().verbs().toInfinitive();
+                    // Imperative for homework
+                    doc.match('Practice Assignments: #Sentence+').sentences().verbs().toInfinitive();
 
-                // Expand contractions
-                doc.contractions().expand();
+                    // Expand contractions
+                    doc.contractions().expand();
 
-                // Ensure proper capitalization
-                doc.sentences().toTitleCase(); // But selective, as it might overdo—use for new sentences
+                    // Custom fixes
+                    doc.match('which i').replaceWith('which I');
 
-                // Pluralize nouns if context suggests (simple heuristic)
-                doc.nouns().toPlural().if('#Singular'); // Example: adjust based on need
-
-                // Fix common errors: e.g., "which i" -> "which I"
-                doc.match('which i').replaceWith('which I');
-
-                return doc.text();
+                    return doc.text();
+                } catch (error) {
+                    console.warn('Proofreading skipped due to error:', error);
+                    return text; // Fallback to original
+                }
             }
 
             generateOutput() {
@@ -785,19 +1080,36 @@
                     });
                 }
 
-                // Apply proofreading if enabled
+                // Apply proofreading if enabled (safe with try-catch)
                 return this.proofreadText(output);
             }
 
             saveToHistory() {
-                // ... (same)
+                if (!this.studentName) return false;
+                const history = JSON.parse(localStorage.getItem('lessonHistory') || '{}');
+                if (!history[this.studentName]) {
+                    history[this.studentName] = [];
+                }
+                const note = {
+                    content: this.generateOutput(),
+                    date: new Date().toISOString(),
+                    isFinalized: this.isFinalized
+                };
+                const lastNote = history[this.studentName][history[this.studentName].length - 1];
+                if (lastNote && lastNote.content === note.content) {
+                    showError('Cannot save identical note. Make at least one change.');
+                    return false;
+                }
+                history[this.studentName].push(note);
+                localStorage.setItem('lessonHistory', JSON.stringify(history));
+                return true;
             }
         }
 
         // Global formatter instance
         const formatter = new LessonFormatter();
 
-        // NEW: Proofread function for post-generation edits
+        // Proofread function (post-generation)
         function proofreadOutput() {
             const outputEl = document.getElementById('output');
             let currentText = outputEl.textContent;
@@ -814,14 +1126,221 @@
             }, 100);
         }
 
-        // Main functions (updated to use new generateOutput with proofreading)
         function formatNotes() {
-            // ... (same, but now generateOutput includes proofreading)
+            const input = document.getElementById('lessonNotes').value.trim();
+            
+            if (!input || input.length < CONFIG.MIN_TEXT_LENGTH) {
+                showError('Please enter at least 10 characters of lesson notes.');
+                return;
+            }
+
+            if (input.length > CONFIG.MAX_CHARS) {
+                showError(`Notes exceed ${CONFIG.MAX_CHARS} characters. Please shorten.`);
+                return;
+            }
+
+            hideMessages();
+            showProcessing(true);
+            document.getElementById('finalizeBar').classList.add('show');
+            
+            setTimeout(() => {
+                try {
+                    formatter.reset();
+                    formatter.parseSentences(input);
+                    const output = formatter.generateOutput();
+                    
+                    document.getElementById('output').textContent = output;
+                    showProcessing(false);
+                    showSuccess('Lesson recap generated successfully!');
+                    
+                } catch (error) {
+                    console.error('Error formatting notes:', error);
+                    showProcessing(false);
+                    showError('An error occurred while formatting. Please try again.');
+                    
+                    const fallbackOutput = createFallbackOutput(input);
+                    document.getElementById('output').textContent = fallbackOutput;
+                }
+            }, 100);
         }
 
-        // ... (other functions same as previous)
+        function createFallbackOutput(input) {
+            const lines = input.split(/[.!?]+/).filter(line => line.trim());
+            let output = 'Lesson Recap\n\nToday\'s Achievements:\n\n';
+            
+            lines.slice(0, 3).forEach(line => {
+                if (line.trim()) {
+                    output += `• ${line.trim()}.\n`;
+                }
+            });
+            
+            output += '\nPractice Assignments:\n\n';
+            output += '• Practice the material covered in today\'s lesson.\n';
+            output += '• Focus on maintaining proper technique.\n';
+            
+            return output;
+        }
 
-        // Event listeners (same)
+        function finalizeNote() {
+            if (!formatter.studentName) {
+                showError('Please enter a student name and generate a recap first.');
+                return;
+            }
+            if (formatter.isFinalized) {
+                showError('Note is already finalized.');
+                return;
+            }
+            const saved = formatter.saveToHistory();
+            if (saved) {
+                formatter.isFinalized = true;
+                formatter.finalizeDate = new Date().toLocaleString();
+                document.getElementById('output').textContent = formatter.generateOutput();
+                document.getElementById('output').classList.add('finalized');
+                document.getElementById('finalizeBar').classList.remove('show');
+                showSuccess(`Note finalized and saved on ${formatter.finalizeDate}`);
+            }
+        }
+
+        function viewHistory() {
+            const student = document.getElementById('studentName').value.trim() || formatter.studentName;
+            if (!student) {
+                showError('Please enter a student name to view history.');
+                return;
+            }
+            const history = JSON.parse(localStorage.getItem('lessonHistory') || '{}');
+            const studentHistory = history[student] || [];
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = '';
+            if (studentHistory.length === 0) {
+                historyList.innerHTML = '<div class="history-item">No history found.</div>';
+            } else {
+                studentHistory.slice(-10).reverse().forEach(note => {
+                    const item = document.createElement('div');
+                    item.className = 'history-item';
+                    item.innerHTML = `<strong>${new Date(note.date).toLocaleDateString()}</strong> - ${note.isFinalized ? 'Finalized' : 'Draft'}<br>${note.content.substring(0, 100)}...`;
+                    item.onclick = () => loadFromHistory(note.content, student);
+                    historyList.appendChild(item);
+                });
+            }
+            document.getElementById('historySection').style.display = 'block';
+            showSuccess(`Showing history for ${student}`);
+        }
+
+        function loadFromHistory(content, student) {
+            document.getElementById('lessonNotes').value = content.replace(/Lesson Recap.*\n\nToday's Achievements:[\s\S]*$/i, '').trim();
+            document.getElementById('studentName').value = student;
+            document.getElementById('historySection').style.display = 'none';
+            showSuccess('Loaded from history. Make changes and regenerate.');
+        }
+
+        function loadExample(key) {
+            const example = examples[key];
+            if (example) {
+                const [name, notes] = example.split(' - ', 2);
+                document.getElementById('studentName').value = name ? name.trim() : '';
+                document.getElementById('lessonNotes').value = notes || example;
+                updateCharCount();
+                hideMessages();
+            }
+        }
+
+        function clearAll() {
+            document.getElementById('studentName').value = '';
+            document.getElementById('lessonNotes').value = '';
+            document.getElementById('output').textContent = 'Your formatted lesson recap will appear here...';
+            document.getElementById('output').classList.remove('finalized');
+            document.getElementById('finalizeBar').classList.remove('show');
+            document.getElementById('historySection').style.display = 'none';
+            updateCharCount();
+            hideMessages();
+            formatter.reset();
+        }
+
+        function copyOutput() {
+            const output = document.getElementById('output').textContent;
+            
+            if (!output || output === 'Your formatted lesson recap will appear here...') {
+                showError('No content to copy. Please generate a recap first.');
+                return;
+            }
+            
+            navigator.clipboard.writeText(output)
+                .then(() => showSuccess('Copied to clipboard!'))
+                .catch(() => {
+                    const textarea = document.createElement('textarea');
+                    textarea.value = output;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    try {
+                        document.execCommand('copy');
+                        showSuccess('Copied to clipboard!');
+                    } catch (err) {
+                        showError('Unable to copy. Please select and copy manually.');
+                    }
+                    document.body.removeChild(textarea);
+                });
+        }
+
+        function showProcessing(show) {
+            document.getElementById('processing').style.display = show ? 'flex' : 'none';
+            document.getElementById('formatBtn').disabled = show;
+        }
+
+        function showError(message) {
+            document.getElementById('errorText').textContent = message;
+            document.getElementById('errorMessage').style.display = 'flex';
+            setTimeout(hideMessages, 5000);
+        }
+
+        function showSuccess(message) {
+            document.getElementById('successText').textContent = message;
+            document.getElementById('successMessage').style.display = 'flex';
+            setTimeout(hideMessages, 3000);
+        }
+
+        function hideMessages() {
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+        }
+
+        function updateCharCount() {
+            const text = document.getElementById('lessonNotes').value;
+            const count = text.length;
+            const el = document.getElementById('charCount');
+            el.textContent = `${count} / ${CONFIG.MAX_CHARS} characters`;
+            el.className = 'char-count';
+            if (count > CONFIG.MAX_CHARS * 0.8) el.classList.add('warning');
+            if (count > CONFIG.MAX_CHARS) el.classList.add('danger');
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCharCount(); // Initial count
+            document.getElementById('lessonNotes').addEventListener('input', updateCharCount);
+            
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey || e.metaKey) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        formatNotes();
+                    } else if (e.key === 'Delete' || e.key === 'Backspace') {
+                        e.preventDefault();
+                        clearAll();
+                    } else if (e.key === 'f') {
+                        e.preventDefault();
+                        finalizeNote();
+                    } else if (e.key === 'h') {
+                        e.preventDefault();
+                        viewHistory();
+                    }
+                }
+            });
+        });
+
+        window.addEventListener('error', (event) => {
+            console.error('Global error:', event.error);
+            showError('An unexpected error occurred. Please refresh and try again.');
+        });
     </script>
 </body>
 </html>
