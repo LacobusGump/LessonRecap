@@ -40,7 +40,7 @@
             font-weight: 400;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            font-size: 13px;
+            font-size: 14px; /* Increased for better readability */
         }
         
         .container {
@@ -88,7 +88,7 @@
             margin-bottom: 5px; /* Fibonacci: 5 */
             font-weight: 500;
             color: var(--text);
-            font-size: 13px; /* Fibonacci: 13 */
+            font-size: 14px; /* Increased */
         }
         
         .form-input {
@@ -96,7 +96,7 @@
             padding: 13px; /* Fibonacci: 13 */
             border: 1px solid var(--border);
             border-radius: var(--border-radius);
-            font-size: 13px; /* Fibonacci: 13 */
+            font-size: 14px; /* Increased */
             font-family: inherit;
             transition: all 0.2s ease;
             background: var(--bg-secondary);
@@ -114,8 +114,10 @@
         }
         
         .form-textarea {
-            min-height: 89px; /* Fibonacci: 89 */
+            min-height: 200px; /* Increased for larger box */
             resize: vertical;
+            font-size: 14px; /* Increased for better text readability */
+            line-height: 1.6; /* Improved line spacing */
         }
         
         .button-group {
@@ -183,6 +185,7 @@
             border: 1px solid var(--border);
             color: var(--text);
             position: relative;
+            font-size: 14px; /* Match body */
         }
         
         .output-content.finalized {
@@ -393,10 +396,10 @@
                 <textarea
                     id="lessonNotes"
                     class="form-textarea"
-                    rows="5"
+                    rows="10" <!-- Increased rows for larger box -->
                     placeholder="Example: worked through Black Sabbath Paranoid which I sent home through the app. You did great with it, went over some of the 16s fills..."
                 ></textarea>
-                <div class="char-count" id="charCount">0 characters</div>
+                <div class="char-count" id="charCount">0 / 5000 characters</div>
             </div>
             
             <div class="checklist-section">
@@ -569,7 +572,35 @@
             'seek & destroy': { title: 'Seek & Destroy', artist: 'Metallica' },
             'something just like this': { title: 'Something Just Like This', artist: 'The Chainsmokers & Coldplay' },
             'bones': { title: 'Bones', artist: 'Imagine Dragons' },
-            'too sweet': { title: 'Too Sweet', artist: 'Hozier' }
+            'too sweet': { title: 'Too Sweet', artist: 'Hozier' },
+            // Expanded list from popular drum songs
+            'enter sandman': { title: 'Enter Sandman', artist: 'Metallica' },
+            'walk this way': { title: 'Walk This Way', artist: 'Aerosmith' },
+            'rock n roll': { title: 'Rock and Roll', artist: 'Led Zeppelin' },
+            'back in black': { title: 'Back In Black', artist: 'AC/DC' },
+            'come together': { title: 'Come Together', artist: 'The Beatles' },
+            'funky drummer': { title: 'Funky Drummer Pt. 1', artist: 'James Brown' },
+            'take five': { title: 'Take Five', artist: 'The Dave Brubeck Quartet' },
+            'clint eastwood': { title: 'Clint Eastwood', artist: 'Gorillaz' },
+            'blitzkrieg bop': { title: 'Blitzkrieg Bop', artist: 'Ramones' },
+            'livin on a prayer': { title: "Livin' on a Prayer", artist: 'Bon Jovi' },
+            'clocks': { title: 'Clocks', artist: 'Coldplay' },
+            'my hero': { title: 'My Hero', artist: 'Foo Fighters' },
+            'castle on the hill': { title: 'Castle On The Hill', artist: 'Ed Sheeran' },
+            'shape of you': { title: 'Shape of You', artist: 'Ed Sheeran' },
+            'starboy': { title: 'Starboy', artist: 'The Weeknd' },
+            'skin': { title: 'Skin', artist: 'Rihanna' },
+            'all i want': { title: 'All I Want', artist: 'Skunk Anansie' },
+            'all my life': { title: 'All My Life', artist: 'Foo Fighters' },
+            'all right now': { title: 'All Right Now', artist: 'Free' },
+            'always on the run': { title: 'Always On The Run', artist: 'Lenny Kravitz' },
+            'purple rain': { title: 'Purple Rain', artist: 'Prince' },
+            'comfortably numb': { title: 'Comfortably Numb', artist: 'Pink Floyd' },
+            'knockin on heaven door': { title: "Knockin' on Heaven's Door", artist: "Guns N' Roses" },
+            'rocket man': { title: 'Rocket Man', artist: 'Elton John' },
+            'green river': { title: 'Green River', artist: 'Creedence Clearwater Revival' },
+            'aja': { title: 'Aja', artist: 'Steely Dan' },
+            'we will rock you': { title: 'We Will Rock You', artist: 'Queen' }
         };
 
         const examples = {
@@ -630,6 +661,13 @@
                     processed = processed.replace(regex, right);
                 }
                 
+                // NEW: Auto-replace known song mentions with full title/artist for better recognition
+                for (const [key, data] of Object.entries(knownSongs)) {
+                    const regex = new RegExp(`\\b${this.escapeRegex(key)}\\b`, 'gi');
+                    const replacement = `${data.title}${data.artist ? ` by ${data.artist}` : ''}`;
+                    processed = processed.replace(regex, replacement);
+                }
+                
                 // Apply music term corrections
                 for (const [abbrev, full] of Object.entries(musicTerms)) {
                     const regex = new RegExp(`\\b${this.escapeRegex(abbrev)}\\b`, 'gi');
@@ -664,6 +702,8 @@
             }
 
             extractSongs(text) {
+                // Enhanced: Since we preprocess to include full song names, extraction can be more robust
+                // But keep patterns for structured mentions
                 const patterns = [
                     /(?:worked through|played through|started learning|learned|practiced|played)\s+([^,.!?]+?)(?:\s+by\s+([^,.!?]+?))?(?:[,.!?]|$)/gi,
                     /(?:song|track)\s+["']?([^"',.!?]+?)["']?(?:\s+by\s+([^,.!?]+?))?(?:[,.!?]|$)/gi
@@ -675,7 +715,6 @@
                         let songTitle = match[1].trim();
                         let artist = match[2] ? match[2].trim() : '';
 
-                        // Check for "Artist - Song" format
                         if (!artist && songTitle.includes('-')) {
                             const parts = songTitle.split('-').map(p => p.trim());
                             if (parts.length === 2) {
@@ -684,14 +723,6 @@
                             }
                         }
 
-                        // Check against known songs database
-                        const songKey = songTitle.toLowerCase();
-                        if (knownSongs[songKey]) {
-                            songTitle = knownSongs[songKey].title;
-                            artist = artist || knownSongs[songKey].artist;
-                        }
-
-                        // Clean and validate
                         songTitle = this.capitalizeProperNouns(songTitle);
                         artist = artist ? this.capitalizeProperNouns(artist) : '';
 
@@ -775,7 +806,8 @@
                 
                 const achievementKeywords = [
                     'worked', 'played', 'went through', 'learned', 'started',
-                    'practiced', 'broke down', 'covered', 'sounds'
+                    'practiced', 'broke down', 'covered', 'sounds', 'sounding', // Added 'sounding' for better recognition
+                    'good', 'great', 'excellent', 'awesome'
                 ];
                 
                 const homeworkKeywords = [
@@ -812,7 +844,7 @@
                     }
                 }
                 
-                // Format song references without quotes
+                // Format song references without quotes (now handled in preprocess)
                 this.songs.forEach(song => {
                     const pattern = new RegExp(`\\b${this.escapeRegex(song.title)}\\b`, 'gi');
                     const replacement = song.artist ? 
@@ -869,7 +901,10 @@
                     'chainsmokers': 'The Chainsmokers',
                     'coldplay': 'Coldplay',
                     'radiohead': 'Radiohead',
-                    'hozier': 'Hozier'
+                    'hozier': 'Hozier',
+                    'ac/dc': 'AC/DC',
+                    'guns n roses': "Guns N' Roses",
+                    'led zeppelin': 'Led Zeppelin'
                 };
 
                 let result = text;
@@ -916,7 +951,7 @@
                     output += `\nTechniques Covered:\n\n`;
                     const techniqueList = Array.from(this.techniques).slice(0, 5);
                     techniqueList.forEach(technique => {
-                        output += `• ${technique}\n`;
+                        output += `• ${this.capitalizeProperNouns(technique)}\n`; // Capitalize techniques for polish
                     });
                 }
 
@@ -991,6 +1026,23 @@
             }, 100);
         }
 
+        function createFallbackOutput(input) {
+            const lines = input.split(/[.!?]+/).filter(line => line.trim());
+            let output = 'Lesson Recap\n\nToday\'s Achievements:\n\n';
+            
+            lines.slice(0, 3).forEach(line => {
+                if (line.trim()) {
+                    output += `• ${line.trim()}.\n`;
+                }
+            });
+            
+            output += '\nPractice Assignments:\n\n';
+            output += '• Practice the material covered in today\'s lesson.\n';
+            output += '• Focus on maintaining proper technique.\n';
+            
+            return output;
+        }
+
         function finalizeNote() {
             if (!formatter.studentName) {
                 showError('Please enter a student name and generate a recap first.');
@@ -1041,23 +1093,6 @@
             document.getElementById('studentName').value = student;
             document.getElementById('historySection').style.display = 'none';
             showSuccess('Loaded from history. Make changes and regenerate.');
-        }
-
-        function createFallbackOutput(input) {
-            const lines = input.split(/[.!?]+/).filter(line => line.trim());
-            let output = 'Lesson Recap\n\nToday\'s Achievements:\n\n';
-            
-            lines.slice(0, 3).forEach(line => {
-                if (line.trim()) {
-                    output += `• ${line.trim()}.\n`;
-                }
-            });
-            
-            output += '\nPractice Assignments:\n\n';
-            output += '• Practice the material covered in today\'s lesson.\n';
-            output += '• Focus on maintaining proper technique.\n';
-            
-            return output;
         }
 
         function loadExample(key) {
