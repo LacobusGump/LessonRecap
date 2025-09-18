@@ -91,28 +91,31 @@
             font-size: 13px; /* Fibonacci: 13 */
         }
         
-        .form-textarea {
+        .form-input {
             width: 100%;
             padding: 13px; /* Fibonacci: 13 */
             border: 1px solid var(--border);
             border-radius: var(--border-radius);
             font-size: 13px; /* Fibonacci: 13 */
             font-family: inherit;
-            resize: vertical;
             transition: all 0.2s ease;
             background: var(--bg-secondary);
-            min-height: 89px; /* Fibonacci: 89 */
             color: var(--text);
         }
         
-        .form-textarea:focus {
+        .form-input:focus {
             outline: none;
             border-color: var(--primary);
             background: var(--bg-primary);
         }
         
-        .form-textarea::placeholder {
+        .form-input::placeholder {
             color: var(--text-light);
+        }
+        
+        .form-textarea {
+            min-height: 89px; /* Fibonacci: 89 */
+            resize: vertical;
         }
         
         .button-group {
@@ -142,7 +145,7 @@
             color: white;
         }
         
-        .btn-primary:hover {
+        .btn-primary:hover:not(:disabled) {
             transform: translateY(-1px);
         }
         
@@ -152,7 +155,7 @@
             border: 1px solid var(--border);
         }
         
-        .btn-secondary:hover {
+        .btn-secondary:hover:not(:disabled) {
             background: var(--border);
         }
         
@@ -180,6 +183,55 @@
             border: 1px solid var(--border);
             color: var(--text);
             position: relative;
+        }
+        
+        .output-content.finalized {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--accent);
+        }
+        
+        .finalize-bar {
+            display: none;
+            position: sticky;
+            top: 0;
+            background: var(--bg-secondary);
+            padding: 8px;
+            border-bottom: 1px solid var(--border);
+            text-align: right;
+        }
+        
+        .finalize-bar.show {
+            display: block;
+        }
+        
+        .output-content.finalized .finalize-bar {
+            display: none;
+        }
+        
+        .history-section {
+            margin-top: 13px; /* Fibonacci: 13 */
+            padding-top: 13px; /* Fibonacci: 13 */
+            border-top: 1px solid var(--border);
+        }
+        
+        .history-list {
+            max-height: 200px;
+            overflow-y: auto;
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            padding: 8px;
+            border: 1px solid var(--border);
+        }
+        
+        .history-item {
+            padding: 5px;
+            border-bottom: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        
+        .history-item:last-child {
+            border-bottom: none;
         }
         
         .examples-section {
@@ -267,6 +319,34 @@
             margin-top: 5px; /* Fibonacci: 5 */
         }
         
+        .char-count.warning {
+            color: var(--warning);
+        }
+        
+        .char-count.danger {
+            color: var(--danger);
+        }
+        
+        .checklist-section {
+            margin-top: 13px;
+            padding: 8px;
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border);
+        }
+        
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 5px;
+            font-size: 12px;
+        }
+        
+        .check-item:last-child {
+            margin-bottom: 0;
+        }
+        
         @media (max-width: 768px) {
             .container {
                 padding: 13px; /* Fibonacci: 13 */
@@ -299,25 +379,56 @@
         
         <div class="main-card">
             <div class="form-section">
+                <label class="form-label" for="studentName">Student Name</label>
+                <input
+                    type="text"
+                    id="studentName"
+                    class="form-input"
+                    placeholder="Enter student name (e.g., Charleigh)"
+                >
+            </div>
+            
+            <div class="form-section">
                 <label class="form-label" for="lessonNotes">Enter Raw Lesson Notes</label>
                 <textarea
                     id="lessonNotes"
                     class="form-textarea"
                     rows="5"
-                    placeholder="Example: Charleigh - worked through Black Sabbath Paranoid which I sent home through the app. You did great with it, went over some of the 16s fills..."
+                    placeholder="Example: worked through Black Sabbath Paranoid which I sent home through the app. You did great with it, went over some of the 16s fills..."
                 ></textarea>
                 <div class="char-count" id="charCount">0 characters</div>
+            </div>
+            
+            <div class="checklist-section">
+                <div class="check-item">
+                    <input type="checkbox" id="spellCheck" checked>
+                    <label for="spellCheck" style="font-size: 12px; color: var(--text-light);">Basic Spellcheck</label>
+                </div>
+                <div class="check-item">
+                    <input type="checkbox" id="grammarCheck" checked>
+                    <label for="grammarCheck" style="font-size: 12px; color: var(--text-light);">Basic Grammar Suggestions</label>
+                </div>
+                <div class="check-item">
+                    <input type="checkbox" id="offensiveFilter" checked>
+                    <label for="offensiveFilter" style="font-size: 12px; color: var(--text-light);">Filter Offensive Words</label>
+                </div>
             </div>
             
             <div class="button-group">
                 <button class="btn btn-primary" onclick="formatNotes()" id="formatBtn">
                     Generate Professional Recap
                 </button>
+                <button class="btn btn-secondary" onclick="finalizeNote()">
+                    Finalize Note
+                </button>
                 <button class="btn btn-secondary" onclick="clearAll()">
                     Clear All
                 </button>
                 <button class="btn btn-secondary" onclick="copyOutput()">
                     Copy Output
+                </button>
+                <button class="btn btn-secondary" onclick="viewHistory()">
+                    View History
                 </button>
             </div>
             
@@ -338,7 +449,16 @@
             
             <div class="output-section">
                 <label class="form-label">Professional Lesson Recap</label>
+                <div class="finalize-bar" id="finalizeBar">
+                    <button class="btn btn-primary" onclick="finalizeNote()" style="font-size: 12px; padding: 4px 8px;">Finalize & Save</button>
+                    <span style="color: var(--text-light); font-size: 12px; margin-right: auto;">Draft - Click to finalize</span>
+                </div>
                 <div id="output" class="output-content">Your formatted lesson recap will appear here...</div>
+            </div>
+            
+            <div class="history-section" id="historySection" style="display: none;">
+                <label class="form-label">Note History</label>
+                <div id="historyList" class="history-list"></div>
             </div>
             
             <div class="examples-section">
@@ -360,6 +480,7 @@
         const CONFIG = {
             MAX_HOMEWORK_ITEMS: 4,
             MIN_TEXT_LENGTH: 10,
+            MAX_CHARS: 5000, // Added limit for character count
             MAX_PROCESSING_TIME: 5000,
             DEBOUNCE_DELAY: 300
         };
@@ -424,6 +545,16 @@
             'sixtuplet': 'sextuplet'
         };
 
+        // Basic offensive words filter (expandable dictionary)
+        const offensiveWords = ['damn', 'hell', 'shit', 'fuck', 'ass', 'bitch']; // Placeholder; expand as needed
+
+        // Basic grammar rules (simple suggestions)
+        const grammarRules = [
+            { pattern: /\bi (\w)/gi, replacement: 'I $1' },
+            { pattern: /(\w+)ed (\w+)/gi, replacement: '$1ed, $2' }, // Basic comma suggestion
+            { pattern: /\b(he|she|it|they|we|you) (\w+)/gi, replacement: '$1 $2' } // Basic capitalization after pronouns
+        ];
+
         const knownSongs = {
             'paranoid': { title: 'Paranoid', artist: 'Black Sabbath' },
             'running': { title: 'Running', artist: 'OMA' },
@@ -458,6 +589,8 @@
                 this.techniques = new Set();
                 this.songs = [];
                 this.errors = [];
+                this.isFinalized = false;
+                this.finalizeDate = null;
             }
 
             reset() {
@@ -467,12 +600,29 @@
                 this.techniques = new Set();
                 this.songs = [];
                 this.errors = [];
+                this.isFinalized = false;
+                this.finalizeDate = null;
             }
 
             preprocessText(text) {
                 if (!text) return '';
                 
                 let processed = text.trim();
+                
+                // Offensive word filter
+                if (document.getElementById('offensiveFilter').checked) {
+                    for (const word of offensiveWords) {
+                        const regex = new RegExp(`\\b${this.escapeRegex(word)}\\b`, 'gi');
+                        processed = processed.replace(regex, '[filtered]');
+                    }
+                }
+                
+                // Basic grammar check
+                if (document.getElementById('grammarCheck').checked) {
+                    for (const rule of grammarRules) {
+                        processed = processed.replace(rule.pattern, rule.replacement);
+                    }
+                }
                 
                 // Apply spelling corrections
                 for (const [wrong, right] of Object.entries(spellingCorrections)) {
@@ -500,6 +650,11 @@
             }
 
             extractStudentName(text) {
+                let name = document.getElementById('studentName').value.trim();
+                if (name) {
+                    this.studentName = this.capitalizeWord(name);
+                    return text;
+                }
                 const nameMatch = text.match(/^([A-Z][a-z]+)\s*[-:–]\s*/i);
                 if (nameMatch) {
                     this.studentName = this.capitalizeWord(nameMatch[1]);
@@ -737,6 +892,10 @@
                     output += ` - ${this.studentName}`;
                 }
                 
+                if (this.finalizeDate) {
+                    output += ` (Finalized: ${this.finalizeDate})`;
+                }
+                
                 output += `\n\nToday's Achievements:\n\n`;
                 
                 if (this.achievements.length > 0) {
@@ -763,6 +922,28 @@
 
                 return output;
             }
+
+            saveToHistory() {
+                if (!this.studentName) return;
+                const history = JSON.parse(localStorage.getItem('lessonHistory') || '{}');
+                if (!history[this.studentName]) {
+                    history[this.studentName] = [];
+                }
+                const note = {
+                    content: this.generateOutput(),
+                    date: new Date().toISOString(),
+                    isFinalized: this.isFinalized
+                };
+                // Check for reuse: require at least one char change if loading past
+                const lastNote = history[this.studentName][history[this.studentName].length - 1];
+                if (lastNote && lastNote.content === note.content) {
+                    showError('Cannot save identical note. Make at least one change.');
+                    return false;
+                }
+                history[this.studentName].push(note);
+                localStorage.setItem('lessonHistory', JSON.stringify(history));
+                return true;
+            }
         }
 
         // Global formatter instance
@@ -771,14 +952,21 @@
         // Main functions
         function formatNotes() {
             const input = document.getElementById('lessonNotes').value.trim();
+            const studentInput = document.getElementById('studentName').value.trim();
             
             if (!input || input.length < CONFIG.MIN_TEXT_LENGTH) {
                 showError('Please enter at least 10 characters of lesson notes.');
                 return;
             }
 
+            if (input.length > CONFIG.MAX_CHARS) {
+                showError(`Notes exceed ${CONFIG.MAX_CHARS} characters. Please shorten.`);
+                return;
+            }
+
             hideMessages();
             showProcessing(true);
+            document.getElementById('finalizeBar').classList.add('show');
             
             // Use setTimeout to allow UI to update
             setTimeout(() => {
@@ -803,6 +991,58 @@
             }, 100);
         }
 
+        function finalizeNote() {
+            if (!formatter.studentName) {
+                showError('Please enter a student name and generate a recap first.');
+                return;
+            }
+            if (formatter.isFinalized) {
+                showError('Note is already finalized.');
+                return;
+            }
+            const saved = formatter.saveToHistory();
+            if (saved) {
+                formatter.isFinalized = true;
+                formatter.finalizeDate = new Date().toLocaleString();
+                document.getElementById('output').textContent = formatter.generateOutput();
+                document.getElementById('output').classList.add('finalized');
+                document.getElementById('finalizeBar').classList.remove('show');
+                showSuccess(`Note finalized and saved on ${formatter.finalizeDate}`);
+            }
+        }
+
+        function viewHistory() {
+            const student = document.getElementById('studentName').value.trim() || formatter.studentName;
+            if (!student) {
+                showError('Please enter a student name to view history.');
+                return;
+            }
+            const history = JSON.parse(localStorage.getItem('lessonHistory') || '{}');
+            const studentHistory = history[student] || [];
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = '';
+            if (studentHistory.length === 0) {
+                historyList.innerHTML = '<div class="history-item">No history found.</div>';
+            } else {
+                studentHistory.slice(-10).reverse().forEach(note => { // Show last 10
+                    const item = document.createElement('div');
+                    item.className = 'history-item';
+                    item.innerHTML = `<strong>${new Date(note.date).toLocaleDateString()}</strong> - ${note.isFinalized ? 'Finalized' : 'Draft'}<br>${note.content.substring(0, 100)}...`;
+                    item.onclick = () => loadFromHistory(note.content, student);
+                    historyList.appendChild(item);
+                });
+            }
+            document.getElementById('historySection').style.display = 'block';
+            showSuccess(`Showing history for ${student}`);
+        }
+
+        function loadFromHistory(content, student) {
+            document.getElementById('lessonNotes').value = content.replace(/Lesson Recap.*\n\n/, '').replace(/\n\n.*$/s, ''); // Strip header/footer
+            document.getElementById('studentName').value = student;
+            document.getElementById('historySection').style.display = 'none';
+            showSuccess('Loaded from history. Make changes and regenerate.');
+        }
+
         function createFallbackOutput(input) {
             const lines = input.split(/[.!?]+/).filter(line => line.trim());
             let output = 'Lesson Recap\n\nToday\'s Achievements:\n\n';
@@ -823,17 +1063,24 @@
         function loadExample(key) {
             const example = examples[key];
             if (example) {
-                document.getElementById('lessonNotes').value = example;
+                const [name, notes] = example.split(' - ', 2);
+                document.getElementById('studentName').value = name.trim();
+                document.getElementById('lessonNotes').value = notes || example;
                 updateCharCount();
                 hideMessages();
             }
         }
 
         function clearAll() {
+            document.getElementById('studentName').value = '';
             document.getElementById('lessonNotes').value = '';
             document.getElementById('output').textContent = 'Your formatted lesson recap will appear here...';
+            document.getElementById('output').classList.remove('finalized');
+            document.getElementById('finalizeBar').classList.remove('show');
+            document.getElementById('historySection').style.display = 'none';
             updateCharCount();
             hideMessages();
+            formatter.reset();
         }
 
         function copyOutput() {
@@ -892,7 +1139,16 @@
 
         function updateCharCount() {
             const text = document.getElementById('lessonNotes').value;
-            document.getElementById('charCount').textContent = `${text.length} characters`;
+            const count = text.length;
+            const charCountEl = document.getElementById('charCount');
+            charCountEl.textContent = `${count} / ${CONFIG.MAX_CHARS} characters`;
+            charCountEl.className = 'char-count';
+            if (count > CONFIG.MAX_CHARS * 0.8) {
+                charCountEl.classList.add('warning');
+            }
+            if (count > CONFIG.MAX_CHARS) {
+                charCountEl.classList.add('danger');
+            }
         }
 
         // Event listeners
@@ -909,6 +1165,12 @@
                     } else if (e.key === 'Delete' || e.key === 'Backspace') {
                         e.preventDefault();
                         clearAll();
+                    } else if (e.key === 'f') {
+                        e.preventDefault();
+                        finalizeNote();
+                    } else if (e.key === 'h') {
+                        e.preventDefault();
+                        viewHistory();
                     }
                 }
             });
