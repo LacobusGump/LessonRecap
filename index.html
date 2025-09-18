@@ -518,6 +518,24 @@
             user-select: none;
         }
         
+        /* New AI Loading Indicator */
+        .ai-loading {
+            display: none;
+            align-items: center;
+            gap: var(--fib-5);
+            color: var(--warning);
+            font-weight: 400;
+            margin-top: var(--fib-8);
+            padding: var(--fib-8);
+            background: rgba(245, 158, 11, 0.1);
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        
+        .ai-loading.show {
+            display: flex;
+        }
+        
         @media (max-width: 768px) {
             .container {
                 grid-template-columns: 1fr;
@@ -581,6 +599,10 @@
                     <input type="checkbox" id="offensiveFilter" checked>
                     <label for="offensiveFilter">Filter Offensive Words</label>
                 </div>
+                <div class="check-item">
+                    <input type="checkbox" id="useAI" checked>
+                    <label for="useAI">Use Onboard AI (TinyLlama) for Generation</label>
+                </div>
             </div>
             
             <div class="button-group">
@@ -607,6 +629,11 @@
             <div class="processing-indicator" id="processing">
                 <div class="spinner"></div>
                 Processing...
+            </div>
+            
+            <div class="ai-loading" id="aiLoading">
+                <div class="spinner"></div>
+                Loading Onboard AI Model (TinyLlama-1.1B)... This may take 30-60 seconds on first load.
             </div>
             
             <div class="error-message" id="errorMessage">
@@ -649,8 +676,11 @@
         </div>
     </div>
 
-    <!-- Switched to reliable CDN for Compromise (cdnjs) to fix loading bug -->
+    <!-- Compromise for fallback NLP -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/compromise/14.14.0/compromise.min.js"></script>
+    
+    <!-- WebLLM for Onboard AI (TinyLlama model) -->
+    <script src="https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2.9/dist/index.min.js"></script>
 
     <script>
         // Configuration and Data (full knownSongs list included for completeness)
@@ -659,7 +689,10 @@
             MIN_TEXT_LENGTH: 10,
             MAX_CHARS: 5000,
             MAX_PROCESSING_TIME: 5000,
-            DEBOUNCE_DELAY: 300
+            DEBOUNCE_DELAY: 300,
+            AI_MODEL: 'TinyLlama-1.1B-Chat-3T-q4f16_1-MLC', // Small, fast Llama variant for browser
+            AI_MAX_TOKENS: 512, // Limit for speed
+            AI_TEMPERATURE: 0.7
         };
 
         const musicTerms = {
@@ -877,6 +910,11 @@
             ]
         };
 
+        // Global AI Engine (WebLLM)
+        let aiEngine = null;
+        let isModelLoaded = false;
+
+        // Fallback Rule-Based Formatter (original)
         class LessonFormatter {
             constructor() {
                 this.studentName = '';
@@ -888,6 +926,8 @@
                 this.isFinalized = false;
                 this.finalizeDate = null;
             }
+
+            // ... (Keep all original methods: reset, preprocessText, escapeRegex, extractStudentName, extractSongs, extractTechniques, splitIntoParts, parseSentences, classifySentence, formatSentence, generateInferredHomework, capitalizeWord, capitalizeProperNouns, proofreadText, generateOutput, saveToHistory)
 
             reset() {
                 this.studentName = '';
@@ -1208,7 +1248,7 @@
                 });
             }
 
-            // Enhanced Proofreading with Context Addition (Rule-based "AI" simulation)
+            // Enhanced Proofreading with Context Addition (Rule-based "AI" simulation) - Kept for fallback
             proofreadText(text) {
                 try {
                     if (!window.nlp || !document.getElementById('grammarCheck').checked) return text;
@@ -1344,29 +1384,128 @@
         // Global formatter instance
         const formatter = new LessonFormatter();
 
-        // Proofread function (post-generation) - Now enhanced to show changes
-        function proofreadOutput() {
-            const outputEl = document.getElementById('output');
-            let currentText = outputEl.textContent;
-            if (currentText === 'Your formatted lesson recap will appear here...') {
-                showError('Generate a recap first.');
-                return;
-            }
-            showProcessing(true);
-            setTimeout(() => {
-                const proofread = formatter.proofreadText(currentText);
-                if (proofread !== currentText) {
-                    outputEl.textContent = proofread;
-                    showSuccess('Proofread, edited, and context added!');
-                } else {
-                    showSuccess('No changes needed - already polished!');
+        // AI Generation Function using WebLLM (TinyLlama)
+        async function generateWithAI(studentName, rawNotes, useFallback = false) {
+            if (!aiEngine || !isModelLoaded) {
+                if (!useFallback) {
+                    showError('AI model not loaded. Using fallback rule-based generation.');
+                    return null;
                 }
-                showProcessing(false);
-            }, 200); // Slightly longer for perceived processing
+            }
+
+            // Preprocess raw notes (spellcheck, offensive filter, etc.)
+            let processedNotes = rawNotes;
+            if (document.getElementById('offensiveFilter').checked) {
+                for (const word of offensiveWords) {
+                    const regex = new RegExp(`\\b${word}\\b`, 'gi');
+                    processedNotes = processedNotes.replace(regex, '[filtered]');
+                }
+            }
+            // Basic spelling corrections
+            for (const [wrong, right] of Object.entries(spellingCorrections)) {
+                const regex = new RegExp(`\\b${wrong}\\b`, 'gi');
+                processedNotes = processedNotes.replace(regex, right);
+            }
+
+            // Craft prompt for drum lesson recap
+            const prompt = `You are a professional drum teacher assistant. Transform these raw lesson notes into a polished, professional recap. Structure it as:
+
+Lesson Recap - [Student Name]
+
+Today's Achievements:
+
+• [Bullet point achievements from the notes, using past tense, starting with "We " where appropriate]
+
+Practice Assignments:
+
+• [Imperative homework items, 2-4 bullets, inferred from notes if needed, no "You" prefix]
+
+If techniques were covered, add a Techniques Covered section with bullets.
+
+Keep it concise, positive, and focused on drums. Correct any music terms (e.g., 16s -> 16th notes). Student: ${studentName || 'Unnamed'}. Notes: ${processedNotes}
+
+Output only the formatted recap text.`;
+
+            if (useFallback || !aiEngine) {
+                // Fallback to rule-based
+                formatter.reset();
+                formatter.parseSentences(rawNotes);
+                return formatter.generateOutput();
+            }
+
+            try {
+                const reply = await aiEngine.chat.completions.create({
+                    messages: [
+                        { role: 'system', content: 'You are a helpful assistant for formatting drum lesson recaps.' },
+                        { role: 'user', content: prompt }
+                    ],
+                    temperature: CONFIG.AI_TEMPERATURE,
+                    max_tokens: CONFIG.AI_MAX_TOKENS,
+                    stream: false
+                });
+                return reply.choices[0].message.content.trim();
+            } catch (error) {
+                console.error('AI Generation Error:', error);
+                showError('AI generation failed. Falling back to rule-based.');
+                return generateWithAI(studentName, rawNotes, true); // Recursive fallback
+            }
         }
 
-        function formatNotes() {
+        // Load AI Model on Demand
+        async function loadAIModel() {
+            if (isModelLoaded) return true;
+            document.getElementById('aiLoading').classList.add('show');
+            showProcessing(true);
+            try {
+                aiEngine = await mlcChat.initEngine();
+                await aiEngine.reload(CONFIG.AI_MODEL);
+                isModelLoaded = true;
+                document.getElementById('aiLoading').classList.remove('show');
+                showSuccess('AI Model Loaded! Ready for generation.');
+                return true;
+            } catch (error) {
+                console.error('Model Load Error:', error);
+                document.getElementById('aiLoading').classList.remove('show');
+                showError('Failed to load AI model. Using rule-based fallback.');
+                return false;
+            } finally {
+                showProcessing(false);
+            }
+        }
+
+        // Updated Proofread with AI Option
+        async function proofreadWithAI(text) {
+            if (!document.getElementById('grammarCheck').checked || !isModelLoaded) {
+                return formatter.proofreadText(text);
+            }
+
+            const prompt = `Proofread and enhance this drum lesson recap. Fix grammar, improve flow, add 1-2 relevant practice tips for drums (e.g., metronome use). Keep structure intact. Make it more professional and engaging.
+
+${text}
+
+Output only the improved recap.`;
+
+            try {
+                const reply = await aiEngine.chat.completions.create({
+                    messages: [
+                        { role: 'system', content: 'You are an expert editor for music lesson notes.' },
+                        { role: 'user', content: prompt }
+                    ],
+                    temperature: 0.5, // Lower for editing
+                    max_tokens: CONFIG.AI_MAX_TOKENS,
+                    stream: false
+                });
+                return reply.choices[0].message.content.trim();
+            } catch (error) {
+                console.error('AI Proofread Error:', error);
+                return formatter.proofreadText(text); // Fallback
+            }
+        }
+
+        // Updated formatNotes with AI
+        async function formatNotes() {
             const input = document.getElementById('lessonNotes').value.trim();
+            const studentName = document.getElementById('studentName').value.trim();
             
             if (!input || input.length < CONFIG.MIN_TEXT_LENGTH) {
                 showError('Please enter at least 10 characters of lesson notes.');
@@ -1381,26 +1520,67 @@
             hideMessages();
             showProcessing(true);
             document.getElementById('finalizeBar').classList.add('show');
-            
-            setTimeout(() => {
-                try {
+
+            const useAI = document.getElementById('useAI').checked;
+
+            try {
+                let output;
+                if (useAI) {
+                    await loadAIModel();
+                    output = await generateWithAI(studentName, input);
+                } else {
+                    // Rule-based
                     formatter.reset();
                     formatter.parseSentences(input);
-                    const output = formatter.generateOutput();
-                    
-                    document.getElementById('output').textContent = output;
-                    showProcessing(false);
-                    showSuccess('Lesson recap generated successfully!');
-                    
-                } catch (error) {
-                    console.error('Error formatting notes:', error);
-                    showProcessing(false);
-                    showError('An error occurred while formatting. Please try again.');
-                    
-                    const fallbackOutput = createFallbackOutput(input);
-                    document.getElementById('output').textContent = fallbackOutput;
+                    output = formatter.generateOutput();
                 }
-            }, 100);
+
+                if (output) {
+                    document.getElementById('output').textContent = output;
+                    showSuccess(useAI ? 'AI-Generated recap ready!' : 'Lesson recap generated successfully!');
+                } else {
+                    throw new Error('No output generated');
+                }
+            } catch (error) {
+                console.error('Error formatting notes:', error);
+                showError('An error occurred while formatting. Please try again.');
+                
+                const fallbackOutput = createFallbackOutput(input);
+                document.getElementById('output').textContent = fallbackOutput;
+            } finally {
+                showProcessing(false);
+            }
+        }
+
+        // Updated proofreadOutput with AI
+        async function proofreadOutput() {
+            const outputEl = document.getElementById('output');
+            let currentText = outputEl.textContent;
+            if (currentText === 'Your formatted lesson recap will appear here...') {
+                showError('Generate a recap first.');
+                return;
+            }
+            showProcessing(true);
+            try {
+                const useAI = document.getElementById('useAI').checked && document.getElementById('grammarCheck').checked;
+                let proofread;
+                if (useAI && isModelLoaded) {
+                    proofread = await proofreadWithAI(currentText);
+                } else {
+                    proofread = formatter.proofreadText(currentText);
+                }
+                if (proofread !== currentText) {
+                    outputEl.textContent = proofread;
+                    showSuccess(useAI ? 'AI Proofread & enhanced!' : 'Proofread, edited, and context added!');
+                } else {
+                    showSuccess('No changes needed - already polished!');
+                }
+            } catch (error) {
+                console.error('Proofread Error:', error);
+                showError('Proofreading failed. Try rule-based mode.');
+            } finally {
+                showProcessing(false);
+            }
         }
 
         function createFallbackOutput(input) {
@@ -1421,7 +1601,7 @@
         }
 
         function finalizeNote() {
-            if (!formatter.studentName) {
+            if (!formatter.studentName && !document.getElementById('studentName').value.trim()) {
                 showError('Please enter a student name and generate a recap first.');
                 return;
             }
@@ -1493,6 +1673,7 @@
             updateCharCount();
             hideMessages();
             formatter.reset();
+            // Note: AI model stays loaded for performance
         }
 
         function copyOutput() {
