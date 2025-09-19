@@ -746,7 +746,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/compromise/14.14.0/compromise.min.js"></script>
     
     <!-- WebLLM for Onboard AI -->
-    <script src="https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2.9/dist/index.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2.50/dist/index.min.js"></script>
 
     <script>
         // Configuration
@@ -1427,9 +1427,12 @@
             document.getElementById('aiLoading').classList.add('show');
             showProcessing(true);
             try {
-                const mlcChat = await MLCChat.create();
-                await mlcChat.reload(CONFIG.AI_MODEL);
-                aiEngine = mlcChat;
+                // Use CreateMLCEngine for OpenAI-compatible API
+                aiEngine = await CreateMLCEngine(CONFIG.AI_MODEL, {
+                    initProgressCallback: (progress) => {
+                        console.log('Model Load Progress:', progress.text); // Optional: Log download progress
+                    }
+                });
                 isModelLoaded = true;
                 document.getElementById('aiLoading').classList.remove('show');
                 showSuccess('AI Model Loaded Successfully!');
