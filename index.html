@@ -3,48 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Music Lesson Formatter Pro</title>
+    <title>Drum Lesson Formatter</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        
         :root {
-            --primary: #4f46e5;
-            --primary-dark: #4338ca;
-            --secondary: #0f172a;
-            --accent: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --text: #f1f5f9;
-            --text-light: #94a3b8;
-            --border: #334155;
-            --bg-primary: #0f172a;
-            --bg-secondary: #1e293b;
-            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 8px 13px rgba(0, 0, 0, 0.2);
-            --shadow-xl: 0 21px 34px rgba(0, 0, 0, 0.3);
-            --gradient: linear-gradient(135deg, #3730a3 0%, #5b21b6 100%);
-            --gradient-subtle: linear-gradient(135deg, rgba(55, 48, 163, 0.1) 0%, rgba(91, 33, 182, 0.1) 100%);
-            --border-radius: 12px;
-            --fib-1: 1px;
-            --fib-2: 2px;
-            --fib-3: 3px;
-            --fib-5: 5px;
-            --fib-8: 8px;
-            --fib-13: 13px;
-            --fib-21: 21px;
-            --fib-34: 34px;
-            --fib-55: 55px;
+            --f1: 1px;
+            --f2: 2px;
+            --f3: 3px;
+            --f5: 5px;
+            --f8: 8px;
+            --f13: 13px;
+            --f21: 21px;
+            --f34: 34px;
+            --f55: 55px;
+            --f89: 89px;
+            
+            --bg: #0a0a0a;
+            --surface: #141414;
+            --border: #262626;
+            --text: #f0f0f0;
+            --dim: #888;
+            --accent: #3b82f6;
+            --success: #22c55e;
+            --error: #ef4444;
         }
-        
-        .fib-1 { padding: var(--fib-1); margin: var(--fib-1); }
-        .fib-2 { padding: var(--fib-2); margin: var(--fib-2); }
-        .fib-3 { padding: var(--fib-3); margin: var(--fib-3); }
-        .fib-5 { padding: var(--fib-5); margin: var(--fib-5); }
-        .fib-8 { padding: var(--fib-8); margin: var(--fib-8); }
-        .fib-13 { padding: var(--fib-13); margin: var(--fib-13); }
-        .fib-21 { padding: var(--fib-21); margin: var(--fib-21); }
-        .fib-34 { padding: var(--fib-34); margin: var(--fib-34); }
-        .fib-55 { padding: var(--fib-55); margin: var(--fib-55); }
         
         * {
             margin: 0;
@@ -53,1801 +34,608 @@
         }
         
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            line-height: 1.618;
+            font-family: -apple-system, system-ui, sans-serif;
+            background: var(--bg);
             color: var(--text);
-            background: var(--gradient-subtle), var(--bg-primary);
-            min-height: 100vh;
-            font-weight: 300;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+            line-height: 1.618;
             font-size: 14px;
-            overflow-x: hidden;
-        }
-        
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                radial-gradient(circle at 20% 80%, rgba(79, 70, 229, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(239, 68, 68, 0.03) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: -1;
-        }
-        
-        .container {
+            padding: var(--f21);
             max-width: 987px;
             margin: 0 auto;
-            padding: var(--fib-21);
+        }
+        
+        h1 {
+            font-size: var(--f21);
+            font-weight: 500;
+            margin-bottom: var(--f34);
+            letter-spacing: -0.02em;
+        }
+        
+        .grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: var(--fib-21);
-            align-items: start;
-        }
-        
-        .header {
-            grid-column: 1 / -1;
-            text-align: center;
-            margin-bottom: var(--fib-21);
-            position: relative;
-        }
-        
-        .header::after {
-            content: '';
-            position: absolute;
-            bottom: -var(--fib-8);
-            left: 50%;
-            transform: translateX(-50%);
-            width: var(--fib-55);
-            height: 1px;
-            background: var(--gradient);
-            border-radius: 1px;
-        }
-        
-        .header h1 {
-            font-size: var(--fib-34);
-            font-weight: 600;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: var(--fib-5);
-            letter-spacing: -0.01em;
-            opacity: 0;
-            animation: fadeInUp 0.8s ease-out forwards;
-        }
-        
-        .header .subtitle {
-            color: var(--text-light);
-            font-size: var(--fib-21);
-            font-weight: 300;
-            opacity: 0;
-            animation: fadeInUp 0.8s ease-out 0.2s forwards;
-        }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(var(--fib-13));
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .input-card, .output-card {
-            background: var(--bg-primary);
-            border-radius: var(--border-radius);
-            padding: var(--fib-21);
-            box-shadow: var(--shadow-xl);
-            border: 1px solid var(--border);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .input-card::before, .output-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: var(--fib-1);
-            background: var(--gradient);
-            opacity: 0.5;
-        }
-        
-        .input-card:hover, .output-card:hover {
-            transform: translateY(var(--fib-2));
-            box-shadow: var(--shadow-xl), 0 0 var(--fib-21) rgba(79, 70, 229, 0.1);
-        }
-        
-        .form-section {
-            margin-bottom: var(--fib-13);
-        }
-        
-        .form-label {
-            display: block;
-            margin-bottom: var(--fib-5);
-            font-weight: 500;
-            color: var(--text);
-            font-size: 14px;
-            opacity: 0.8;
-        }
-        
-        .form-input, .form-textarea {
-            width: 100%;
-            padding: var(--fib-13);
-            border: 1px solid var(--border);
-            border-radius: var(--border-radius);
-            font-size: 14px;
-            font-family: inherit;
-            transition: all 0.3s ease;
-            background: linear-gradient(145deg, var(--bg-secondary), rgba(30, 41, 59, 0.8));
-            color: var(--text);
-            backdrop-filter: blur(10px);
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-        
-        .form-input:focus, .form-textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: linear-gradient(145deg, var(--bg-primary), rgba(15, 23, 42, 0.9));
-            box-shadow: 0 0 0 var(--fib-3) rgba(79, 70, 229, 0.2), inset 0 1px 3px rgba(0, 0, 0, 0.2);
-            transform: scale(1.01);
-        }
-        
-        .form-input::placeholder, .form-textarea::placeholder {
-            color: var(--text-light);
-            opacity: 0.7;
-        }
-        
-        .form-textarea {
-            min-height: 200px;
-            resize: vertical;
-            line-height: 1.618;
-            font-weight: 300;
-        }
-        
-        .button-group {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(144px, 1fr));
-            gap: var(--fib-8);
-            margin-bottom: var(--fib-13);
-        }
-        
-        .btn {
-            padding: var(--fib-8) var(--fib-13);
-            border: none;
-            border-radius: var(--border-radius);
-            font-size: 13px;
-            font-weight: 400;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: var(--fib-5);
-            text-decoration: none;
-            font-family: inherit;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-            transition: left 0.5s;
-        }
-        
-        .btn:hover::before {
-            left: 100%;
-        }
-        
-        .btn-primary {
-            background: var(--gradient);
-            color: white;
-        }
-        
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(var(--fib-1)) scale(1.02);
-            box-shadow: var(--shadow-lg);
-        }
-        
-        .btn-secondary {
-            background: var(--bg-secondary);
-            color: var(--text);
-            border: 1px solid var(--border);
-        }
-        
-        .btn-secondary:hover:not(:disabled) {
-            background: var(--border);
-            transform: translateY(var(--fib-1));
-        }
-        
-        .btn:active {
-            transform: translateY(0) scale(0.98);
-        }
-        
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        .output-section {
-            margin-top: var(--fib-13);
-        }
-        
-        .output-content {
-            background: linear-gradient(145deg, var(--bg-secondary), rgba(30, 41, 59, 0.8));
-            padding: var(--fib-13);
-            border-radius: var(--border-radius);
-            white-space: pre-wrap;
-            min-height: 144px;
-            font-family: inherit;
-            line-height: 1.618;
-            border: 1px solid var(--border);
-            color: var(--text);
-            position: relative;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
-        }
-        
-        .output-content.finalized {
-            background: linear-gradient(145deg, rgba(16, 185, 129, 0.05), rgba(16, 185, 129, 0.02));
-            border-color: var(--accent);
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(16, 185, 129, 0.2);
-        }
-        
-        .finalize-bar {
-            display: none;
-            position: sticky;
-            top: 0;
-            background: var(--bg-secondary);
-            padding: var(--fib-8);
-            border-bottom: 1px solid var(--border);
-            text-align: right;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-radius: var(--border-radius) var(--border-radius) 0 0;
-        }
-        
-        .finalize-bar.show {
-            display: flex;
-        }
-        
-        .output-content.finalized .finalize-bar {
-            display: none;
-        }
-        
-        .history-section, .examples-section {
-            margin-top: var(--fib-13);
-            padding-top: var(--fib-13);
-            border-top: 1px solid var(--border);
-        }
-        
-        .history-list {
-            max-height: calc(var(--fib-55) * 3.618);
-            overflow-y: auto;
-            background: var(--bg-secondary);
-            border-radius: var(--border-radius);
-            padding: var(--fib-8);
-            border: 1px solid var(--border);
-            scrollbar-width: thin;
-            scrollbar-color: var(--primary) var(--bg-secondary);
-        }
-        
-        .history-list::-webkit-scrollbar {
-            width: var(--fib-3);
-        }
-        
-        .history-list::-webkit-scrollbar-track {
-            background: var(--bg-secondary);
-        }
-        
-        .history-list::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: var(--fib-3);
-        }
-        
-        .history-item {
-            padding: var(--fib-5);
-            border-bottom: 1px solid var(--border);
-            font-size: 12px;
-            color: var(--text-light);
-            cursor: pointer;
-            transition: background 0.2s ease;
-            border-radius: var(--fib-3);
-            margin-bottom: var(--fib-3);
-        }
-        
-        .history-item:hover {
-            background: var(--border);
-        }
-        
-        .history-item:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-        }
-        
-        .examples-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(144px, 1fr));
-            gap: var(--fib-8);
-            margin-top: var(--fib-8);
-        }
-        
-        .example-btn {
-            padding: var(--fib-8) var(--fib-13);
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: var(--border-radius);
-            color: var(--text);
-            font-size: 13px;
-            font-weight: 300;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: left;
-            border-left: 3px solid transparent;
-        }
-        
-        .example-btn:hover {
-            background: var(--primary);
-            color: white;
-            border-left-color: var(--accent);
-            transform: translateX(var(--fib-3));
-        }
-        
-        .processing-indicator {
-            display: none;
-            align-items: center;
-            gap: var(--fib-5);
-            color: var(--primary);
-            font-weight: 400;
-            margin-top: var(--fib-8);
-            padding: var(--fib-8);
-            background: var(--gradient-subtle);
-            border-radius: var(--border-radius);
-            border: 1px solid rgba(79, 70, 229, 0.2);
-        }
-        
-        .spinner {
-            width: var(--fib-13);
-            height: var(--fib-13);
-            border: 2px solid var(--border);
-            border-top: 2px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .error-message, .success-message, .warning-message {
-            display: none;
-            padding: var(--fib-8);
-            border-radius: var(--border-radius);
-            margin-top: var(--fib-8);
-            align-items: center;
-            gap: var(--fib-5);
-            font-size: 13px;
-            animation: slideIn 0.3s ease-out;
-        }
-        
-        .error-message {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            color: var(--danger);
-        }
-        
-        .success-message {
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            color: var(--accent);
-        }
-        
-        .warning-message {
-            background: rgba(245, 158, 11, 0.1);
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            color: var(--warning);
-        }
-        
-        @keyframes slideIn {
-            from { transform: translateX(-100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        
-        .char-count {
-            text-align: right;
-            color: var(--text-light);
-            font-size: 13px;
-            margin-top: var(--fib-5);
-        }
-        
-        .char-count.warning {
-            color: var(--warning);
-        }
-        
-        .char-count.danger {
-            color: var(--danger);
-        }
-        
-        .checklist-section {
-            margin-top: var(--fib-13);
-            padding: var(--fib-8);
-            background: var(--gradient-subtle);
-            border-radius: var(--border-radius);
-            border: 1px solid rgba(79, 70, 229, 0.1);
-        }
-        
-        .check-item {
-            display: flex;
-            align-items: center;
-            gap: var(--fib-5);
-            margin-bottom: var(--fib-5);
-            font-size: 12px;
-        }
-        
-        .check-item:last-child {
-            margin-bottom: 0;
-        }
-        
-        .check-item input[type="checkbox"] {
-            accent-color: var(--primary);
-            width: var(--fib-5);
-            height: var(--fib-5);
-            cursor: pointer;
-            border-radius: 2px;
-        }
-        
-        .check-item label {
-            color: var(--text-light);
-            cursor: pointer;
-            user-select: none;
-        }
-        
-        .ai-loading {
-            display: none;
-            align-items: center;
-            gap: var(--fib-5);
-            color: var(--warning);
-            font-weight: 400;
-            margin-top: var(--fib-8);
-            padding: var(--fib-8);
-            background: rgba(245, 158, 11, 0.1);
-            border-radius: var(--border-radius);
-            border: 1px solid rgba(245, 158, 11, 0.3);
-        }
-        
-        .ai-loading.show {
-            display: flex;
-        }
-        
-        /* Drum Pattern Editor Styles */
-        .drum-editor {
-            margin-top: var(--fib-13);
-            padding: var(--fib-8);
-            background: var(--bg-secondary);
-            border-radius: var(--border-radius);
-            border: 1px solid var(--border);
-        }
-        
-        .drum-grid {
-            display: grid;
-            grid-template-columns: 100px repeat(16, 1fr);
-            gap: 2px;
-        }
-        
-        .drum-row-label {
-            font-weight: 500;
-            padding: 4px;
-            background: var(--border);
-            text-align: right;
-        }
-        
-        .drum-cell {
-            background: var(--bg-primary);
-            border: 1px solid var(--border);
-            cursor: pointer;
-            height: 24px;
-            transition: background 0.2s;
-        }
-        
-        .drum-cell.active {
-            background: var(--accent);
-        }
-        
-        .drum-controls {
-            margin-top: var(--fib-8);
-            display: flex;
-            gap: var(--fib-8);
+            gap: var(--f21);
         }
         
         @media (max-width: 768px) {
-            .container {
-                grid-template-columns: 1fr;
-                padding: var(--fib-13);
-                gap: var(--fib-13);
-            }
-            
-            .header h1 {
-                font-size: var(--fib-21);
-            }
-            
-            .button-group {
-                grid-template-columns: 1fr;
-            }
-            
-            .examples-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .drum-grid {
-                grid-template-columns: 80px repeat(16, 1fr);
-                font-size: 12px;
-            }
-            
-            .drum-cell {
-                height: 20px;
-            }
+            .grid { grid-template-columns: 1fr; }
         }
+        
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--f8);
+            padding: var(--f21);
+        }
+        
+        label {
+            display: block;
+            margin-bottom: var(--f8);
+            font-size: 12px;
+            color: var(--dim);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--f5);
+            padding: var(--f8) var(--f13);
+            color: var(--text);
+            font: inherit;
+            transition: border-color 0.2s;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        
+        textarea {
+            min-height: 144px;
+            resize: vertical;
+            line-height: 1.618;
+        }
+        
+        button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: var(--f5);
+            padding: var(--f8) var(--f21);
+            font: inherit;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        
+        button:hover { opacity: 0.9; }
+        button:active { transform: translateY(1px); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        button.secondary {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+        
+        button.secondary:hover { background: var(--border); }
+        
+        .btn-group {
+            display: flex;
+            gap: var(--f8);
+            margin-top: var(--f13);
+            flex-wrap: wrap;
+        }
+        
+        .btn-group button { flex: 1; min-width: 89px; }
+        
+        /* Beat Grid */
+        .beat-grid {
+            display: grid;
+            grid-template-columns: var(--f55) repeat(16, 1fr);
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+            border-radius: var(--f5);
+            overflow: hidden;
+            margin: var(--f13) 0;
+        }
+        
+        .beat-label {
+            background: var(--surface);
+            padding: var(--f5);
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            color: var(--dim);
+        }
+        
+        .beat-cell {
+            aspect-ratio: 1;
+            background: var(--surface);
+            cursor: pointer;
+            transition: background 0.1s;
+            position: relative;
+        }
+        
+        .beat-cell:hover { background: var(--border); }
+        .beat-cell.active { background: var(--accent); }
+        .beat-cell.accent-beat::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--dim);
+        }
+        
+        /* Notation Display */
+        .notation {
+            font-family: 'Courier New', monospace;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--f5);
+            padding: var(--f13);
+            margin: var(--f13) 0;
+            white-space: pre;
+            line-height: 1.4;
+            font-size: 12px;
+            overflow-x: auto;
+        }
+        
+        .output {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--f5);
+            padding: var(--f21);
+            min-height: 233px;
+            white-space: pre-wrap;
+            line-height: 1.618;
+        }
+        
+        .output.final {
+            border-color: var(--success);
+            position: relative;
+        }
+        
+        .output.final::before {
+            content: 'FINALIZED';
+            position: absolute;
+            top: var(--f8);
+            right: var(--f8);
+            font-size: 10px;
+            color: var(--success);
+            letter-spacing: 0.1em;
+        }
+        
+        /* Messages */
+        .msg {
+            padding: var(--f8) var(--f13);
+            border-radius: var(--f5);
+            margin-top: var(--f13);
+            font-size: 12px;
+            display: none;
+        }
+        
+        .msg.show { display: block; }
+        .msg.success { background: rgba(34, 197, 94, 0.1); color: var(--success); }
+        .msg.error { background: rgba(239, 68, 68, 0.1); color: var(--error); }
+        
+        /* Examples */
+        .examples {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(144px, 1fr));
+            gap: var(--f5);
+            margin-top: var(--f13);
+        }
+        
+        .example-btn {
+            padding: var(--f5) var(--f8);
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--f3);
+            color: var(--dim);
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+        
+        .example-btn:hover {
+            color: var(--text);
+            border-color: var(--accent);
+        }
+        
+        /* Utilities */
+        .section { margin-bottom: var(--f21); }
+        .small { font-size: 11px; color: var(--dim); }
+        .counter { text-align: right; margin-top: var(--f5); }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .processing { animation: pulse 1s infinite; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🎵 Music Lesson Formatter Pro</h1>
-            <p class="subtitle">Transform raw lesson notes into professional recaps with drum notation support</p>
+    <h1>Drum Lesson Formatter</h1>
+    
+    <div class="grid">
+        <div class="card">
+            <div class="section">
+                <label>Student</label>
+                <input type="text" id="student" placeholder="Name">
+            </div>
+            
+            <div class="section">
+                <label>Notes</label>
+                <textarea id="notes" placeholder="Worked on paradiddles at 120bpm, practiced kick independence..."></textarea>
+                <div class="small counter"><span id="charCount">0</span> / 2000</div>
+            </div>
+            
+            <div class="section">
+                <label>Beat Pattern</label>
+                <div class="beat-grid" id="beatGrid"></div>
+                <div class="notation" id="notation">Click cells to create pattern</div>
+                <div class="btn-group">
+                    <button class="secondary" onclick="clearPattern()">Clear</button>
+                    <button class="secondary" onclick="presetBeat('basic')">Basic</button>
+                    <button class="secondary" onclick="presetBeat('funk')">Funk</button>
+                    <button class="secondary" onclick="addPatternToNotes()">Add to Notes</button>
+                </div>
+            </div>
+            
+            <div class="section">
+                <label>Examples</label>
+                <div class="examples">
+                    <button class="example-btn" onclick="loadExample(0)">Basic Lesson</button>
+                    <button class="example-btn" onclick="loadExample(1)">Song Practice</button>
+                    <button class="example-btn" onclick="loadExample(2)">Technique Focus</button>
+                    <button class="example-btn" onclick="loadExample(3)">Advanced</button>
+                </div>
+            </div>
+            
+            <div class="btn-group">
+                <button onclick="generate()">Generate</button>
+                <button class="secondary" onclick="clearAll()">Clear</button>
+            </div>
+            
+            <div class="msg" id="msg"></div>
         </div>
         
-        <div class="input-card">
-            <div class="form-section">
-                <label class="form-label" for="studentName">Student Name</label>
-                <input
-                    type="text"
-                    id="studentName"
-                    class="form-input"
-                    placeholder="Enter student name (e.g., Charleigh)"
-                >
-            </div>
-            
-            <div class="form-section">
-                <label class="form-label" for="lessonNotes">Enter Raw Lesson Notes</label>
-                <textarea
-                    id="lessonNotes"
-                    class="form-textarea"
-                    rows="10"
-                    placeholder="Example: worked through Black Sabbath Paranoid which I sent home through the app. You did great with it, went over some of the 16s fills... Or describe a drum pattern like 'hi-hat on 8ths, snare on 2 and 4, kick on 1 and 3'"
-                ></textarea>
-                <div class="char-count" id="charCount">0 / 5000 characters</div>
-            </div>
-            
-            <div class="form-section drum-editor">
-                <label class="form-label">Drum Pattern Editor (4/4, 16th notes)</label>
-                <div class="drum-grid" id="drumGrid"></div>
-                <div class="drum-controls">
-                    <button class="btn btn-secondary" onclick="addDrumPatternToNotes()">Add to Notes</button>
-                    <button class="btn btn-secondary" onclick="clearDrumPattern()">Clear Pattern</button>
-                </div>
-            </div>
-            
-            <div class="checklist-section">
-                <div class="check-item">
-                    <input type="checkbox" id="spellCheck" checked>
-                    <label for="spellCheck">Basic Spellcheck</label>
-                </div>
-                <div class="check-item">
-                    <input type="checkbox" id="grammarCheck" checked>
-                    <label for="grammarCheck">AI Grammar Proofreading</label>
-                </div>
-                <div class="check-item">
-                    <input type="checkbox" id="offensiveFilter" checked>
-                    <label for="offensiveFilter">Filter Offensive Words</label>
-                </div>
-                <div class="check-item">
-                    <input type="checkbox" id="useAI" checked>
-                    <label for="useAI">Use Onboard AI (TinyLlama) for Generation & Notation</label>
-                </div>
-            </div>
-            
-            <div class="button-group">
-                <button class="btn btn-primary" onclick="formatNotes()" id="formatBtn">
-                    Generate Professional Recap
-                </button>
-                <button class="btn btn-secondary" onclick="proofreadOutput()">
-                    Proofread & Edit
-                </button>
-                <button class="btn btn-secondary" onclick="finalizeNote()">
-                    Finalize Note
-                </button>
-                <button class="btn btn-secondary" onclick="clearAll()">
-                    Clear All
-                </button>
-                <button class="btn btn-secondary" onclick="copyOutput()">
-                    Copy Output
-                </button>
-                <button class="btn btn-secondary" onclick="viewHistory()">
-                    View History
-                </button>
-            </div>
-            
-            <div class="processing-indicator" id="processing">
-                <div class="spinner"></div>
-                Processing...
-            </div>
-            
-            <div class="ai-loading" id="aiLoading">
-                <div class="spinner"></div>
-                Loading Onboard AI Model (TinyLlama-1.1B)...
-            </div>
-            
-            <div class="error-message" id="errorMessage">
-                <span>⚠️</span>
-                <span id="errorText">An error occurred</span>
-            </div>
-            
-            <div class="success-message" id="successMessage">
-                <span>✅</span>
-                <span id="successText">Operation successful</span>
-            </div>
-            
-            <div class="warning-message" id="warningMessage">
-                <span>⚠️</span>
-                <span id="warningText">Warning</span>
-            </div>
-            
-            <div class="examples-section">
-                <label class="form-label">Quick Examples (Click to Load)</label>
-                <div class="examples-grid">
-                    <button class="example-btn" onclick="loadExample('charleigh')">Charleigh - Drums & Fills</button>
-                    <button class="example-btn" onclick="loadExample('morgan')">Morgan - Endurance Focus</button>
-                    <button class="example-btn" onclick="loadExample('luca')">Luca - Beginner Progress</button>
-                    <button class="example-btn" onclick="loadExample('conan')">Conan - Advanced Techniques</button>
-                    <button class="example-btn" onclick="loadExample('amaiyah')">Amaiyah - Equipment Discussion</button>
-                    <button class="example-btn" onclick="loadExample('brody')">Brody - Multiple Songs</button>
-                </div>
-            </div>
-        </div>
-        
-        <div class="output-card">
-            <div class="output-section">
-                <label class="form-label">Professional Lesson Recap</label>
-                <div class="finalize-bar" id="finalizeBar">
-                    <span style="color: var(--text-light); font-size: 12px;">Draft - Click to finalize</span>
-                    <button class="btn btn-primary" onclick="finalizeNote()" style="font-size: 12px; padding: 4px 8px;">Finalize & Save</button>
-                </div>
-                <div id="output" class="output-content">Your formatted lesson recap will appear here...</div>
-            </div>
-            
-            <div class="history-section" id="historySection" style="display: none;">
-                <label class="form-label">Note History</label>
-                <div id="historyList" class="history-list"></div>
+        <div class="card">
+            <label>Output</label>
+            <div class="output" id="output">Formatted lesson will appear here...</div>
+            <div class="btn-group">
+                <button class="secondary" onclick="copyOutput()">Copy</button>
+                <button class="secondary" onclick="finalize()">Finalize</button>
             </div>
         </div>
     </div>
 
-    <!-- Compromise for fallback NLP -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/compromise/14.14.0/compromise.min.js"></script>
-    
-    <!-- WebLLM for Onboard AI -->
-    <script src="https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2.50/dist/index.min.js"></script>
-
     <script>
-        // Configuration
-        const CONFIG = {
-            MAX_HOMEWORK_ITEMS: 4,
-            MIN_TEXT_LENGTH: 10,
-            MAX_CHARS: 5000,
-            AI_MODEL: 'TinyLlama-1.1B-Chat-v1.0-q4f16_1-MLC',
-            AI_MAX_TOKENS: 512,
-            AI_TEMPERATURE: 0.7,
-            DRUM_PARTS: ['Hi-Hat', 'Ride', 'Crash', 'Snare', 'High Tom', 'Mid Tom', 'Floor Tom', 'Bass Drum']
+        // Drum parts and pattern storage
+        const parts = ['HH', 'SD', 'BD'];
+        let pattern = {};
+        let finalized = false;
+        
+        // Music terms dictionary
+        const terms = {
+            'hh': 'hi-hat', 'hihat': 'hi-hat', 'bd': 'bass drum', 'kick': 'kick drum',
+            'sd': 'snare drum', 'snare': 'snare drum', '16s': '16th notes', '8s': '8th notes',
+            'bpm': 'BPM', 'paradiddle': 'paradiddle', 'flam': 'flam', 'drag': 'drag',
+            'metalica': 'Metallica', 'sabbath': 'Sabbath', 'paraniod': 'Paranoid'
         };
-
-        const musicTerms = {
-            'hh': 'hi-hat',
-            'hihat': 'hi-hat',
-            'hi hat': 'hi-hat',
-            '16s': '16th notes',
-            '16ths': '16th notes',
-            '8s': '8th notes',
-            '8ths': '8th notes',
-            'bpm': 'BPM',
-            'kick': 'kick drum',
-            'bd': 'bass drum',
-            'sd': 'snare drum',
-            'fill': 'fill',
-            'fills': 'fills',
-            'groove': 'groove',
-            'grooves': 'grooves',
-            'beat': 'beat',
-            'beats': 'beats',
-            'cross stick': 'cross-stick',
-            'crossstick': 'cross-stick',
-            'rim shot': 'rim shot',
-            'rimshot': 'rim shot'
+        
+        // Song database
+        const songs = {
+            'paranoid': 'Paranoid by Black Sabbath',
+            'enter sandman': 'Enter Sandman by Metallica',
+            'back in black': 'Back In Black by AC/DC',
+            'smells like teen spirit': 'Smells Like Teen Spirit by Nirvana',
+            'seven nation army': 'Seven Nation Army by The White Stripes'
         };
-
-        const spellingCorrections = {
-            'metalica': 'Metallica',
-            'metallica': 'Metallica',
-            'sabath': 'Sabbath',
-            'sabbath': 'Sabbath',
-            'oma': 'OMA',
-            'rhthm': 'rhythm',
-            'rythm': 'rhythm',
-            'rythem': 'rhythm',
-            'brough': 'brought',
-            'startwed': 'started',
-            'tp': 'to',
-            'lite': 'light',
-            'avail': 'available',
-            'practise': 'practice',
-            'practis': 'practice',
-            'foccus': 'focus',
-            'focuss': 'focus',
-            'spead': 'speed',
-            'endurence': 'endurance',
-            'endurace': 'endurance',
-            'techinque': 'technique',
-            'technqiue': 'technique',
-            'patern': 'pattern',
-            'pattrn': 'pattern',
-            'creap': 'Creep',
-            'paraniod': 'Paranoid',
-            'parnoid': 'Paranoid',
-            'bosa nova': 'bossa nova',
-            'bosa': 'bossa',
-            'indepence': 'independence',
-            'independance': 'independence',
-            'sixtuplets': 'sextuplets',
-            'sixtuplet': 'sextuplet'
-        };
-
-        const offensiveWords = ['damn', 'hell', 'shit', 'fuck', 'ass', 'bitch'];
-
-        const grammarRules = [
-            { pattern: /\bi (\w)/gi, replacement: 'I $1' },
-            { pattern: /\b(he|she|it|they|we|you) ([a-z])/gi, replacement: '$1 $2' }
+        
+        // Examples
+        const examples = [
+            { student: 'Alex', notes: 'Worked on basic 4/4 beat at 100bpm. Focus on keeping steady kick drum and hi-hat eighth notes. Snare on 2 and 4.' },
+            { student: 'Morgan', notes: 'Played through Seven Nation Army. Good timing on the main beat, work on fills between sections. Try adding ghost notes on snare.' },
+            { student: 'Sam', notes: 'Practiced paradiddles starting at 80bpm up to 120bpm. Right hand lead feels strong. Work on left hand consistency.' },
+            { student: 'Jordan', notes: 'Advanced session: polyrhythmic patterns, 5/4 time signature exploration, worked on Meshuggah-style grooves with displaced accents.' }
         ];
-
-        const knownSongs = {
-            'paranoid': { title: 'Paranoid', artist: 'Black Sabbath' },
-            'running': { title: 'Running', artist: 'OMA' },
-            'friday im in love': { title: "Friday I'm In Love", artist: 'The Cure' },
-            'seven nation army': { title: 'Seven Nation Army', artist: 'The White Stripes' },
-            'radioactive': { title: 'Radioactive', artist: 'Imagine Dragons' },
-            'i will survive': { title: 'I Will Survive', artist: 'Gloria Gaynor' },
-            'master of puppets': { title: 'Master of Puppets', artist: 'Metallica' },
-            'creep': { title: 'Creep', artist: 'Radiohead' },
-            'cream': { title: 'CREAM', artist: 'OMA' },
-            'seek and destroy': { title: 'Seek & Destroy', artist: 'Metallica' },
-            'something just like this': { title: 'Something Just Like This', artist: 'The Chainsmokers & Coldplay' },
-            'bones': { title: 'Bones', artist: 'Imagine Dragons' },
-            'too sweet': { title: 'Too Sweet', artist: 'Hozier' },
-            'back in black': { title: 'Back In Black', artist: 'AC/DC' },
-            'come together': { title: 'Come Together', artist: 'The Beatles' },
-            'funky drummer': { title: 'Funky Drummer Pt. 1 & 2', artist: 'James Brown' },
-            'take five': { title: 'Take Five', artist: 'The Dave Brubeck Quartet' },
-            'rat salad': { title: 'Rat Salad', artist: 'Black Sabbath' },
-            'stratus': { title: 'Stratus', artist: 'Billy Cobham' },
-            'in the air tonight': { title: 'In The Air Tonight', artist: 'Phil Collins' },
-            'got a match': { title: 'Got A Match?', artist: 'Chick Corea Elektric Band' },
-            'resolution': { title: 'Resolution', artist: 'John Coltrane' },
-            'toad': { title: 'Toad', artist: 'Cream' },
-            'footprints': { title: 'Footprints', artist: 'Miles Davis' },
-            'burn': { title: 'Burn', artist: 'Deep Purple' },
-            'digital bath': { title: 'Digital Bath', artist: 'Deftones' },
-            'the dance of eternity': { title: 'The Dance of Eternity', artist: 'Dream Theater' },
-            'go your own way': { title: 'Go Your Own Way', artist: 'Fleetwood Mac' },
-            'everlong': { title: 'Everlong', artist: 'Foo Fighters' },
-            'sing sing sing': { title: 'Sing, Sing, Sing', artist: 'Benny Goodman' },
-            'fire': { title: 'Fire', artist: 'Jimi Hendrix' },
-            'where eagles dare': { title: 'Where Eagles Dare', artist: 'Iron Maiden' },
-            'don’t stop believin’': { title: "Don’t Stop Believin’", artist: 'Journey' },
-            'moby dick': { title: 'Moby Dick', artist: 'Led Zeppelin' },
-            'wax simulacra': { title: 'Wax Simulacra', artist: 'The Mars Volta' },
-            'rust in peace polaris': { title: 'Rust In Peace…Polaris', artist: 'Megadeth' },
-            'bleed': { title: 'Bleed', artist: 'Meshuggah' },
-            'one': { title: 'One', artist: 'Metallica' },
-            'cissy strut': { title: 'Cissy Strut', artist: 'The Meters' },
-            'smells like teen spirit': { title: 'Smells Like Teen Spirit', artist: 'Nirvana' },
-            'mouth for war': { title: 'Mouth For War', artist: 'Pantera' },
-            '50 ways to leave your lover': { title: '50 Ways To Leave Your Lover', artist: 'Paul Simon' },
-            'message in a bottle': { title: 'Message In A Bottle', artist: 'The Police' },
-            'dance with the devil': { title: 'Dance With The Devil', artist: 'Cozy Powell' },
-            'no one knows': { title: 'No One Knows', artist: 'Queens Of The Stone Age' },
-            'killing in the name of': { title: 'Killing In The Name Of', artist: 'Rage Against The Machine' },
-            'channel one suite': { title: 'Channel One Suite', artist: 'Buddy Rich Big Band' },
-            'paint it black': { title: 'Paint It Black', artist: 'The Rolling Stones' },
-            'tom sawyer': { title: 'Tom Sawyer', artist: 'Rush' },
-            'blue matter': { title: 'Blue Matter', artist: 'John Scofield' },
-            'territory': { title: 'Territory', artist: 'Sepultura' },
-            'raining blood': { title: 'Raining Blood', artist: 'Slayer' },
-            'tonight tonight': { title: 'Tonight, Tonight', artist: 'Smashing Pumpkins' },
-            'spoonman': { title: 'Spoonman', artist: 'Soundgarden' },
-            'home at last': { title: 'Home At Last', artist: 'Steely Dan' },
-            'seven days': { title: 'Seven Days', artist: 'Sting' },
-            'wipeout': { title: 'Wipeout', artist: 'The Surfaris' },
-            'lateralus': { title: 'Lateralus', artist: 'Tool' },
-            'rosanna': { title: 'Rosanna', artist: 'Toto' },
-            'what is hip': { title: 'What Is Hip?', artist: 'Tower of Power' },
-            'hot for teacher': { title: 'Hot For Teacher', artist: 'Van Halen' },
-            'who are you': { title: 'Who Are You', artist: 'The Who' },
-            'the black page': { title: 'The Black Page #1', artist: 'Frank Zappa' },
-            'we will rock you': { title: 'We Will Rock You', artist: 'Queen' },
-            'hold on': { title: 'Hold On', artist: 'Alabama Shakes' },
-            'rocky mountain way': { title: 'Rocky Mountain Way', artist: 'Joe Walsh' },
-            'tnt': { title: 'T.N.T.', artist: 'AC/DC' },
-            'bad moon rising': { title: 'Bad Moon Rising', artist: 'Creedence Clearwater Revival' },
-            'africa': { title: 'Africa', artist: 'Toto' },
-            'enter sandman': { title: 'Enter Sandman', artist: 'Metallica' },
-            'beat it': { title: 'Beat It', artist: 'Michael Jackson' },
-            'addicted to love': { title: 'Addicted To Love', artist: 'Robert Palmer' },
-            'all star': { title: 'All Star', artist: 'Smash Mouth' },
-            'billie jean': { title: 'Billie Jean', artist: 'Michael Jackson' },
-            'blinding lights': { title: 'Blinding Lights', artist: 'The Weeknd' },
-            'cant stop the feeling': { title: "Can't Stop The Feeling!", artist: 'Justin Timberlake' },
-            'castle on the hill': { title: 'Castle On The Hill', artist: 'Ed Sheeran' },
-            'circles': { title: 'Circles', artist: 'Post Malone' },
-            'crazy': { title: 'Crazy', artist: 'Gnarls Barkley' },
-            'crazy in love': { title: 'Crazy In Love', artist: 'Beyoncé' },
-            'dont you forget about me': { title: "Don't You (Forget About Me)", artist: 'Simple Minds' },
-            'drops of jupiter': { title: 'Drops Of Jupiter (Tell Me)', artist: 'Train' },
-            'dynamite': { title: 'Dynamite', artist: 'BTS' },
-            'every breath you take': { title: 'Every Breath You Take', artist: 'The Police' },
-            'everybody wants to rule the world': { title: 'Everybody Wants To Rule The World', artist: 'Tears For Fears' },
-            'fallin': { title: "Fallin'", artist: 'Alicia Keys' },
-            'get lucky': { title: 'Get Lucky', artist: 'Daft Punk' },
-            'gimme all your lovin': { title: 'Gimme All Your Lovin\'', artist: 'ZZ Top' },
-            'girls just want to have fun': { title: 'Girls Just Want To Have Fun', artist: 'Cyndi Lauper' },
-            'happy': { title: 'Happy', artist: 'Pharrell Williams' },
-            'heathens': { title: 'Heathens', artist: 'Twenty One Pilots' },
-            'i need to know': { title: 'I Need To Know', artist: 'Marc Anthony' },
-            'juice': { title: 'Juice', artist: 'Lizzo' },
-            'jump': { title: 'Jump', artist: 'Van Halen' },
-            'just dance': { title: 'Just Dance', artist: 'Lady Gaga' },
-            'levitating': { title: 'Levitating', artist: 'Dua Lipa' },
-            'livin la vida loca': { title: 'Livin\' La Vida Loca', artist: 'Ricky Martin' },
-            'livin on a prayer': { title: "Livin' On A Prayer", artist: 'Bon Jovi' },
-            'mercy': { title: 'Mercy', artist: 'Duffy' },
-            'moves like jagger': { title: 'Moves Like Jagger', artist: 'Maroon 5' },
-            'only wanna be with you': { title: 'Only Wanna Be With You', artist: 'Hootie & the Blowfish' },
-            'pour some sugar on me': { title: 'Pour Some Sugar On Me', artist: 'Def Leppard' },
-            'pride in the name of love': { title: 'Pride (In The Name Of Love)', artist: 'U2' },
-            'roar': { title: 'Roar', artist: 'Katy Perry' },
-            'rude': { title: 'Rude', artist: 'Magic!' },
-            'send my love': { title: 'Send My Love (To Your New Lover)', artist: 'Adele' },
-            'separate ways': { title: 'Separate Ways (Worlds Apart)', artist: 'Journey' },
-            'shut up and dance': { title: 'Shut Up And Dance', artist: 'Walk the Moon' },
-            'smooth': { title: 'Smooth', artist: 'Santana' },
-            'stayin alive': { title: 'Stayin\' Alive', artist: 'Bee Gees' },
-            'stronger what doesnt kill you': { title: 'Stronger (What Doesn\'t Kill You)', artist: 'Kelly Clarkson' },
-            'umbrella': { title: 'Umbrella', artist: 'Rihanna' },
-            'uptown funk': { title: 'Uptown Funk', artist: 'Mark Ronson ft. Bruno Mars' },
-            'valerie': { title: 'Valerie', artist: 'Amy Winehouse' },
-            'walking on sunshine': { title: 'Walking On Sunshine', artist: 'Katrina & The Waves' },
-            'what makes you beautiful': { title: 'What Makes You Beautiful', artist: 'One Direction' },
-            'who knew': { title: 'Who Knew', artist: 'Pink' },
-            'ymca': { title: 'Y.M.C.A.', artist: 'Village People' },
-            'you belong with me': { title: 'You Belong With Me', artist: 'Taylor Swift' },
-            'you oughta know': { title: 'You Oughta Know', artist: 'Alanis Morissette' }
-        };
-
-        const examples = {
-            charleigh: `Charleigh - Worked through Black sabath Paranoid which i sent home through the app. you did great with it, went over some of the 16s fills which brough us into playing 16s to a metronome! Startwed at 100bpm and worked it up to 170. great job, try to keep everything nice and balanced`,
-            morgan: `Morgan - Worked through The Cure - Friday I'm In Love. We played through first at 90% speed then cranked it out at full. spoke about technique with hh and keeping it light so we can play through the whole song. keep your kick nice and steady`,
-            luca: `Luca - Went through triplets from 60-70bpm. doing great, try for 80 next week. played through seven nation army, just the chorus. played through radioactive which sounds very good! lastly started to learn i will survive`,
-            conan: `Conan - Worked through bosa nova, playing it to different songs but looking to keep it nice and consistent. Then we broke into master of puppets by metalica and worked out timing. sounding really good. lastly went through some foot techniques`,
-            amaiyah: `Amaiyah - worked through creep, broke down the main patterns including the cross stick. Went through learning sixtuplets. for sticking its 6 hits on the snare then 2, 2, 2 starting on the snare, tom, low tom. spoke about what kind of drum kit to get which i suggest not spend over $500 to start`,
-            brody: `Brody played through The Chainsmokers & Coldplay - Something Just Like This and picked out the kick pattern in the chorus. Also played Bones by Imagine Dragons and too sweet by hozier`
-        };
-
-        const contextEnhancers = {
-            techniques: {
-                'metronome': 'Remember to use a metronome to improve timing precision in your practice sessions.',
-                '16th notes': 'Focus on even subdivision when practicing 16th notes to enhance groove feel.',
-                'fills': 'Experiment with variations in fills to add creativity to your playing.',
-                'bpm': 'Gradually increase BPM in subsequent practices to build speed comfortably.',
-                'hi-hat': 'Keep hi-hat technique light and consistent for better endurance.'
-            },
-            general: [
-                'Consider recording your practice sessions to self-assess progress.',
-                'Warm up with basic rudiments before diving into song material.'
-            ]
-        };
-
-        // Global AI Engine
-        let aiEngine = null;
-        let isModelLoaded = false;
-
-        // Rule-Based Formatter
-        class LessonFormatter {
-            constructor() {
-                this.studentName = '';
-                this.achievements = [];
-                this.homework = [];
-                this.techniques = new Set();
-                this.songs = [];
-                this.errors = [];
-                this.isFinalized = false;
-                this.finalizeDate = null;
-            }
-
-            reset() {
-                this.studentName = '';
-                this.achievements = [];
-                this.homework = [];
-                this.techniques = new Set();
-                this.songs = [];
-                this.errors = [];
-                this.isFinalized = false;
-                this.finalizeDate = null;
-            }
-
-            preprocessText(text) {
-                if (!text) return '';
-                
-                let processed = text.trim();
-                
-                if (document.getElementById('offensiveFilter').checked) {
-                    for (const word of offensiveWords) {
-                        const regex = new RegExp(`\\b${this.escapeRegex(word)}\\b`, 'gi');
-                        processed = processed.replace(regex, '[filtered]');
-                    }
-                }
-                
-                if (document.getElementById('grammarCheck').checked) {
-                    for (const rule of grammarRules) {
-                        processed = processed.replace(rule.pattern, rule.replacement);
-                    }
-                }
-                
-                for (const [wrong, right] of Object.entries(spellingCorrections)) {
-                    const regex = new RegExp(`\\b${this.escapeRegex(wrong)}\\b`, 'gi');
-                    processed = processed.replace(regex, right);
-                }
-                
-                for (const [key, data] of Object.entries(knownSongs)) {
-                    const regex = new RegExp(`\\b${this.escapeRegex(key)}\\b`, 'gi');
-                    processed = processed.replace(regex, data.title);
-                }
-                
-                for (const [abbrev, full] of Object.entries(musicTerms)) {
-                    const regex = new RegExp(`\\b${this.escapeRegex(abbrev)}\\b`, 'gi');
-                    processed = processed.replace(regex, full);
-                }
-                
-                processed = processed
-                    .replace(/\s+/g, ' ')
-                    .replace(/\s*([,.!?;:])/g, '$1')
-                    .replace(/([.!?])\s*([a-z])/g, (match, p1, p2) => `${p1} ${p2.toUpperCase()}`);
-                
-                return processed;
-            }
-
-            escapeRegex(string) {
-                return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            }
-
-            extractStudentName(text) {
-                let name = document.getElementById('studentName').value.trim();
-                if (name) {
-                    this.studentName = this.capitalizeWord(name);
-                    return text;
-                }
-                const nameMatch = text.match(/^([A-Z][a-z]+)\s*[-:–]\s*/i);
-                if (nameMatch) {
-                    this.studentName = this.capitalizeWord(nameMatch[1]);
-                    return text.replace(nameMatch[0], '').trim();
-                }
-                return text;
-            }
-
-            extractSongs(text) {
-                const patterns = [
-                    /(?:worked through|played through|started learning|learned|practiced|played)\s+([^,.!?]+?)(?:\s+by\s+([^,.!?]+?))?(?:[,.!?]|$)/gi,
-                    /(?:song|track)\s+["']?([^"',.!?]+?)["']?(?:\s+by\s+([^,.!?]+?))?(?:[,.!?]|$)/gi
-                ];
-
-                for (const pattern of patterns) {
-                    let match;
-                    while ((match = pattern.exec(text)) !== null) {
-                        let songTitle = match[1].trim();
-                        let artist = match[2] ? match[2].trim() : '';
-
-                        if (!artist && songTitle.includes('-')) {
-                            const parts = songTitle.split('-').map(p => p.trim());
-                            if (parts.length === 2) {
-                                artist = parts[0];
-                                songTitle = parts[1];
-                            }
-                        }
-
-                        const songKey = songTitle.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ');
-                        if (knownSongs[songKey]) {
-                            const known = knownSongs[songKey];
-                            songTitle = known.title;
-                            artist = artist || known.artist;
-                        }
-
-                        songTitle = this.capitalizeProperNouns(songTitle);
-                        artist = artist ? this.capitalizeProperNouns(artist) : '';
-
-                        if (songTitle && !songTitle.match(/^(it|this|that|them|the|a|an)$/i)) {
-                            this.songs.push({ title: songTitle, artist });
-                        }
-                    }
-                }
-
-                const uniqueSongs = new Map();
-                this.songs.forEach(song => {
-                    const key = song.title.toLowerCase();
-                    if (!uniqueSongs.has(key)) {
-                        uniqueSongs.set(key, song);
-                    }
-                });
-                this.songs = Array.from(uniqueSongs.values());
-            }
-
-            extractTechniques(text) {
-                const patterns = [
-                    /\b\d+(?:\s*-\s*\d+)?\s*bpm\b/gi,
-                    /\btriplets?\b/gi,
-                    /\bsextuplets?\b/gi,
-                    /\b16th\s+notes?\b/gi,
-                    /\b8th\s+notes?\b/gi,
-                    /\bcross[\s-]?stick\b/gi,
-                    /\bkick\s+(?:drum|independence|pattern)?\b/gi,
-                    /\bhi[\s-]?hat\b/gi,
-                    /\bfills?\b/gi,
-                    /\bgrooves?\b/gi,
-                    /\bbeats?\b/gi,
-                    /\bbossa\s+nova\b/gi,
-                    /\bendurance\b/gi,
-                    /\bmetronome\b/gi,
-                    /\bindependence\b/gi
-                ];
-
-                patterns.forEach(pattern => {
-                    const matches = text.match(pattern);
-                    if (matches) {
-                        matches.forEach(match => {
-                            this.techniques.add(match.toLowerCase());
-                        });
-                    }
-                });
-            }
-
-            splitIntoParts(text) {
-                return text.split(/[.!?;]+/).flatMap(sentence => 
-                    sentence.split(',').map(part => part.trim()).filter(part => part.length > 3)
-                ).filter(part => part.length > 5);
-            }
-
-            parseSentences(text) {
-                const cleanText = this.extractStudentName(text);
-                const processed = this.preprocessText(cleanText);
-                
-                this.extractSongs(processed);
-                this.extractTechniques(processed);
-
-                const parts = this.splitIntoParts(processed);
-
-                parts.forEach(part => {
-                    const classification = this.classifySentence(part);
-                    const formatted = this.formatSentence(part, classification);
-                    
-                    if (formatted) {
-                        if (classification === 'achievement') {
-                            this.achievements.push(formatted);
-                        } else if (classification === 'homework') {
-                            this.homework.push(formatted);
-                        }
-                    }
-                });
-
-                this.generateInferredHomework();
-            }
-
-            classifySentence(sentence) {
-                const lower = sentence.toLowerCase();
-                
-                const achievementKeywords = [
-                    'worked', 'played', 'went through', 'learned', 'started',
-                    'practiced', 'broke down', 'covered', 'sounds', 'sounding',
-                    'good', 'great', 'excellent', 'awesome', 'did great'
-                ];
-                
-                const homeworkKeywords = [
-                    'try', 'keep', 'practice', 'work on', 'focus on',
-                    'next week', 'homework', 'continue', 'maintain'
-                ];
-
-                if (achievementKeywords.some(keyword => lower.includes(keyword))) {
-                    return 'achievement';
-                }
-                
-                if (homeworkKeywords.some(keyword => lower.includes(keyword))) {
-                    return 'homework';
-                }
-                
-                return 'other';
-            }
-
-            formatSentence(sentence, type) {
-                if (!sentence) return '';
-                
-                let formatted = sentence.trim();
-                
-                formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1);
-                
-                if (type === 'achievement') {
-                    const lowerFormatted = formatted.toLowerCase();
-                    if (lowerFormatted.match(/^(worked|played|started|learned|practiced|went|focused|covered)/)) {
-                        if (!formatted.match(/^(We|Today|This|First|Then|Also|Additionally)/i)) {
-                            formatted = 'We ' + lowerFormatted;
-                            formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1);
-                        }
-                    }
-                    if (lowerFormatted.includes('you ')) {
-                        formatted = formatted.replace(/\b(you)\s+([a-z])/gi, (m, p1, p2) => `${p1} ${p2.toUpperCase()}`);
-                    }
-                } else if (type === 'homework') {
-                    const lowerFormatted = formatted.toLowerCase();
-                    if (lowerFormatted.match(/^(try|keep|practice|work|focus)/)) {
-                        formatted = lowerFormatted.charAt(0).toUpperCase() + lowerFormatted.slice(1);
-                    }
-                    if (!formatted.match(/^(Try|Keep|Practice|Work|Focus)/i)) {
-                        formatted = 'Practice ' + formatted.toLowerCase();
-                        formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1);
-                    }
-                }
-                
-                this.songs.forEach(song => {
-                    const titlePattern = new RegExp(`\\b${this.escapeRegex(song.title)}\\b`, 'gi');
-                    if (song.artist) {
-                        const hasArtistBefore = new RegExp(`(${this.escapeRegex(song.artist)})\\s+${this.escapeRegex(song.title)}\\b`, 'gi').test(formatted);
-                        const replacement = hasArtistBefore ? song.title : `${song.title} by ${song.artist}`;
-                        formatted = formatted.replace(titlePattern, replacement);
-                    }
-                });
-                
-                Object.values(knownSongs).forEach(data => {
-                    if (data.artist) {
-                        const dupPattern = new RegExp(`(${this.escapeRegex(data.artist)})\\s+${this.escapeRegex(data.title)}\\s+by\\s+${this.escapeRegex(data.artist)}`, 'gi');
-                        formatted = formatted.replace(dupPattern, '$1 $2');
-                    }
-                });
-                
-                if (!formatted.match(/[.!?]$/)) {
-                    formatted += '.';
-                }
-                
-                return formatted;
-            }
-
-            generateInferredHomework() {
-                if (this.songs.length > 0 && this.homework.length < 2) {
-                    const song = this.songs[0];
-                    const songRef = song.artist ? `${song.title} by ${song.artist}` : song.title;
-                    this.homework.push(`Practice ${songRef} focusing on accuracy and timing.`);
-                }
-
-                if (this.techniques.has('metronome') || Array.from(this.techniques).some(t => t.includes('bpm'))) {
-                    this.homework.push('Continue metronome practice to build consistency.');
-                }
-
-                if (this.techniques.has('fills') || this.techniques.has('16th notes')) {
-                    this.homework.push('Work on drum fills, starting slowly and building speed.');
-                }
-
-                if (this.homework.length === 0) {
-                    this.homework.push('Practice the material covered in today\'s lesson.');
-                    this.homework.push('Focus on maintaining proper technique and timing.');
-                }
-
-                this.homework = [...new Set(this.homework)].slice(0, CONFIG.MAX_HOMEWORK_ITEMS);
-            }
-
-            capitalizeWord(word) {
-                return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-            }
-
-            capitalizeProperNouns(text) {
-                const properNouns = {
-                    'metallica': 'Metallica',
-                    'sabbath': 'Sabbath',
-                    'oma': 'OMA',
-                    'the cure': 'The Cure',
-                    'chainsmokers': 'The Chainsmokers',
-                    'coldplay': 'Coldplay',
-                    'radiohead': 'Radiohead',
-                    'hozier': 'Hozier',
-                    'ac/dc': 'AC/DC',
-                    'guns n roses': "Guns N' Roses",
-                    'led zeppelin': 'Led Zeppelin',
-                    'the beatles': 'The Beatles',
-                    'james brown': 'James Brown',
-                    'the dave brubeck quartet': 'The Dave Brubeck Quartet'
-                };
-
-                let result = text;
-                for (const [lower, proper] of Object.entries(properNouns)) {
-                    const regex = new RegExp(`\\b${this.escapeRegex(lower)}\\b`, 'gi');
-                    result = result.replace(regex, proper);
-                }
-
-                return result.replace(/\b\w+/g, word => {
-                    const lower = word.toLowerCase();
-                    return properNouns[lower] || this.capitalizeWord(word);
-                });
-            }
-
-            proofreadText(text) {
-                try {
-                    if (!window.nlp || !document.getElementById('grammarCheck').checked) return text;
-
-                    let doc = nlp(text);
-
-                    doc.match('Today\'s Achievements: #Sentence+').sentences().verbs().toPastTense();
-
-                    doc.match('Practice Assignments: #Sentence+').sentences().verbs().toInfinitive();
-
-                    doc.contractions().expand();
-
-                    doc.match('which i').replaceWith('which I');
-
-                    let processedText = doc.text();
-
-                    let enhanced = processedText;
-                    let inserted = false;
-
-                    for (const [tech, context] of Object.entries(contextEnhancers.techniques)) {
-                        if (processedText.toLowerCase().includes(tech) && !enhanced.toLowerCase().includes(context.toLowerCase())) {
-                            const insertPoint = enhanced.indexOf('\nPractice Assignments:\n\n');
-                            if (insertPoint !== -1) {
-                                const afterSection = enhanced.substring(insertPoint + '\nPractice Assignments:\n\n'.length);
-                                const beforeSection = enhanced.substring(0, insertPoint + '\nPractice Assignments:\n\n'.length);
-                                enhanced = beforeSection + `• ${context}\n` + afterSection;
-                                inserted = true;
-                            }
-                        }
-                    }
-
-                    if (!inserted) {
-                        const generalContext = contextEnhancers.general[Math.floor(Math.random() * contextEnhancers.general.length)];
-                        const insertPoint = enhanced.indexOf('\nPractice Assignments:\n\n');
-                        if (insertPoint !== -1) {
-                            const afterSection = enhanced.substring(insertPoint + '\nPractice Assignments:\n\n'.length);
-                            const beforeSection = enhanced.substring(0, insertPoint + '\nPractice Assignments:\n\n'.length);
-                            enhanced = beforeSection + `• ${generalContext}\n` + afterSection;
-                        }
-                    }
-
-                    enhanced = enhanced.replace(/\n• You (.+?)\n/g, '\n• $1\n');
-
-                    return enhanced;
-                } catch (error) {
-                    console.warn('Proofreading skipped due to error:', error);
-                    let fallback = text;
-                    fallback = fallback.replace(/\n• You (.+?)\n/g, '\n• $1\n');
-                    const insertPoint = fallback.indexOf('\nPractice Assignments:\n\n');
-                    if (insertPoint !== -1) {
-                        const generalContext = contextEnhancers.general[0];
-                        const afterSection = fallback.substring(insertPoint + '\nPractice Assignments:\n\n'.length);
-                        const beforeSection = fallback.substring(0, insertPoint + '\nPractice Assignments:\n\n'.length);
-                        fallback = beforeSection + `• ${generalContext}\n` + afterSection;
-                    }
-                    return fallback;
-                }
-            }
-
-            generateOutput() {
-                let output = `Lesson Recap`;
-                
-                if (this.studentName) {
-                    output += ` - ${this.studentName}`;
-                }
-                
-                if (this.finalizeDate) {
-                    output += ` (Finalized: ${this.finalizeDate})`;
-                }
-                
-                output += `\n\nToday's Achievements:\n\n`;
-                
-                if (this.achievements.length > 0) {
-                    this.achievements.forEach(achievement => {
-                        output += `• ${achievement}\n`;
-                    });
-                } else {
-                    output += `• Successfully completed lesson activities.\n`;
-                }
-                
-                output += `\nPractice Assignments:\n\n`;
-                
-                this.homework.forEach(hw => {
-                    output += `• ${hw}\n`;
-                });
-
-                if (this.techniques.size > 2) {
-                    output += `\nTechniques Covered:\n\n`;
-                    const techniqueList = Array.from(this.techniques).slice(0, 5);
-                    techniqueList.forEach(technique => {
-                        output += `• ${this.capitalizeProperNouns(technique.charAt(0).toUpperCase() + technique.slice(1))}\n`;
-                    });
-                }
-
-                return this.proofreadText(output);
-            }
-
-            saveToHistory() {
-                if (!this.studentName) return false;
-                const history = JSON.parse(localStorage.getItem('lessonHistory') || '{}');
-                if (!history[this.studentName]) {
-                    history[this.studentName] = [];
-                }
-                const note = {
-                    content: this.generateOutput(),
-                    date: new Date().toISOString(),
-                    isFinalized: this.isFinalized
-                };
-                const lastNote = history[this.studentName][history[this.studentName].length - 1];
-                if (lastNote && lastNote.content === note.content) {
-                    showError('Cannot save identical note. Make at least one change.');
-                    return false;
-                }
-                history[this.studentName].push(note);
-                localStorage.setItem('lessonHistory', JSON.stringify(history));
-                return true;
-            }
-        }
-
-        const formatter = new LessonFormatter();
-
-        // AI Functions
-        async function loadAIModel() {
-            if (isModelLoaded) return true;
-            document.getElementById('aiLoading').classList.add('show');
-            showProcessing(true);
-            try {
-                // Use CreateMLCEngine for OpenAI-compatible API
-                aiEngine = await CreateMLCEngine(CONFIG.AI_MODEL, {
-                    initProgressCallback: (progress) => {
-                        console.log('Model Load Progress:', progress.text); // Optional: Log download progress
-                    }
-                });
-                isModelLoaded = true;
-                document.getElementById('aiLoading').classList.remove('show');
-                showSuccess('AI Model Loaded Successfully!');
-                return true;
-            } catch (error) {
-                console.error('Model Load Error:', error);
-                document.getElementById('aiLoading').classList.remove('show');
-                showWarning('AI model loading failed. Using rule-based fallback for generation.');
-                return false;
-            } finally {
-                showProcessing(false);
-            }
-        }
-
-        async function generateWithAI(studentName, rawNotes) {
-            if (!aiEngine || !isModelLoaded) {
-                showWarning('AI not available. Using rule-based generation.');
-                formatter.reset();
-                formatter.parseSentences(rawNotes);
-                return formatter.generateOutput();
-            }
-
-            let processedNotes = formatter.preprocessText(rawNotes);
-
-            const prompt = `You are a professional drum teacher assistant with full knowledge of music theory, drum notation, and rhythm patterns. Transform these raw lesson notes into a polished professional recap. If the notes describe a drum pattern or rhythm, include a text-based drum notation section using standard text representation (e.g., HH: x-x-x-x, SN: ----o---, BD: o-------o).
-
-Structure:
-Lesson Recap - [Student Name]
-
-Today's Achievements:
-• [Past tense achievements]
-
-Practice Assignments:
-• [Imperative homework, 2-4 items]
-
-Techniques Covered (if applicable):
-• [List]
-
-Drum Notation (if described in notes):
-[Text notation]
-
-Keep concise, positive, drum-focused. Correct music terms. Student: ${studentName || 'Unnamed'}. Notes: ${processedNotes}
-
-Output only the formatted recap.`;
-
-            try {
-                const reply = await aiEngine.chat.completions.create({
-                    messages: [
-                        { role: 'system', content: 'You are an expert in music theory and drum teaching.' },
-                        { role: 'user', content: prompt }
-                    ],
-                    temperature: CONFIG.AI_TEMPERATURE,
-                    max_tokens: CONFIG.AI_MAX_TOKENS,
-                    stream: false
-                });
-                return reply.choices[0].message.content.trim();
-            } catch (error) {
-                console.error('AI Generation Error:', error);
-                showWarning('AI generation failed. Falling back to rule-based.');
-                formatter.reset();
-                formatter.parseSentences(rawNotes);
-                return formatter.generateOutput();
-            }
-        }
-
-        async function proofreadWithAI(text) {
-            if (!document.getElementById('grammarCheck').checked || !isModelLoaded || !aiEngine) {
-                return formatter.proofreadText(text);
-            }
-
-            const prompt = `Proofread and enhance this drum lesson recap using music theory knowledge. Fix grammar, improve flow, add 1-2 drum-specific practice tips. If drum patterns are mentioned, ensure proper text notation. Keep structure.
-
-${text}
-
-Output only the improved recap.`;
-
-            try {
-                const reply = await aiEngine.chat.completions.create({
-                    messages: [
-                        { role: 'system', content: 'You are an expert editor for music lessons with drum theory knowledge.' },
-                        { role: 'user', content: prompt }
-                    ],
-                    temperature: 0.5,
-                    max_tokens: CONFIG.AI_MAX_TOKENS,
-                    stream: false
-                });
-                return reply.choices[0].message.content.trim();
-            } catch (error) {
-                console.error('AI Proofread Error:', error);
-                return formatter.proofreadText(text);
-            }
-        }
-
-        // Drum Pattern Editor
-        let drumPattern = {};
-
-        function initDrumEditor() {
-            const grid = document.getElementById('drumGrid');
+        
+        // Initialize beat grid
+        function initGrid() {
+            const grid = document.getElementById('beatGrid');
             grid.innerHTML = '';
-            CONFIG.DRUM_PARTS.forEach(part => {
+            
+            parts.forEach(part => {
+                pattern[part] = new Array(16).fill(false);
+                
+                // Add label
                 const label = document.createElement('div');
-                label.className = 'drum-row-label';
+                label.className = 'beat-label';
                 label.textContent = part;
                 grid.appendChild(label);
-                drumPattern[part] = Array(16).fill(false);
+                
+                // Add cells
                 for (let i = 0; i < 16; i++) {
                     const cell = document.createElement('div');
-                    cell.className = 'drum-cell';
+                    cell.className = 'beat-cell';
+                    if (i % 4 === 0) cell.classList.add('accent-beat');
                     cell.dataset.part = part;
                     cell.dataset.beat = i;
-                    cell.onclick = toggleDrumCell;
+                    cell.onclick = toggleCell;
                     grid.appendChild(cell);
                 }
             });
+            
+            updateNotation();
         }
-
-        function toggleDrumCell(e) {
-            const cell = e.target;
-            const part = cell.dataset.part;
-            const beat = parseInt(cell.dataset.beat);
-            drumPattern[part][beat] = !drumPattern[part][beat];
-            cell.classList.toggle('active', drumPattern[part][beat]);
+        
+        // Toggle beat cell
+        function toggleCell(e) {
+            const { part, beat } = e.target.dataset;
+            pattern[part][beat] = !pattern[part][beat];
+            e.target.classList.toggle('active');
+            updateNotation();
         }
-
-        function addDrumPatternToNotes() {
-            let notation = 'Drum Pattern (4/4, 16ths):\n';
-            CONFIG.DRUM_PARTS.forEach(part => {
-                notation += `${part.substring(0, 2).toUpperCase()}: `;
+        
+        // Update notation display
+        function updateNotation() {
+            let notation = '4/4 Time - 16th Notes\n\n';
+            const dividers = '|----|----|----|----|';
+            
+            parts.forEach(part => {
+                notation += `${part}: |`;
                 for (let i = 0; i < 16; i++) {
-                    notation += drumPattern[part][i] ? 'x' : '-';
-                    if (i % 4 === 3) notation += ' ';
+                    notation += pattern[part][i] ? 'x' : '-';
+                    if ((i + 1) % 4 === 0 && i < 15) notation += '|';
                 }
-                notation += '\n';
+                notation += '|\n';
             });
-            const notesEl = document.getElementById('lessonNotes');
-            notesEl.value += '\n\n' + notation;
-            updateCharCount();
-            showSuccess('Drum pattern added to notes!');
-        }
-
-        function clearDrumPattern() {
-            CONFIG.DRUM_PARTS.forEach(part => {
-                drumPattern[part].fill(false);
-            });
-            const cells = document.querySelectorAll('.drum-cell');
-            cells.forEach(cell => cell.classList.remove('active'));
-            showSuccess('Drum pattern cleared!');
-        }
-
-        // Main Functions
-        async function formatNotes() {
-            const input = document.getElementById('lessonNotes').value.trim();
-            const studentName = document.getElementById('studentName').value.trim();
             
-            if (!input || input.length < CONFIG.MIN_TEXT_LENGTH) {
-                showError('Please enter at least 10 characters of lesson notes.');
-                return;
-            }
-
-            if (input.length > CONFIG.MAX_CHARS) {
-                showError(`Notes exceed ${CONFIG.MAX_CHARS} characters. Please shorten.`);
-                return;
-            }
-
-            hideMessages();
-            showProcessing(true);
-            document.getElementById('finalizeBar').classList.add('show');
-
-            const useAI = document.getElementById('useAI').checked;
-            let output;
-
-            try {
-                if (useAI) {
-                    const loaded = await loadAIModel();
-                    if (loaded) {
-                        output = await generateWithAI(studentName, input);
-                    } else {
-                        throw new Error('AI load failed');
+            notation += '    ' + dividers + '\n';
+            notation += '     1 e & a 2 e & a 3 e & a 4 e & a';
+            
+            document.getElementById('notation').textContent = notation;
+        }
+        
+        // Clear pattern
+        function clearPattern() {
+            document.querySelectorAll('.beat-cell.active').forEach(cell => {
+                cell.classList.remove('active');
+            });
+            parts.forEach(part => pattern[part].fill(false));
+            updateNotation();
+            showMsg('Pattern cleared', 'success');
+        }
+        
+        // Load preset beats
+        function presetBeat(type) {
+            clearPattern();
+            
+            const presets = {
+                basic: {
+                    HH: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],
+                    SD: [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],
+                    BD: [1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]
+                },
+                funk: {
+                    HH: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,0,0],
+                    SD: [0,0,0,0,1,0,0,1,0,0,1,0,1,0,0,0],
+                    BD: [1,0,0,1,0,0,1,0,0,0,0,0,0,0,1,0]
+                }
+            };
+            
+            const preset = presets[type];
+            parts.forEach(part => {
+                preset[part].forEach((val, i) => {
+                    pattern[part][i] = val === 1;
+                    if (val === 1) {
+                        document.querySelector(`[data-part="${part}"][data-beat="${i}"]`).classList.add('active');
                     }
-                } else {
-                    formatter.reset();
-                    formatter.parseSentences(input);
-                    output = formatter.generateOutput();
-                }
-
-                document.getElementById('output').textContent = output || createFallbackOutput(input);
-                showSuccess(useAI ? 'AI-Generated recap ready!' : 'Lesson recap generated successfully!');
-            } catch (error) {
-                console.error('Formatting Error:', error);
-                showError('An unexpected error occurred. Using fallback.');
-                formatter.reset();
-                formatter.parseSentences(input);
-                document.getElementById('output').textContent = formatter.generateOutput();
-            } finally {
-                showProcessing(false);
-            }
+                });
+            });
+            
+            updateNotation();
+            showMsg(`${type} beat loaded`, 'success');
         }
-
-        async function proofreadOutput() {
-            const outputEl = document.getElementById('output');
-            let currentText = outputEl.textContent.trim();
-            if (!currentText || currentText === 'Your formatted lesson recap will appear here...') {
-                showError('Generate a recap first.');
+        
+        // Add pattern to notes
+        function addPatternToNotes() {
+            const hasPattern = parts.some(part => pattern[part].some(v => v));
+            if (!hasPattern) {
+                showMsg('Create a pattern first', 'error');
                 return;
             }
-            showProcessing(true);
-            try {
-                const useAI = document.getElementById('useAI').checked && document.getElementById('grammarCheck').checked;
-                let proofread;
-                if (useAI && isModelLoaded) {
-                    proofread = await proofreadWithAI(currentText);
-                } else {
-                    proofread = formatter.proofreadText(currentText);
-                }
-                if (proofread !== currentText) {
-                    outputEl.textContent = proofread;
-                    showSuccess(useAI ? 'AI Proofread & enhanced!' : 'Proofread, edited, and context added!');
-                } else {
-                    showSuccess('No changes needed - already polished!');
-                }
-            } catch (error) {
-                console.error('Proofread Error:', error);
-                showWarning('Proofreading failed. No changes applied.');
-            } finally {
-                showProcessing(false);
-            }
+            const notation = document.getElementById('notation').textContent;
+            document.getElementById('notes').value += '\n\nDrum Pattern:\n' + notation;
+            updateCharCount();
+            showMsg('Pattern added to notes', 'success');
         }
-
-        function finalizeNote() {
-            const studentName = formatter.studentName || document.getElementById('studentName').value.trim();
-            if (!studentName) {
-                showError('Please enter a student name and generate a recap first.');
-                return;
-            }
-            if (formatter.isFinalized) {
-                showError('Note is already finalized.');
-                return;
-            }
-            formatter.studentName = studentName; // Ensure it's set
-            const saved = formatter.saveToHistory();
-            if (saved) {
-                formatter.isFinalized = true;
-                formatter.finalizeDate = new Date().toLocaleString();
-                document.getElementById('output').textContent = formatter.generateOutput();
-                document.getElementById('output').classList.add('finalized');
-                document.getElementById('finalizeBar').classList.remove('show');
-                showSuccess(`Note finalized and saved on ${formatter.finalizeDate}`);
-            }
+        
+        // Process text
+        function processText(text) {
+            if (!text) return '';
+            
+            // Fix common misspellings and abbreviations
+            Object.entries(terms).forEach(([key, val]) => {
+                const regex = new RegExp(`\\b${key}\\b`, 'gi');
+                text = text.replace(regex, val);
+            });
+            
+            // Identify and format songs
+            Object.entries(songs).forEach(([key, val]) => {
+                const regex = new RegExp(`\\b${key}\\b`, 'gi');
+                text = text.replace(regex, val);
+            });
+            
+            // Fix capitalization
+            text = text.replace(/\. ([a-z])/g, (m, p1) => `. ${p1.toUpperCase()}`);
+            text = text.charAt(0).toUpperCase() + text.slice(1);
+            
+            return text;
         }
-
-        function viewHistory() {
-            const student = document.getElementById('studentName').value.trim() || formatter.studentName;
-            if (!student) {
-                showError('Please enter a student name to view history.');
+        
+        // Generate formatted output
+        function generate() {
+            const student = document.getElementById('student').value.trim();
+            const notes = document.getElementById('notes').value.trim();
+            
+            if (!notes) {
+                showMsg('Please enter lesson notes', 'error');
                 return;
             }
-            const history = JSON.parse(localStorage.getItem('lessonHistory') || '{}');
-            const studentHistory = history[student] || [];
-            const historyList = document.getElementById('historyList');
-            historyList.innerHTML = '';
-            if (studentHistory.length === 0) {
-                historyList.innerHTML = '<div class="history-item">No history found.</div>';
+            
+            const processed = processText(notes);
+            const sentences = processed.match(/[^.!?]+[.!?]/g) || [];
+            
+            // Extract achievements and homework
+            const achievements = [];
+            const homework = [];
+            const techniques = new Set();
+            
+            // Find techniques mentioned
+            ['BPM', 'paradiddle', 'fill', 'groove', 'independence', 'ghost note', '16th notes', '8th notes']
+                .forEach(tech => {
+                    if (processed.toLowerCase().includes(tech.toLowerCase())) {
+                        techniques.add(tech);
+                    }
+                });
+            
+            // Classify sentences
+            sentences.forEach(s => {
+                const lower = s.toLowerCase();
+                if (lower.includes('worked') || lower.includes('played') || lower.includes('practiced')) {
+                    achievements.push('• ' + s.trim());
+                } else if (lower.includes('try') || lower.includes('work on') || lower.includes('focus')) {
+                    homework.push('• ' + s.trim());
+                }
+            });
+            
+            // Build output
+            let output = `LESSON RECAP${student ? ' - ' + student : ''}\n`;
+            output += `Date: ${new Date().toLocaleDateString()}\n\n`;
+            
+            output += 'TODAY\'S ACHIEVEMENTS:\n';
+            if (achievements.length) {
+                output += achievements.join('\n');
             } else {
-                studentHistory.slice(-10).reverse().forEach((note, index) => {
-                    const item = document.createElement('div');
-                    item.className = 'history-item';
-                    item.innerHTML = `<strong>${new Date(note.date).toLocaleDateString()}</strong> - ${note.isFinalized ? 'Finalized' : 'Draft'}<br>${note.content.substring(0, 100)}...`;
-                    item.onclick = () => loadFromHistory(note.content, student);
-                    historyList.appendChild(item);
+                output += '• Completed lesson objectives\n• Showed good progress';
+            }
+            
+            output += '\n\nPRACTICE ASSIGNMENTS:\n';
+            if (homework.length) {
+                output += homework.join('\n');
+            } else {
+                output += '• Continue practicing material from today\n• Focus on maintaining steady tempo';
+            }
+            
+            if (techniques.size) {
+                output += '\n\nTECHNIQUES COVERED:\n';
+                Array.from(techniques).forEach(t => {
+                    output += `• ${t}\n`;
                 });
             }
-            document.getElementById('historySection').style.display = 'block';
-            showSuccess(`Showing history for ${student}`);
-        }
-
-        function loadFromHistory(content, student) {
-            document.getElementById('lessonNotes').value = content.replace(/Lesson Recap.*\n\nToday's Achievements:[\s\S]*$/i, '').trim();
-            document.getElementById('studentName').value = student;
-            document.getElementById('historySection').style.display = 'none';
-            showSuccess('Loaded from history. Make changes and regenerate.');
-        }
-
-        function loadExample(key) {
-            const example = examples[key];
-            if (example) {
-                const [name, notes] = example.split(' - ', 2);
-                document.getElementById('studentName').value = name ? name.trim() : '';
-                document.getElementById('lessonNotes').value = notes || example;
-                updateCharCount();
-                hideMessages();
-            }
-        }
-
-        function clearAll() {
-            document.getElementById('studentName').value = '';
-            document.getElementById('lessonNotes').value = '';
-            document.getElementById('output').textContent = 'Your formatted lesson recap will appear here...';
-            document.getElementById('output').classList.remove('finalized');
-            document.getElementById('finalizeBar').classList.remove('show');
-            document.getElementById('historySection').style.display = 'none';
-            updateCharCount();
-            hideMessages();
-            formatter.reset();
-            clearDrumPattern();
-        }
-
-        function copyOutput() {
-            const output = document.getElementById('output').textContent;
             
-            if (!output || output === 'Your formatted lesson recap will appear here...') {
-                showError('No content to copy. Please generate a recap first.');
+            // Add notation if pattern exists
+            const hasPattern = parts.some(part => pattern[part].some(v => v));
+            if (hasPattern) {
+                output += '\n\nDRUM NOTATION:\n' + document.getElementById('notation').textContent;
+            }
+            
+            document.getElementById('output').textContent = output;
+            finalized = false;
+            document.getElementById('output').classList.remove('final');
+            showMsg('Recap generated!', 'success');
+        }
+        
+        // Finalize output
+        function finalize() {
+            if (finalized) {
+                showMsg('Already finalized', 'error');
                 return;
             }
+            document.getElementById('output').classList.add('final');
+            finalized = true;
             
-            navigator.clipboard.writeText(output)
-                .then(() => showSuccess('Copied to clipboard!'))
-                .catch(() => {
-                    const textarea = document.createElement('textarea');
-                    textarea.value = output;
-                    document.body.appendChild(textarea);
-                    textarea.select();
-                    try {
-                        document.execCommand('copy');
-                        showSuccess('Copied to clipboard!');
-                    } catch (err) {
-                        showError('Unable to copy. Please select and copy manually.');
-                    }
-                    document.body.removeChild(textarea);
-                });
-        }
-
-        function createFallbackOutput(input) {
-            const lines = input.split(/[.!?]+/).filter(line => line.trim());
-            let output = 'Lesson Recap\n\nToday\'s Achievements:\n\n';
-            
-            lines.slice(0, 3).forEach(line => {
-                if (line.trim()) {
-                    output += `• ${line.trim()}.\n`;
-                }
+            // Save to localStorage
+            const student = document.getElementById('student').value.trim() || 'Unknown';
+            const history = JSON.parse(localStorage.getItem('lessonHistory') || '{}');
+            if (!history[student]) history[student] = [];
+            history[student].push({
+                date: new Date().toISOString(),
+                content: document.getElementById('output').textContent
             });
+            localStorage.setItem('lessonHistory', JSON.stringify(history));
             
-            output += '\nPractice Assignments:\n\n';
-            output += '• Practice the material covered in today\'s lesson.\n';
-            output += '• Focus on maintaining proper technique.\n';
-            
-            return output;
+            showMsg('Finalized and saved!', 'success');
         }
-
-        function showProcessing(show) {
-            document.getElementById('processing').style.display = show ? 'flex' : 'none';
-            document.getElementById('formatBtn').disabled = show;
+        
+        // Copy output
+        function copyOutput() {
+            const text = document.getElementById('output').textContent;
+            if (text === 'Formatted lesson will appear here...') {
+                showMsg('Nothing to copy', 'error');
+                return;
+            }
+            navigator.clipboard.writeText(text);
+            showMsg('Copied!', 'success');
         }
-
-        function showError(message) {
-            document.getElementById('errorText').textContent = message;
-            document.getElementById('errorMessage').style.display = 'flex';
-            setTimeout(hideMessages, 5000);
-        }
-
-        function showSuccess(message) {
-            document.getElementById('successText').textContent = message;
-            document.getElementById('successMessage').style.display = 'flex';
-            setTimeout(hideMessages, 3000);
-        }
-
-        function showWarning(message) {
-            document.getElementById('warningText').textContent = message;
-            document.getElementById('warningMessage').style.display = 'flex';
-            setTimeout(hideMessages, 5000);
-        }
-
-        function hideMessages() {
-            document.getElementById('errorMessage').style.display = 'none';
-            document.getElementById('successMessage').style.display = 'none';
-            document.getElementById('warningMessage').style.display = 'none';
-        }
-
-        function updateCharCount() {
-            const text = document.getElementById('lessonNotes').value;
-            const count = text.length;
-            const el = document.getElementById('charCount');
-            el.textContent = `${count} / ${CONFIG.MAX_CHARS} characters`;
-            el.className = 'char-count';
-            if (count > CONFIG.MAX_CHARS * 0.8) el.classList.add('warning');
-            if (count > CONFIG.MAX_CHARS) el.classList.add('danger');
-        }
-
-        // Event listeners
-        document.addEventListener('DOMContentLoaded', () => {
-            initDrumEditor();
+        
+        // Clear all
+        function clearAll() {
+            document.getElementById('student').value = '';
+            document.getElementById('notes').value = '';
+            document.getElementById('output').textContent = 'Formatted lesson will appear here...';
+            document.getElementById('output').classList.remove('final');
+            clearPattern();
+            finalized = false;
             updateCharCount();
-            document.getElementById('lessonNotes').addEventListener('input', updateCharCount);
-            
-            document.addEventListener('keydown', (e) => {
-                if (e.ctrlKey || e.metaKey) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        formatNotes();
-                    } else if (e.key === 'Delete' || e.key === 'Backspace') {
-                        e.preventDefault();
-                        clearAll();
-                    } else if (e.key === 'f') {
-                        e.preventDefault();
-                        finalizeNote();
-                    } else if (e.key === 'h') {
-                        e.preventDefault();
-                        viewHistory();
-                    }
-                }
-            });
-        });
-
-        window.addEventListener('error', (event) => {
-            console.error('Global error:', event.error);
-            showError('An unexpected error occurred. Please refresh and try again.');
+        }
+        
+        // Load example
+        function loadExample(idx) {
+            const ex = examples[idx];
+            document.getElementById('student').value = ex.student;
+            document.getElementById('notes').value = ex.notes;
+            updateCharCount();
+            showMsg('Example loaded', 'success');
+        }
+        
+        // Show message
+        function showMsg(text, type) {
+            const msg = document.getElementById('msg');
+            msg.textContent = text;
+            msg.className = `msg ${type} show`;
+            setTimeout(() => msg.classList.remove('show'), 3000);
+        }
+        
+        // Update character count
+        function updateCharCount() {
+            const count = document.getElementById('notes').value.length;
+            document.getElementById('charCount').textContent = count;
+            document.getElementById('charCount').style.color = count > 1800 ? 'var(--error)' : 'var(--dim)';
+        }
+        
+        // Initialize
+        initGrid();
+        document.getElementById('notes').addEventListener('input', updateCharCount);
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', e => {
+            if (e.ctrlKey || e.metaKey) {
+                if (e.key === 'Enter') { e.preventDefault(); generate(); }
+                if (e.key === 's') { e.preventDefault(); finalize(); }
+                if (e.key === 'd') { e.preventDefault(); clearAll(); }
+            }
         });
     </script>
 </body>
