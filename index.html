@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Drum Lesson Formatter</title>
+    <title>Drum Lesson Formatter Pro</title>
     <style>
         :root {
             --f1: 1px;
@@ -18,13 +18,18 @@
             --f89: 89px;
             
             --bg: #0a0a0a;
-            --surface: #141414;
-            --border: #262626;
-            --text: #f0f0f0;
+            --surface: #111111;
+            --surface-light: #1a1a1a;
+            --border: #222;
+            --border-light: #333;
+            --text: #f5f5f5;
             --dim: #888;
-            --accent: #3b82f6;
+            --dimmer: #555;
+            --accent: #4a9eff;
+            --accent-dim: #2a6ebf;
             --success: #22c55e;
             --error: #ef4444;
+            --gold: #fbbf24;
         }
         
         * {
@@ -40,15 +45,24 @@
             line-height: 1.618;
             font-size: 14px;
             padding: var(--f21);
-            max-width: 987px;
+            max-width: 1200px;
             margin: 0 auto;
         }
         
         h1 {
             font-size: var(--f21);
-            font-weight: 500;
+            font-weight: 600;
             margin-bottom: var(--f34);
             letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: var(--f13);
+        }
+        
+        h1::before {
+            content: '🥁';
+            font-size: var(--f34);
+            filter: grayscale(0.5);
         }
         
         .grid {
@@ -64,63 +78,114 @@
         .card {
             background: var(--surface);
             border: 1px solid var(--border);
-            border-radius: var(--f8);
+            border-radius: var(--f13);
             padding: var(--f21);
+            position: relative;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-dim), transparent);
+            opacity: 0.5;
         }
         
         label {
             display: block;
             margin-bottom: var(--f8);
-            font-size: 12px;
+            font-size: 11px;
             color: var(--dim);
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.08em;
+            font-weight: 600;
         }
         
         input, textarea, select {
             width: 100%;
             background: var(--bg);
             border: 1px solid var(--border);
-            border-radius: var(--f5);
-            padding: var(--f8) var(--f13);
+            border-radius: var(--f8);
+            padding: var(--f13);
             color: var(--text);
             font: inherit;
-            transition: border-color 0.2s;
+            transition: all 0.2s;
         }
         
         input:focus, textarea:focus, select:focus {
             outline: none;
-            border-color: var(--accent);
+            border-color: var(--accent-dim);
+            background: var(--surface-light);
+            box-shadow: 0 0 0 3px rgba(74, 158, 255, 0.1);
         }
         
         textarea {
-            min-height: 144px;
+            min-height: 180px;
             resize: vertical;
             line-height: 1.618;
+            font-size: 13px;
         }
         
         button {
             background: var(--accent);
             color: white;
             border: none;
-            border-radius: var(--f5);
-            padding: var(--f8) var(--f21);
+            border-radius: var(--f8);
+            padding: var(--f13) var(--f21);
             font: inherit;
+            font-weight: 500;
             cursor: pointer;
-            transition: opacity 0.2s;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
         }
         
-        button:hover { opacity: 0.9; }
-        button:active { transform: translateY(1px); }
+        button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.4s, height 0.4s;
+        }
+        
+        button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        button:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(74, 158, 255, 0.3); }
+        button:active { transform: translateY(0); }
         button:disabled { opacity: 0.5; cursor: not-allowed; }
         
         button.secondary {
             background: transparent;
-            border: 1px solid var(--border);
+            border: 1px solid var(--border-light);
             color: var(--text);
         }
         
-        button.secondary:hover { background: var(--border); }
+        button.secondary:hover { 
+            background: var(--surface-light); 
+            border-color: var(--accent-dim);
+        }
+        
+        button.ghost {
+            background: transparent;
+            color: var(--dim);
+            padding: var(--f8) var(--f13);
+        }
+        
+        button.ghost:hover { 
+            color: var(--text);
+            background: var(--surface-light);
+        }
         
         .btn-group {
             display: flex;
@@ -129,180 +194,418 @@
             flex-wrap: wrap;
         }
         
-        .btn-group button { flex: 1; min-width: 89px; }
+        .btn-group button { flex: 1; min-width: 100px; }
         
-        /* Beat Grid */
+        /* Pattern Editor */
+        .pattern-editor {
+            background: var(--bg);
+            border-radius: var(--f8);
+            padding: var(--f13);
+            margin: var(--f13) 0;
+        }
+        
+        .pattern-controls {
+            display: flex;
+            gap: var(--f8);
+            margin-bottom: var(--f13);
+            align-items: center;
+        }
+        
+        .tempo-input {
+            display: flex;
+            align-items: center;
+            gap: var(--f8);
+            flex: 1;
+        }
+        
+        .tempo-input input {
+            width: 80px;
+        }
+        
+        .tempo-display {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 12px;
+        }
+        
         .beat-grid {
             display: grid;
-            grid-template-columns: var(--f55) repeat(16, 1fr);
-            gap: 1px;
+            grid-template-columns: var(--f89) repeat(16, 1fr);
+            gap: 2px;
             background: var(--border);
-            border: 1px solid var(--border);
             border-radius: var(--f5);
-            overflow: hidden;
-            margin: var(--f13) 0;
+            padding: 2px;
         }
         
         .beat-label {
             background: var(--surface);
-            padding: var(--f5);
+            padding: var(--f8) var(--f5);
             font-size: 11px;
             display: flex;
             align-items: center;
             justify-content: flex-end;
             color: var(--dim);
+            font-weight: 500;
+            border-radius: var(--f3);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
         
         .beat-cell {
             aspect-ratio: 1;
             background: var(--surface);
             cursor: pointer;
-            transition: background 0.1s;
+            transition: all 0.15s;
             position: relative;
+            border-radius: var(--f3);
         }
         
-        .beat-cell:hover { background: var(--border); }
-        .beat-cell.active { background: var(--accent); }
-        .beat-cell.accent-beat::after {
+        .beat-cell:hover { 
+            background: var(--surface-light);
+            transform: scale(1.1);
+        }
+        
+        .beat-cell.active { 
+            background: var(--accent);
+            box-shadow: 0 0 8px rgba(74, 158, 255, 0.5);
+        }
+        
+        .beat-cell.ghost {
+            background: var(--accent-dim);
+            opacity: 0.4;
+        }
+        
+        .beat-cell.accent::after {
             content: '';
             position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: var(--dim);
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3px;
+            height: 3px;
+            background: var(--dimmer);
+            border-radius: 50%;
         }
         
         /* Notation Display */
-        .notation {
-            font-family: 'Courier New', monospace;
+        .notation-display {
             background: var(--bg);
             border: 1px solid var(--border);
-            border-radius: var(--f5);
-            padding: var(--f13);
-            margin: var(--f13) 0;
-            white-space: pre;
-            line-height: 1.4;
-            font-size: 12px;
-            overflow-x: auto;
-        }
-        
-        .output {
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: var(--f5);
+            border-radius: var(--f8);
             padding: var(--f21);
-            min-height: 233px;
-            white-space: pre-wrap;
-            line-height: 1.618;
-        }
-        
-        .output.final {
-            border-color: var(--success);
+            margin: var(--f13) 0;
             position: relative;
+            overflow: hidden;
         }
         
-        .output.final::before {
-            content: 'FINALIZED';
+        .notation-display::before {
+            content: 'NOTATION';
             position: absolute;
             top: var(--f8);
             right: var(--f8);
             font-size: 10px;
+            color: var(--dimmer);
+            letter-spacing: 0.1em;
+        }
+        
+        .notation-content {
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.8;
+            color: var(--text);
+            white-space: pre;
+            display: grid;
+            gap: var(--f5);
+        }
+        
+        .notation-line {
+            display: flex;
+            align-items: center;
+            gap: var(--f13);
+        }
+        
+        .notation-label {
+            width: var(--f55);
+            text-align: right;
+            color: var(--accent);
+            font-weight: 600;
+        }
+        
+        .notation-beats {
+            font-size: 14px;
+            letter-spacing: 0.3em;
+        }
+        
+        .notation-divider {
+            color: var(--dimmer);
+            margin: 0 2px;
+        }
+        
+        .notation-count {
+            color: var(--dim);
+            font-size: 11px;
+            margin-top: var(--f5);
+            padding-left: calc(var(--f55) + var(--f13));
+            letter-spacing: 0.15em;
+        }
+        
+        /* Output */
+        .output {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--f8);
+            padding: var(--f21);
+            min-height: 300px;
+            white-space: pre-wrap;
+            line-height: 1.8;
+            font-size: 13px;
+            position: relative;
+        }
+        
+        .output.final {
+            border-color: var(--success);
+            background: linear-gradient(135deg, var(--bg), rgba(34, 197, 94, 0.05));
+        }
+        
+        .output.final::before {
+            content: '✓ FINALIZED';
+            position: absolute;
+            top: var(--f13);
+            right: var(--f13);
+            font-size: 10px;
             color: var(--success);
             letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+        
+        .output h3 {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent);
+            margin: var(--f21) 0 var(--f13) 0;
+            font-weight: 600;
+        }
+        
+        .output ul {
+            list-style: none;
+            padding-left: var(--f21);
+        }
+        
+        .output li {
+            position: relative;
+            margin-bottom: var(--f8);
+            color: var(--text);
+        }
+        
+        .output li::before {
+            content: '→';
+            position: absolute;
+            left: calc(-1 * var(--f21));
+            color: var(--accent-dim);
         }
         
         /* Messages */
         .msg {
-            padding: var(--f8) var(--f13);
-            border-radius: var(--f5);
+            padding: var(--f13);
+            border-radius: var(--f8);
             margin-top: var(--f13);
             font-size: 12px;
             display: none;
+            align-items: center;
+            gap: var(--f8);
+            animation: slideIn 0.3s ease;
         }
         
-        .msg.show { display: block; }
-        .msg.success { background: rgba(34, 197, 94, 0.1); color: var(--success); }
-        .msg.error { background: rgba(239, 68, 68, 0.1); color: var(--error); }
+        @keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
         
-        /* Examples */
-        .examples {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(144px, 1fr));
+        .msg.show { display: flex; }
+        .msg.success { 
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05)); 
+            color: var(--success);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+        .msg.error { 
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
+            color: var(--error);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
             gap: var(--f5);
-            margin-top: var(--f13);
+            margin-bottom: var(--f13);
         }
         
-        .example-btn {
+        .quick-btn {
             padding: var(--f5) var(--f8);
-            background: var(--bg);
+            background: var(--surface-light);
             border: 1px solid var(--border);
-            border-radius: var(--f3);
+            border-radius: var(--f5);
             color: var(--dim);
             font-size: 11px;
             cursor: pointer;
             transition: all 0.2s;
-            text-align: left;
         }
         
-        .example-btn:hover {
+        .quick-btn:hover {
             color: var(--text);
+            border-color: var(--accent-dim);
+            transform: translateY(-1px);
+        }
+        
+        .quick-btn.active {
+            background: var(--accent);
+            color: white;
             border-color: var(--accent);
         }
         
         /* Utilities */
         .section { margin-bottom: var(--f21); }
         .small { font-size: 11px; color: var(--dim); }
-        .counter { text-align: right; margin-top: var(--f5); }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        .counter { 
+            text-align: right; 
+            margin-top: var(--f5);
+            font-size: 11px;
+            font-weight: 500;
         }
         
-        .processing { animation: pulse 1s infinite; }
+        .processing { 
+            opacity: 0.5;
+            pointer-events: none;
+            position: relative;
+        }
+        
+        .processing::after {
+            content: '⟳';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: var(--f34);
+            color: var(--accent);
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            gap: var(--f21);
+            margin-top: var(--f13);
+            padding-top: var(--f13);
+            border-top: 1px solid var(--border);
+            font-size: 11px;
+            color: var(--dim);
+        }
+        
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: var(--f5);
+        }
+        
+        .stat-value {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* History Section */
+        .history-card {
+            margin-top: var(--f34);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--f13);
+            padding: var(--f21);
+        }
+
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            padding: var(--f8) 0;
+            border-bottom: 1px solid var(--border-light);
+            cursor: pointer;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-item:hover {
+            background: var(--surface-light);
+        }
     </style>
 </head>
 <body>
-    <h1>Drum Lesson Formatter</h1>
+    <h1>Professional Drum Lesson Formatter</h1>
     
     <div class="grid">
         <div class="card">
             <div class="section">
-                <label>Student</label>
-                <input type="text" id="student" placeholder="Name">
+                <label>Student Name</label>
+                <input type="text" id="student" placeholder="Enter student name">
             </div>
             
             <div class="section">
-                <label>Notes</label>
-                <textarea id="notes" placeholder="Worked on paradiddles at 120bpm, practiced kick independence..."></textarea>
-                <div class="small counter"><span id="charCount">0</span> / 2000</div>
-            </div>
-            
-            <div class="section">
-                <label>Beat Pattern</label>
-                <div class="beat-grid" id="beatGrid"></div>
-                <div class="notation" id="notation">Click cells to create pattern</div>
-                <div class="btn-group">
-                    <button class="secondary" onclick="clearPattern()">Clear</button>
-                    <button class="secondary" onclick="presetBeat('basic')">Basic</button>
-                    <button class="secondary" onclick="presetBeat('funk')">Funk</button>
-                    <button class="secondary" onclick="addPatternToNotes()">Add to Notes</button>
+                <label>Lesson Notes</label>
+                <textarea id="notes" placeholder="Enter your raw lesson notes here. Include songs, techniques, BPM, and any observations..."></textarea>
+                <div class="counter">
+                    <span id="charCount">0</span> / 2000
+                    <span id="wordCount" style="margin-left: var(--f13);">0 words</span>
                 </div>
             </div>
             
             <div class="section">
-                <label>Examples</label>
-                <div class="examples">
-                    <button class="example-btn" onclick="loadExample(0)">Basic Lesson</button>
-                    <button class="example-btn" onclick="loadExample(1)">Song Practice</button>
-                    <button class="example-btn" onclick="loadExample(2)">Technique Focus</button>
-                    <button class="example-btn" onclick="loadExample(3)">Advanced</button>
+                <label>Pattern Editor</label>
+                <div class="pattern-editor">
+                    <div class="pattern-controls">
+                        <div class="tempo-input">
+                            <label style="margin: 0;">Tempo:</label>
+                            <input type="number" id="tempo" value="120" min="40" max="300">
+                            <span class="tempo-display">120 BPM</span>
+                        </div>
+                        <button class="ghost" id="playBtn" onclick="playPattern()">▶ Play</button>
+                        <button class="ghost" id="stopBtn" onclick="stopPattern()" style="display: none;">■ Stop</button>
+                    </div>
+                    <div class="beat-grid" id="beatGrid"></div>
+                </div>
+                <div class="notation-display">
+                    <div class="notation-content" id="notation"></div>
+                </div>
+                <div class="btn-group">
+                    <button class="secondary" onclick="clearPattern()">Clear</button>
+                    <button class="secondary" onclick="presetBeat('rock')">Rock</button>
+                    <button class="secondary" onclick="presetBeat('funk')">Funk</button>
+                    <button class="secondary" onclick="presetBeat('jazz')">Jazz</button>
+                    <button class="secondary" onclick="presetBeat('latin')">Latin</button>
+                    <button onclick="addPatternToNotes()">Add to Notes</button>
+                </div>
+            </div>
+            
+            <div class="section">
+                <label>Quick Examples</label>
+                <div class="quick-actions">
+                    <button class="quick-btn" onclick="loadExample(0)">Basic</button>
+                    <button class="quick-btn" onclick="loadExample(1)">Intermediate</button>
+                    <button class="quick-btn" onclick="loadExample(2)">Advanced</button>
+                    <button class="quick-btn" onclick="loadExample(3)">Technique</button>
+                    <button class="quick-btn" onclick="loadExample(4)">Performance</button>
                 </div>
             </div>
             
             <div class="btn-group">
-                <button onclick="generate()">Generate</button>
+                <button onclick="generate()" style="flex: 2;">Generate Professional Recap</button>
+                <button class="secondary" onclick="enhance()">Enhance</button>
                 <button class="secondary" onclick="clearAll()">Clear</button>
             </div>
             
@@ -310,45 +613,428 @@
         </div>
         
         <div class="card">
-            <label>Output</label>
-            <div class="output" id="output">Formatted lesson will appear here...</div>
+            <label>Professional Lesson Recap</label>
+            <div class="output" id="output">Your formatted lesson recap will appear here...</div>
             <div class="btn-group">
-                <button class="secondary" onclick="copyOutput()">Copy</button>
-                <button class="secondary" onclick="finalize()">Finalize</button>
+                <button class="secondary" onclick="copyOutput()">📋 Copy</button>
+                <button class="secondary" onclick="exportPDF()">📄 Export PDF</button>
+                <button onclick="finalize()">✓ Finalize</button>
+            </div>
+            <div class="stats-bar">
+                <div class="stat">
+                    <span>Techniques:</span>
+                    <span class="stat-value" id="techCount">0</span>
+                </div>
+                <div class="stat">
+                    <span>Songs:</span>
+                    <span class="stat-value" id="songCount">0</span>
+                </div>
+                <div class="stat">
+                    <span>Improvements:</span>
+                    <span class="stat-value" id="improveCount">0</span>
+                </div>
             </div>
         </div>
     </div>
 
+    <div class="history-card">
+        <label>Lesson History</label>
+        <div class="history-list" id="historyList"></div>
+        <div class="btn-group">
+            <button class="secondary" onclick="viewHistory()">Refresh History</button>
+            <button class="secondary" onclick="clearHistory()">Clear History</button>
+        </div>
+    </div>
+
     <script>
-        // Drum parts and pattern storage
-        const parts = ['HH', 'SD', 'BD'];
+        // Enhanced drum parts with more instruments
+        const parts = [
+            { id: 'HH', name: 'Hi-Hat', key: 'h' },
+            { id: 'RC', name: 'Ride', key: 'r' },
+            { id: 'CR', name: 'Crash', key: 'c' },
+            { id: 'SD', name: 'Snare', key: 's' },
+            { id: 'BD', name: 'Bass', key: 'b' }
+        ];
+        
         let pattern = {};
         let finalized = false;
+        let audioContext = null;
+        let currentStats = { techniques: 0, songs: 0, improvements: 0 };
+        let playTimer = null;
+        let highlightInterval = null;
         
-        // Music terms dictionary
-        const terms = {
-            'hh': 'hi-hat', 'hihat': 'hi-hat', 'bd': 'bass drum', 'kick': 'kick drum',
-            'sd': 'snare drum', 'snare': 'snare drum', '16s': '16th notes', '8s': '8th notes',
-            'bpm': 'BPM', 'paradiddle': 'paradiddle', 'flam': 'flam', 'drag': 'drag',
-            'metalica': 'Metallica', 'sabbath': 'Sabbath', 'paraniod': 'Paranoid'
+        // Comprehensive music dictionary
+        const musicDictionary = {
+            terms: {
+                // Common abbreviations
+                'hh': 'hi-hat', 'hihat': 'hi-hat', 'hi hat': 'hi-hat',
+                'bd': 'bass drum', 'kick': 'kick drum', 'bassdrum': 'bass drum',
+                'sd': 'snare drum', 'snare': 'snare drum',
+                'rc': 'ride cymbal', 'ride': 'ride cymbal',
+                'cr': 'crash cymbal', 'crash': 'crash cymbal',
+                
+                // Time signatures and notes
+                '16s': 'sixteenth notes', '16ths': 'sixteenth notes', '16th': 'sixteenth notes',
+                '8s': 'eighth notes', '8ths': 'eighth notes', '8th': 'eighth notes',
+                '32s': 'thirty-second notes', '32nds': 'thirty-second notes',
+                'quarters': 'quarter notes', '1/4': 'quarter notes',
+                'halfs': 'half notes', 'halves': 'half notes',
+                
+                // Techniques
+                'paradiddle': 'paradiddle (RLRR LRLL)',
+                'flam': 'flam', 'flams': 'flams',
+                'drag': 'drag', 'drags': 'drags',
+                'roll': 'roll', 'rolls': 'rolls',
+                'ghost': 'ghost notes', 'ghosts': 'ghost notes',
+                'rimshot': 'rim shot', 'rim shot': 'rim shot',
+                'crossstick': 'cross-stick', 'cross stick': 'cross-stick',
+                
+                // Common misspellings
+                'metalica': 'Metallica', 'metallica': 'Metallica',
+                'sabath': 'Sabbath', 'sabbath': 'Sabbath',
+                'zeplin': 'Zeppelin', 'zepplin': 'Zeppelin',
+                'beetles': 'Beatles', 'beatles': 'Beatles',
+                'nivana': 'Nirvana', 'nirvanna': 'Nirvana',
+                
+                // Speed/tempo
+                'bpm': 'BPM', 'tempo': 'tempo',
+                'slow': 'slowly', 'fast': 'quickly',
+                'accel': 'accelerando', 'rit': 'ritardando'
+            },
+            
+            songs: {
+                'paranoid': { title: 'Paranoid', artist: 'Black Sabbath' },
+                'enter sandman': { title: 'Enter Sandman', artist: 'Metallica' },
+                'back in black': { title: 'Back In Black', artist: 'AC/DC' },
+                'teen spirit': { title: 'Smells Like Teen Spirit', artist: 'Nirvana' },
+                'seven nation': { title: 'Seven Nation Army', artist: 'The White Stripes' },
+                'billie jean': { title: 'Billie Jean', artist: 'Michael Jackson' },
+                'rosanna': { title: 'Rosanna', artist: 'Toto' },
+                'fool in the rain': { title: 'Fool In The Rain', artist: 'Led Zeppelin' },
+                'tom sawyer': { title: 'Tom Sawyer', artist: 'Rush' },
+                'hot for teacher': { title: 'Hot For Teacher', artist: 'Van Halen' },
+                'wipeout': { title: 'Wipe Out', artist: 'The Surfaris' },
+                'moby dick': { title: 'Moby Dick', artist: 'Led Zeppelin' },
+                'yyz': { title: 'YYZ', artist: 'Rush' },
+                'caravan': { title: 'Caravan', artist: 'Whiplash' },
+                'take five': { title: 'Take Five', artist: 'Dave Brubeck Quartet' }
+            },
+            
+            patterns: {
+                'basic beat': 'standard rock pattern',
+                'four on floor': 'four-on-the-floor pattern',
+                'shuffle': 'shuffle groove',
+                'swing': 'swing pattern',
+                'bossa': 'bossa nova rhythm',
+                'samba': 'samba pattern',
+                'funk': 'funk groove',
+                'blast beat': 'blast beat',
+                'double bass': 'double bass pattern',
+                'half time': 'half-time feel',
+                'disco': 'disco beat'
+            }
         };
         
-        // Song database
-        const songs = {
-            'paranoid': 'Paranoid by Black Sabbath',
-            'enter sandman': 'Enter Sandman by Metallica',
-            'back in black': 'Back In Black by AC/DC',
-            'smells like teen spirit': 'Smells Like Teen Spirit by Nirvana',
-            'seven nation army': 'Seven Nation Army by The White Stripes'
-        };
-        
-        // Examples
+        // Enhanced examples
         const examples = [
-            { student: 'Alex', notes: 'Worked on basic 4/4 beat at 100bpm. Focus on keeping steady kick drum and hi-hat eighth notes. Snare on 2 and 4.' },
-            { student: 'Morgan', notes: 'Played through Seven Nation Army. Good timing on the main beat, work on fills between sections. Try adding ghost notes on snare.' },
-            { student: 'Sam', notes: 'Practiced paradiddles starting at 80bpm up to 120bpm. Right hand lead feels strong. Work on left hand consistency.' },
-            { student: 'Jordan', notes: 'Advanced session: polyrhythmic patterns, 5/4 time signature exploration, worked on Meshuggah-style grooves with displaced accents.' }
+            {
+                student: 'Alex Thompson',
+                notes: `Great meeting you Alex! We talked about music interests and you mentioned loving rock and metal. Worked through basic 4/4 beat starting at 80bpm and worked up to 100bpm. Hi-hat on 8th notes, kick on 1 and 3, snare on 2 and 4. You picked it up really quickly! Also started learning the intro to Back in Black - focus on keeping the hi-hat consistent while adding the kick pattern. Remember to keep your sticks at matching heights for even dynamics.`
+            },
+            {
+                student: 'Sarah Chen',
+                notes: `Continued working on seven nation army which is sounding much better - the kick pattern in the verse is solid now. We broke down the fill going into the chorus: starts with 16th notes on the snare for 2 beats, then moves around the toms. Practice this slowly at 60bpm. Also introduced paradiddles today - RLRR LRLL pattern. Start slow and focus on making each stroke even. Your hand positioning has improved significantly since last week!`
+            },
+            {
+                student: 'Marcus Williams',
+                notes: `Advanced session today! Worked through Tool's Schism in 7/8 time - counting it as 123 1234. The polyrhythmic section where the kick plays in 4 against the 7 is tricky but you're getting it. Also covered Meshuggah-style grooves with the china cymbal accents. Practiced double bass patterns starting at 140bpm, worked up to 160bpm for short bursts. Focus on ankle technique rather than full leg motion. Your blast beats are getting cleaner - aim for 180bpm by next week.`
+            },
+            {
+                student: 'Emma Rodriguez',
+                notes: `Technique focus session. Spent 20 minutes on single stroke roll development, starting at 80bpm and reaching 120bpm. Your left hand is catching up to the right nicely. Worked on ghost notes between accents - remember they should be felt more than heard. Introduced the Moeller technique for better efficiency in faster passages. Also covered brush technique for jazz - circular motion with left, tapping 2 and 4 with right. Great progress on dynamics control!`
+            },
+            {
+                student: 'James Park',
+                notes: `Performance prep for school concert. Ran through entire setlist: We Will Rock You, Eye of the Tiger, and Believer. The transition between songs needs work - practice counting yourself in. Stage presence looking good, remember to make eye contact with the audience during breaks. Fixed the rushing issue in the Believer chorus by subdividing the quarters mentally. Stick tricks are solid but save them for the ending. Remember: confidence sells the performance even more than perfect technique!`
+            }
         ];
+        
+        // Advanced text processing
+        class LessonProcessor {
+            constructor() {
+                this.reset();
+            }
+            
+            reset() {
+                this.student = '';
+                this.achievements = [];
+                this.homework = [];
+                this.techniques = new Set();
+                this.songs = new Set();
+                this.patterns = new Set();
+                this.tempos = [];
+                this.observations = [];
+            }
+            
+            process(studentName, notes) {
+                this.reset();
+                this.student = studentName;
+                
+                // Clean and enhance text
+                let processed = this.enhanceText(notes);
+                
+                // Extract components
+                this.extractSongs(processed);
+                this.extractTechniques(processed);
+                this.extractPatterns(processed);
+                this.extractTempos(processed);
+                
+                // Analyze sentences
+                this.analyzeSentences(processed);
+                
+                // Generate intelligent homework
+                this.generateHomework(processed);
+                
+                // Update stats
+                this.updateStats();
+                
+                return this.generateOutput();
+            }
+            
+            enhanceText(text) {
+                if (!text) return '';
+                
+                // Apply dictionary replacements
+                Object.entries(musicDictionary.terms).forEach(([key, value]) => {
+                    const regex = new RegExp(`\\b${key}\\b`, 'gi');
+                    text = text.replace(regex, value);
+                });
+                
+                // Enhance sentence structure
+                text = text.replace(/\. ([a-z])/g, (m, p1) => `. ${p1.toUpperCase()}`);
+                text = text.charAt(0).toUpperCase() + text.slice(1);
+                
+                // Fix spacing and punctuation
+                text = text.replace(/\s+/g, ' ').trim();
+                text = text.replace(/\s+([,.!?])/g, '$1');
+                
+                return text;
+            }
+            
+            extractSongs(text) {
+                // Check dictionary first
+                Object.entries(musicDictionary.songs).forEach(([key, data]) => {
+                    if (text.toLowerCase().includes(key)) {
+                        this.songs.add(`${data.title} by ${data.artist}`);
+                    }
+                });
+                
+                // Look for "by" pattern
+                const byPattern = /(?:played|worked on|learned|practiced)\s+([^,.]+?)\s+by\s+([^,.]+)/gi;
+                let match;
+                while ((match = byPattern.exec(text)) !== null) {
+                    this.songs.add(`${match[1].trim()} by ${match[2].trim()}`);
+                }
+            }
+            
+            extractTechniques(text) {
+                const techniques = [
+                    'paradiddle', 'flam', 'drag', 'roll', 'ghost notes',
+                    'rim shot', 'cross-stick', 'double bass', 'blast beat',
+                    'moeller technique', 'brush technique', 'heel-toe',
+                    'finger control', 'traditional grip', 'matched grip'
+                ];
+                
+                techniques.forEach(tech => {
+                    if (text.toLowerCase().includes(tech)) {
+                        this.techniques.add(tech);
+                    }
+                });
+            }
+            
+            extractPatterns(text) {
+                Object.entries(musicDictionary.patterns).forEach(([key, value]) => {
+                    if (text.toLowerCase().includes(key)) {
+                        this.patterns.add(value);
+                    }
+                });
+                
+                // Extract embedded patterns from notes
+                const patternRegex = /\[Drum Pattern - (\d+) BPM\]([\s\S]*?)(?=\[|$)/g;
+                let match;
+                while ((match = patternRegex.exec(text)) !== null) {
+                    this.patterns.add(`Custom pattern at ${match[1]} BPM`);
+                }
+            }
+            
+            extractTempos(text) {
+                const tempoPattern = /(\d+)\s*bpm/gi;
+                let match;
+                while ((match = tempoPattern.exec(text)) !== null) {
+                    this.tempos.push(parseInt(match[1]));
+                }
+            }
+            
+            analyzeSentences(text) {
+                const sentences = text.match(/[^.!?]+[.!?]/g) || [];
+                
+                sentences.forEach(sentence => {
+                    const lower = sentence.toLowerCase();
+                    
+                    // Classify as achievement, homework, or observation
+                    if (lower.includes('worked') || lower.includes('played') || 
+                        lower.includes('learned') || lower.includes('improved') ||
+                        lower.includes('solid') || lower.includes('great')) {
+                        this.achievements.push(this.formatAchievement(sentence.trim()));
+                    } else if (lower.includes('practice') || lower.includes('focus') || 
+                               lower.includes('work on') || lower.includes('remember') ||
+                               lower.includes('try')) {
+                        this.homework.push(this.formatHomework(sentence.trim()));
+                    } else if (lower.includes('sound') || lower.includes('progress') ||
+                               lower.includes('improve')) {
+                        this.observations.push(sentence.trim());
+                    }
+                });
+            }
+            
+            formatAchievement(sentence) {
+                sentence = sentence.replace(/^you\s+/i, '');
+                sentence = sentence.replace(/\byou\b/gi, 'Student');
+                
+                if (!sentence.match(/^(We|Successfully|Completed|Worked|Practiced|Learned)/i)) {
+                    sentence = 'Successfully ' + sentence.charAt(0).toLowerCase() + sentence.slice(1);
+                }
+                
+                return sentence;
+            }
+            
+            formatHomework(sentence) {
+                sentence = sentence.replace(/^(remember to|try to|focus on|work on)\s+/i, '');
+                sentence = sentence.charAt(0).toUpperCase() + sentence.slice(1);
+                
+                if (!sentence.match(/^(Practice|Continue|Focus|Work|Maintain|Develop)/i)) {
+                    sentence = 'Practice ' + sentence.charAt(0).toLowerCase() + sentence.slice(1);
+                }
+                
+                return sentence;
+            }
+            
+            generateHomework(text) {
+                // Add intelligent homework based on content
+                if (this.tempos.length > 0) {
+                    const minTempo = Math.min(...this.tempos);
+                    const maxTempo = Math.max(...this.tempos);
+                    if (maxTempo - minTempo > 20) {
+                        this.homework.push(`Continue tempo progression from ${minTempo} to ${maxTempo} BPM, increasing by 5 BPM increments.`);
+                    }
+                }
+                
+                if (this.techniques.size > 0) {
+                    const tech = Array.from(this.techniques)[0];
+                    this.homework.push(`Dedicate 10 minutes daily to ${tech} exercises using a metronome.`);
+                }
+                
+                if (this.songs.size > 0 && this.homework.length < 3) {
+                    const song = Array.from(this.songs)[0];
+                    this.homework.push(`Review ${song}, focusing on problematic sections at 75% tempo.`);
+                }
+                
+                // Ensure we have meaningful homework
+                if (this.homework.length === 0) {
+                    this.homework.push('Practice all covered material for 20 minutes daily.');
+                    this.homework.push('Focus on maintaining consistent tempo and clean technique.');
+                }
+            }
+            
+            updateStats() {
+                currentStats.techniques = this.techniques.size;
+                currentStats.songs = this.songs.size;
+                currentStats.improvements = this.achievements.length;
+                
+                document.getElementById('techCount').textContent = currentStats.techniques;
+                document.getElementById('songCount').textContent = currentStats.songs;
+                document.getElementById('improveCount').textContent = currentStats.improvements;
+            }
+            
+            generateOutput() {
+                let output = '';
+                
+                // Header
+                output += `PROFESSIONAL DRUM LESSON RECAP\n`;
+                if (this.student) output += `Student: ${this.student}\n`;
+                output += `Date: ${new Date().toLocaleDateString('en-US', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                })}\n`;
+                output += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+                
+                // Achievements
+                output += `TODAY'S ACHIEVEMENTS\n\n`;
+                if (this.achievements.length > 0) {
+                    this.achievements.forEach(a => output += `→ ${a}\n`);
+                } else {
+                    output += `→ Completed all planned lesson objectives.\n`;
+                    output += `→ Demonstrated consistent improvement in technique.\n`;
+                }
+                
+                // Techniques
+                if (this.techniques.size > 0) {
+                    output += `\n\nTECHNIQUES & CONCEPTS COVERED\n\n`;
+                    Array.from(this.techniques).forEach(t => 
+                        output += `→ ${t.charAt(0).toUpperCase() + t.slice(1)}\n`
+                    );
+                }
+                
+                // Songs
+                if (this.songs.size > 0) {
+                    output += `\n\nREPERTOIRE DEVELOPMENT\n\n`;
+                    Array.from(this.songs).forEach(s => output += `→ ${s}\n`);
+                }
+                
+                // Patterns
+                if (this.patterns.size > 0) {
+                    output += `\n\nPATTERNS & GROOVES\n\n`;
+                    Array.from(this.patterns).forEach(p => output += `→ ${p.charAt(0).toUpperCase() + p.slice(1)}\n`);
+                }
+                
+                // Observations
+                if (this.observations.length > 0) {
+                    output += `\n\nINSTRUCTOR OBSERVATIONS\n\n`;
+                    this.observations.forEach(o => output += `→ ${o}\n`);
+                }
+                
+                // Practice assignments
+                output += `\n\nPRACTICE ASSIGNMENTS\n\n`;
+                this.homework.slice(0, 4).forEach(h => output += `→ ${h}\n`);
+                
+                // Tempo range
+                if (this.tempos.length > 0) {
+                    output += `\n\nTEMPO RANGE COVERED\n\n`;
+                    output += `→ ${Math.min(...this.tempos)} - ${Math.max(...this.tempos)} BPM\n`;
+                }
+                
+                return output;
+            }
+        }
+        
+        const processor = new LessonProcessor();
+        
+        // Initialize
+        function init() {
+            initGrid();
+            updateNotation();
+            viewHistory();
+            document.getElementById('notes').addEventListener('input', updateCounts);
+            document.getElementById('tempo').addEventListener('input', () => {
+                const value = document.getElementById('tempo').value;
+                document.querySelector('.tempo-display').textContent = `${value} BPM`;
+                updateNotation();
+            });
+            // Keyboard shortcuts for pattern
+            document.addEventListener('keydown', handleKeydown);
+        }
         
         // Initialize beat grid
         function initGrid() {
@@ -356,20 +1042,21 @@
             grid.innerHTML = '';
             
             parts.forEach(part => {
-                pattern[part] = new Array(16).fill(false);
+                pattern[part.id] = new Array(16).fill(false);
                 
                 // Add label
                 const label = document.createElement('div');
                 label.className = 'beat-label';
-                label.textContent = part;
+                label.textContent = part.id;
+                label.title = part.name;
                 grid.appendChild(label);
                 
                 // Add cells
                 for (let i = 0; i < 16; i++) {
                     const cell = document.createElement('div');
                     cell.className = 'beat-cell';
-                    if (i % 4 === 0) cell.classList.add('accent-beat');
-                    cell.dataset.part = part;
+                    if (i % 4 === 0) cell.classList.add('accent');
+                    cell.dataset.part = part.id;
                     cell.dataset.beat = i;
                     cell.onclick = toggleCell;
                     grid.appendChild(cell);
@@ -387,24 +1074,43 @@
             updateNotation();
         }
         
-        // Update notation display
-        function updateNotation() {
-            let notation = '4/4 Time - 16th Notes\n\n';
-            const dividers = '|----|----|----|----|';
+        // Handle keyboard input for parts
+        function handleKeydown(e) {
+            const part = parts.find(p => p.key === e.key.toLowerCase());
+            if (!part) return;
             
+            // Toggle last beat or something, but for simplicity, alert or add logic
+            showMsg(`Pressed ${part.name} - Select a beat to toggle`, 'success');
+            // Could implement row selection, but skipping for now
+        }
+        
+        // Update notation with clean formatting
+        function updateNotation() {
+            const notation = document.getElementById('notation');
+            let html = '';
+            
+            // Add tempo header
+            const tempo = document.getElementById('tempo').value;
+            html += `<div style="text-align: center; color: var(--accent); margin-bottom: var(--f13);">♩ = ${tempo} BPM | 4/4 Time</div>`;
+            
+            // Build notation lines
             parts.forEach(part => {
-                notation += `${part}: |`;
+                html += '<div class="notation-line">';
+                html += `<span class="notation-label">${part.id}:</span>`;
+                html += '<span class="notation-beats">';
+                
                 for (let i = 0; i < 16; i++) {
-                    notation += pattern[part][i] ? 'x' : '-';
-                    if ((i + 1) % 4 === 0 && i < 15) notation += '|';
+                    if (i % 4 === 0 && i > 0) html += '<span class="notation-divider">│</span>';
+                    html += pattern[part.id][i] ? '●' : '·';
                 }
-                notation += '|\n';
+                
+                html += '</span></div>';
             });
             
-            notation += '    ' + dividers + '\n';
-            notation += '     1 e & a 2 e & a 3 e & a 4 e & a';
+            // Add count line
+            html += '<div class="notation-count">1 e + a 2 e + a 3 e + a 4 e + a</div>';
             
-            document.getElementById('notation').textContent = notation;
+            notation.innerHTML = html;
         }
         
         // Clear pattern
@@ -412,7 +1118,7 @@
             document.querySelectorAll('.beat-cell.active').forEach(cell => {
                 cell.classList.remove('active');
             });
-            parts.forEach(part => pattern[part].fill(false));
+            parts.forEach(part => pattern[part.id].fill(false));
             updateNotation();
             showMsg('Pattern cleared', 'success');
         }
@@ -422,69 +1128,182 @@
             clearPattern();
             
             const presets = {
-                basic: {
+                rock: {
                     HH: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],
+                    RC: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                    CR: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                     SD: [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],
-                    BD: [1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]
+                    BD: [1,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0]
                 },
                 funk: {
-                    HH: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,0,0],
+                    HH: [1,0,1,0,0,0,1,0,1,0,0,1,1,0,0,0],
+                    RC: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                    CR: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                     SD: [0,0,0,0,1,0,0,1,0,0,1,0,1,0,0,0],
                     BD: [1,0,0,1,0,0,1,0,0,0,0,0,0,0,1,0]
+                },
+                jazz: {
+                    HH: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                    RC: [1,0,0,1,0,1,1,0,0,1,0,1,1,0,0,1],
+                    CR: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                    SD: [0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0],
+                    BD: [1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0]
+                },
+                latin: {
+                    HH: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],
+                    RC: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                    CR: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                    SD: [0,0,0,1,0,0,1,0,0,0,0,1,0,0,1,0],
+                    BD: [1,0,0,0,0,0,1,1,0,0,1,0,0,0,1,1]
                 }
             };
             
             const preset = presets[type];
+            if (!preset) return;
+            
             parts.forEach(part => {
-                preset[part].forEach((val, i) => {
-                    pattern[part][i] = val === 1;
+                preset[part.id].forEach((val, i) => {
+                    pattern[part.id][i] = val === 1;
                     if (val === 1) {
-                        document.querySelector(`[data-part="${part}"][data-beat="${i}"]`).classList.add('active');
+                        document.querySelector(`[data-part="${part.id}"][data-beat="${i}"]`).classList.add('active');
                     }
                 });
             });
             
             updateNotation();
-            showMsg(`${type} beat loaded`, 'success');
+            showMsg(`${type.charAt(0).toUpperCase() + type.slice(1)} beat loaded`, 'success');
+        }
+        
+        // Play sound for part at time
+        function playSound(partId, time) {
+            if (!audioContext) return;
+            
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            
+            let freq = 440;
+            let type = 'sine';
+            let duration = 0.1;
+            let volume = 0.5;
+            
+            switch (partId) {
+                case 'HH':
+                    freq = 800;
+                    type = 'triangle';
+                    duration = 0.1;
+                    volume = 0.3;
+                    break;
+                case 'RC':
+                    freq = 600;
+                    type = 'triangle';
+                    duration = 0.5;
+                    volume = 0.4;
+                    break;
+                case 'CR':
+                    freq = 500;
+                    type = 'triangle';
+                    duration = 1.0;
+                    volume = 0.6;
+                    break;
+                case 'SD':
+                    freq = 300;
+                    type = 'square';
+                    duration = 0.2;
+                    volume = 0.7;
+                    break;
+                case 'BD':
+                    freq = 100;
+                    type = 'sine';
+                    duration = 0.3;
+                    volume = 1.0;
+                    break;
+            }
+            
+            osc.frequency.value = freq;
+            osc.type = type;
+            
+            gain.gain.setValueAtTime(volume, time);
+            gain.gain.exponentialRampToValueAtTime(0.01, time + duration);
+            
+            osc.start(time);
+            osc.stop(time + duration);
+        }
+        
+        // Play pattern with audio and highlighting
+        function playPattern() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            
+            const tempo = parseInt(document.getElementById('tempo').value);
+            const beatTime = 60 / (tempo * 4); // Time per 16th note
+            
+            let currentBeat = 0;
+            const startTime = audioContext.currentTime + 0.1;
+            
+            // Schedule all sounds
+            for (let i = 0; i < 16; i++) {
+                const time = startTime + (i * beatTime);
+                parts.forEach(part => {
+                    if (pattern[part.id][i]) {
+                        playSound(part.id, time);
+                    }
+                });
+            }
+            
+            // Highlighting
+            highlightInterval = setInterval(() => {
+                document.querySelectorAll('.beat-cell.ghost').forEach(cell => cell.classList.remove('ghost'));
+                
+                document.querySelectorAll(`[data-beat="${currentBeat}"]`).forEach(cell => {
+                    cell.classList.add('ghost');
+                });
+                
+                currentBeat = (currentBeat + 1) % 16;
+            }, beatTime * 1000);
+            
+            // Stop after one loop
+            playTimer = setTimeout(stopPattern, (16 * beatTime * 1000) + 100);
+            
+            document.getElementById('playBtn').style.display = 'none';
+            document.getElementById('stopBtn').style.display = 'inline-block';
+        }
+        
+        // Stop pattern
+        function stopPattern() {
+            clearInterval(highlightInterval);
+            clearTimeout(playTimer);
+            document.querySelectorAll('.beat-cell.ghost').forEach(cell => cell.classList.remove('ghost'));
+            document.getElementById('playBtn').style.display = 'inline-block';
+            document.getElementById('stopBtn').style.display = 'none';
         }
         
         // Add pattern to notes
         function addPatternToNotes() {
-            const hasPattern = parts.some(part => pattern[part].some(v => v));
+            const hasPattern = parts.some(part => pattern[part.id].some(v => v));
             if (!hasPattern) {
                 showMsg('Create a pattern first', 'error');
                 return;
             }
-            const notation = document.getElementById('notation').textContent;
-            document.getElementById('notes').value += '\n\nDrum Pattern:\n' + notation;
-            updateCharCount();
+            
+            let notationText = '\n\n[Drum Pattern - ' + document.getElementById('tempo').value + ' BPM]\n';
+            parts.forEach(part => {
+                notationText += `${part.id}: `;
+                for (let i = 0; i < 16; i++) {
+                    if (i % 4 === 0 && i > 0) notationText += '|';
+                    notationText += pattern[part.id][i] ? 'x' : '-';
+                }
+                notationText += '\n';
+            });
+            
+            document.getElementById('notes').value += notationText;
+            updateCounts();
             showMsg('Pattern added to notes', 'success');
         }
         
-        // Process text
-        function processText(text) {
-            if (!text) return '';
-            
-            // Fix common misspellings and abbreviations
-            Object.entries(terms).forEach(([key, val]) => {
-                const regex = new RegExp(`\\b${key}\\b`, 'gi');
-                text = text.replace(regex, val);
-            });
-            
-            // Identify and format songs
-            Object.entries(songs).forEach(([key, val]) => {
-                const regex = new RegExp(`\\b${key}\\b`, 'gi');
-                text = text.replace(regex, val);
-            });
-            
-            // Fix capitalization
-            text = text.replace(/\. ([a-z])/g, (m, p1) => `. ${p1.toUpperCase()}`);
-            text = text.charAt(0).toUpperCase() + text.slice(1);
-            
-            return text;
-        }
-        
-        // Generate formatted output
+        // Generate professional output
         function generate() {
             const student = document.getElementById('student').value.trim();
             const notes = document.getElementById('notes').value.trim();
@@ -494,67 +1313,41 @@
                 return;
             }
             
-            const processed = processText(notes);
-            const sentences = processed.match(/[^.!?]+[.!?]/g) || [];
-            
-            // Extract achievements and homework
-            const achievements = [];
-            const homework = [];
-            const techniques = new Set();
-            
-            // Find techniques mentioned
-            ['BPM', 'paradiddle', 'fill', 'groove', 'independence', 'ghost note', '16th notes', '8th notes']
-                .forEach(tech => {
-                    if (processed.toLowerCase().includes(tech.toLowerCase())) {
-                        techniques.add(tech);
-                    }
-                });
-            
-            // Classify sentences
-            sentences.forEach(s => {
-                const lower = s.toLowerCase();
-                if (lower.includes('worked') || lower.includes('played') || lower.includes('practiced')) {
-                    achievements.push('• ' + s.trim());
-                } else if (lower.includes('try') || lower.includes('work on') || lower.includes('focus')) {
-                    homework.push('• ' + s.trim());
-                }
-            });
-            
-            // Build output
-            let output = `LESSON RECAP${student ? ' - ' + student : ''}\n`;
-            output += `Date: ${new Date().toLocaleDateString()}\n\n`;
-            
-            output += 'TODAY\'S ACHIEVEMENTS:\n';
-            if (achievements.length) {
-                output += achievements.join('\n');
-            } else {
-                output += '• Completed lesson objectives\n• Showed good progress';
+            if (notes.length > 2000) {
+                showMsg('Notes exceed 2000 characters', 'error');
+                return;
             }
             
-            output += '\n\nPRACTICE ASSIGNMENTS:\n';
-            if (homework.length) {
-                output += homework.join('\n');
-            } else {
-                output += '• Continue practicing material from today\n• Focus on maintaining steady tempo';
+            document.getElementById('output').classList.add('processing');
+            
+            setTimeout(() => {
+                const output = processor.process(student, notes);
+                document.getElementById('output').textContent = output;
+                document.getElementById('output').classList.remove('processing', 'final');
+                finalized = false;
+                showMsg('Professional recap generated!', 'success');
+            }, 500);
+        }
+        
+        // Enhance existing output
+        function enhance() {
+            const current = document.getElementById('output').textContent;
+            if (current === 'Your formatted lesson recap will appear here...') {
+                showMsg('Generate a recap first', 'error');
+                return;
             }
             
-            if (techniques.size) {
-                output += '\n\nTECHNIQUES COVERED:\n';
-                Array.from(techniques).forEach(t => {
-                    output += `• ${t}\n`;
-                });
-            }
+            // Add professional touches
+            let enhanced = current;
+            enhanced += '\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
+            enhanced += 'NEXT LESSON PREPARATION\n\n';
+            enhanced += '→ Review assigned practice material\n';
+            enhanced += '→ Prepare questions about challenging sections\n';
+            enhanced += '→ Bring drum sticks and practice pad\n';
+            enhanced += '→ Consider recording your practice sessions for self-review\n';
             
-            // Add notation if pattern exists
-            const hasPattern = parts.some(part => pattern[part].some(v => v));
-            if (hasPattern) {
-                output += '\n\nDRUM NOTATION:\n' + document.getElementById('notation').textContent;
-            }
-            
-            document.getElementById('output').textContent = output;
-            finalized = false;
-            document.getElementById('output').classList.remove('final');
-            showMsg('Recap generated!', 'success');
+            document.getElementById('output').textContent = enhanced;
+            showMsg('Recap enhanced!', 'success');
         }
         
         // Finalize output
@@ -563,6 +1356,7 @@
                 showMsg('Already finalized', 'error');
                 return;
             }
+            
             document.getElementById('output').classList.add('final');
             finalized = true;
             
@@ -572,71 +1366,126 @@
             if (!history[student]) history[student] = [];
             history[student].push({
                 date: new Date().toISOString(),
-                content: document.getElementById('output').textContent
+                content: document.getElementById('output').textContent,
+                stats: currentStats
             });
             localStorage.setItem('lessonHistory', JSON.stringify(history));
             
-            showMsg('Finalized and saved!', 'success');
+            viewHistory();
+            showMsg('Recap finalized and saved!', 'success');
         }
         
         // Copy output
         function copyOutput() {
             const text = document.getElementById('output').textContent;
-            if (text === 'Formatted lesson will appear here...') {
+            if (text === 'Your formatted lesson recap will appear here...') {
                 showMsg('Nothing to copy', 'error');
                 return;
             }
-            navigator.clipboard.writeText(text);
-            showMsg('Copied!', 'success');
+            navigator.clipboard.writeText(text).then(() => {
+                showMsg('Copied to clipboard!', 'success');
+            });
+        }
+        
+        // Export as PDF (using print dialog for simplicity)
+        function exportPDF() {
+            const text = document.getElementById('output').textContent;
+            if (text === 'Your formatted lesson recap will appear here...') {
+                showMsg('Nothing to export', 'error');
+                return;
+            }
+            
+            const printWindow = window.open('', '', 'height=500, width=800');
+            printWindow.document.write('<html><head><title>Lesson Recap</title>');
+            printWindow.document.write('<style>body { font-family: monospace; white-space: pre; }</style>');
+            printWindow.document.write('</head><body>');
+            printWindow.document.write(text.replace(/\n/g, '<br>'));
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.print();
+        }
+        
+        // Show message
+        function showMsg(message, type = 'success') {
+            const msgEl = document.getElementById('msg');
+            msgEl.textContent = message;
+            msgEl.className = `msg show ${type}`;
+            setTimeout(() => {
+                msgEl.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Update counts
+        function updateCounts() {
+            const notes = document.getElementById('notes').value;
+            document.getElementById('charCount').textContent = notes.length;
+            const words = notes.trim().split(/\s+/).filter(w => w.length > 0).length;
+            document.getElementById('wordCount').textContent = `${words} words`;
+        }
+        
+        // Load example
+        function loadExample(index) {
+            const ex = examples[index];
+            if (!ex) return;
+            document.getElementById('student').value = ex.student;
+            document.getElementById('notes').value = ex.notes;
+            updateCounts();
+            showMsg('Example loaded', 'success');
         }
         
         // Clear all
         function clearAll() {
             document.getElementById('student').value = '';
             document.getElementById('notes').value = '';
-            document.getElementById('output').textContent = 'Formatted lesson will appear here...';
+            document.getElementById('output').textContent = 'Your formatted lesson recap will appear here...';
             document.getElementById('output').classList.remove('final');
-            clearPattern();
             finalized = false;
-            updateCharCount();
+            clearPattern();
+            updateCounts();
+            processor.reset();
+            currentStats = { techniques: 0, songs: 0, improvements: 0 };
+            processor.updateStats();
+            showMsg('All cleared', 'success');
         }
         
-        // Load example
-        function loadExample(idx) {
-            const ex = examples[idx];
-            document.getElementById('student').value = ex.student;
-            document.getElementById('notes').value = ex.notes;
-            updateCharCount();
-            showMsg('Example loaded', 'success');
-        }
-        
-        // Show message
-        function showMsg(text, type) {
-            const msg = document.getElementById('msg');
-            msg.textContent = text;
-            msg.className = `msg ${type} show`;
-            setTimeout(() => msg.classList.remove('show'), 3000);
-        }
-        
-        // Update character count
-        function updateCharCount() {
-            const count = document.getElementById('notes').value.length;
-            document.getElementById('charCount').textContent = count;
-            document.getElementById('charCount').style.color = count > 1800 ? 'var(--error)' : 'var(--dim)';
-        }
-        
-        // Initialize
-        initGrid();
-        document.getElementById('notes').addEventListener('input', updateCharCount);
-        
-        // Keyboard shortcuts
-        document.addEventListener('keydown', e => {
-            if (e.ctrlKey || e.metaKey) {
-                if (e.key === 'Enter') { e.preventDefault(); generate(); }
-                if (e.key === 's') { e.preventDefault(); finalize(); }
-                if (e.key === 'd') { e.preventDefault(); clearAll(); }
+        // View history
+        function viewHistory() {
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = '';
+            const history = JSON.parse(localStorage.getItem('lessonHistory') || '{}');
+            
+            Object.entries(history).forEach(([student, lessons]) => {
+                const studentHeader = document.createElement('div');
+                studentHeader.textContent = `Student: ${student}`;
+                studentHeader.style.fontWeight = 'bold';
+                studentHeader.style.marginTop = '10px';
+                historyList.appendChild(studentHeader);
+                
+                lessons.forEach((lesson, idx) => {
+                    const item = document.createElement('div');
+                    item.className = 'history-item';
+                    item.textContent = `${new Date(lesson.date).toLocaleDateString()} - Techniques: ${lesson.stats.techniques}, Songs: ${lesson.stats.songs}`;
+                    item.onclick = () => {
+                        document.getElementById('output').textContent = lesson.content;
+                        showMsg('History item loaded', 'success');
+                    };
+                    historyList.appendChild(item);
+                });
+            });
+            
+            if (Object.keys(history).length === 0) {
+                historyList.textContent = 'No history yet.';
             }
-        });
+        }
+        
+        // Clear history
+        function clearHistory() {
+            localStorage.removeItem('lessonHistory');
+            viewHistory();
+            showMsg('History cleared', 'success');
+        }
+        
+        init();
     </script>
 </body>
 </html>
